@@ -1,0 +1,270 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title</title>
+
+    <link href="~/css/external-style.css" rel="stylesheet" />
+    <link href="~/css/arise-public-access-site.css" rel="stylesheet" />
+
+    <script src="~/js/external-jquery-header.js"></script>
+</head>
+<body>
+    @{
+        var containerNavbarClasses = "container";
+
+        if (ViewBag.ShowLeftNav == true)
+        {
+            containerNavbarClasses = "container-fluid";
+        }
+    }
+    <div id="divNavbarWrapper" class="navbar navbar-default navbar-fixed-top">
+        <div class="@containerNavbarClasses">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#divMainNavbar" aria-expanded="false">
+                    <span class="sr-only">Toggle Navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" style="box-sizing: border-box; padding: 0px 15px;" href="@Url.Content("~/")">
+                    <img src="~/Images/ccms-Logo-navbar.png" style="height: 50px;" />
+                </a>
+            </div>
+            <h3 style="margin-top:12px; margin-bottom: 0px; margin-left: 80px; color: white;">PROVIDER ACCESS</h3>
+            @if (ViewBag.ShowUserDetails != null && ViewBag.ShowUserDetails)
+            {
+                @Html.Partial("_UserDetails")
+            }
+        </div>
+    </div>
+    @{
+        var containerClasses = "container-fluid";
+        var leftNavClass = String.Empty;
+
+        if (ViewBag.ShowLeftNav == true)
+        {
+            leftNavClass = "container-with-nav";
+        }
+
+        containerClasses += " " + leftNavClass;
+    }
+    @if (ViewBag.ShowLeftNav == true)
+    {
+        <div class="@containerClasses" style="background-color: white; margin-top: 62px;">
+            <div class="row">
+                @Html.Partial("_LeftNavPartial")
+                <div class="col-lg-9 col-md-9 col-xs-8">
+                    <h2>@ViewBag.PageTitle</h2>
+                    <div id="divValidationSummary" class="form-horizontal" style="display: none;">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-horizontal custom-validation-summary col-md-11">
+                                    <div class="form-group form-group-tight">
+                                        <div class="col-md-12">
+                                            <h4 class="text-danger" style="padding-left: 11px;">
+                                                <span class="k-icon k-i-warning"></span>
+                                                <span style="padding: 0 0 0 4px;">Please correct the following Errors</span>
+                                            </h4>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group form-group-tight">
+                                        <div class="col-md-12 " style="padding-left:25px; padding-bottom:10px">
+                                            <ul id="listValidationErrors">
+                                                @* Populated by ValidationSummary.js and the validationSummaryTemplate script (See scrips section below) *@
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="k-callout k-callout-n custom-callout"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <script type="text/x-kendo-template" id="validationSummaryTemplate">
+                        # if (messages.length) { #
+                        # for (var i = 0; i < messages.length; ++i) { #
+                        <li>#= messages[i] #</li>
+                        # } #
+                        # } #
+                    </script>
+                    @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Any(e => e.Exception != null)))
+                    {
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="form-horizontal custom-validation-summary col-md-11">
+                                        <div class="form-group form-group-tight">
+                                            <div class="col-md-12">
+                                                <h4 class="text-danger" style="padding-left: 11px;">
+                                                    <span class="k-icon k-i-warning"></span>
+                                                    <span style="padding: 0 0 0 4px;">Please correct the following Errors</span>
+                                                </h4>
+                                            </div>
+                                        </div>
+                                        @foreach (var item in ViewData.ModelState.Values)
+                                        {
+                                            foreach (var error in item.Errors)
+                                            {
+                                                if (error.Exception != null)
+                                                {
+                                                    <div class="form-group form-group-tight">
+                                                        <div class="col-md-12" style="padding-left:25px; padding-bottom:10px">
+                                                            <ul>
+                                                                <li>@error.Exception.Message</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                        }
+                                    </div>
+                                    <div class="k-callout k-callout-n custom-callout"></div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div id="contentBody" style="opacity: 0;">
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="@containerClasses">
+            <div class="row">
+                <div id="contentBody" class="col-md-12">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    }
+
+    @*<div id="divPasswordWrapper">
+        <div id="divPassword">
+            @Html.Partial("_ChangePasswordPartial", new Arise.PublicAccess.Models.ManageUserViewModel { })
+        </div>
+    </div>*@
+
+    <div>
+        @(Html.Kendo().Window()
+        .Name("ConfirmationBox")
+        .Title("Delete Record")
+        .Actions(a => a.Close())
+        .Events(e => e.Close("CloseConfirmationPopup"))
+        .Draggable(false)
+        .Modal(true)
+        .Scrollable(false)
+        .Pinned()
+        .Visible(false)
+        .Width(300)
+        .Content(@<text>
+                    <div class="panel panel-default panel-marginless">
+                        <div class="panel-body">
+                            <div class="form-horizontal">
+                                <div class="form-group form-group-marginless">
+                                    <div class="col-md-12">
+                                        <p>Are you sure you want to delete this record?</p>
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-marginless">
+                                    <div class="col-md-12 text-center">
+                                        <p>Continue?</p>
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-marginless">
+                                    <div class="col-md-6">
+                                        <input type="button" class="btn btn-primary" value="Delete" id="btnConfirmDelete" />
+                                    </div>
+                                    <div class="col-md-6 text-right">
+                                        <input type="button" class="btn btn-default" value="Cancel" id="btnCancel" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        </text>)
+        )
+    </div>
+
+    <div>
+        @(Html.Kendo().Notification()
+            .Name("CenteredPopup")
+            .Stacking(NotificationStackingSettings.Up)
+            .Events(e => e.Show("ShowCenteredPopup"))
+            .Button(true)
+            .AutoHideAfter(0)
+            .Templates(t =>
+            {
+                t.Add().Type("error").ClientTemplateID("errorTemplate");
+                t.Add().Type("saving").ClientTemplateID("savingTemplate");
+                t.Add().Type("success").ClientTemplateID("savingSuccessTemplate");
+                t.Add().Type("info").ClientTemplateID("infoTemplate");
+                t.Add().Type("actionSuccess").ClientTemplateID("actionSuccessTemplate");
+            })
+            .Width(210)
+        )
+
+        <script id="savingTemplate" type="text/x-kendo-template">
+            <div class="panel panel-default text-center" style="background-color: rgba(229, 245, 250, 0.701961); color: rgb(4, 135, 196); margin: 0; border-color: rgb(183, 225, 240);">
+                <div class="panel-body">
+                    <h4>
+                        <span class="glyphicon glyphicon-floppy-save" style="top: 3px;"></span>
+                        <span style="padding-left: 4px;">#= message #</span>
+                    </h4>
+                </div>
+            </div>
+        </script>
+        <script id="infoTemplate" type="text/x-kendo-template">
+            <div class="panel panel-default text-center" style="background-color: rgba(229, 245, 250, 0.701961); color: rgb(4, 135, 196); margin: 0; border-color: rgb(183, 225, 240);">
+                <div class="panel-body">
+                    <h4>
+                        <span class="glyphicon glyphicon-info-sign" style="top: 3px;"></span>
+                        <span style="padding-left: 4px;">#= message #</span>
+                    </h4>
+                </div>
+            </div>
+        </script>
+        <script id="savingSuccessTemplate" type="text/x-kendo-template">
+            <div class="panel panel-default text-center" style="background-color: rgba(0, 153, 0, 0.701961); color: rgb(255, 255, 255); margin: 0; border-color: rgb(0, 153, 0);">
+                <div class="panel-body">
+                    <h4>
+                        <span class="glyphicon glyphicon-floppy-saved" style="top: 3px;"></span>
+                        <span style="padding-left: 4px;">#= message #</span>
+                    </h4>
+                </div>
+            </div>
+        </script>
+        <script id="actionSuccessTemplate" type="text/x-kendo-template">
+            <div class="panel panel-default text-center" style="background-color: rgba(0, 153, 0, 0.701961); color: rgb(255, 255, 255); margin: 0; border-color: rgb(0, 153, 0);">
+                <div class="panel-body">
+                    <h4>
+                        <span class="glyphicon glyphicon-ok-circle" style="top: 3px;"></span>
+                        <span style="padding-left: 4px;">#= message #</span>
+                    </h4>
+                </div>
+            </div>
+        </script>
+        <script id="errorTemplate" type="text/x-kendo-template">
+            <div class="panel panel-default" style="background-color: rgba(255, 0, 0, 0.701961); color: rgb(255, 255, 255); margin: 0; border-color: rgb(255, 0, 0); ">
+                <div class="panel-body">
+                    <h4 style="margin-top: 0;">
+                        <span class="glyphicon glyphicon-floppy-remove" style="top: 3px;"></span>
+                        <span style="padding-left: 4px;">#= title #</span>
+                    </h4>
+                    <p>#= message #</p>
+                </div>
+            </div>
+        </script>
+    </div>
+
+    <script src="~/js/external-jquery-footer.js"></script>
+    <script src="~/js/arise-public-access-validation.js"></script>
+    <script src="~/js/arise-public-access-site.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

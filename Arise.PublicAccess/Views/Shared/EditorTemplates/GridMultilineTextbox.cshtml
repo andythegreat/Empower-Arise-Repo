@@ -1,0 +1,12 @@
+﻿@model String
+@{
+    //object attr = new { @class = "k-widget form-control" };
+    var attr = new Dictionary<string, object> { { "class", "k-widget form-control" } };
+
+    if (ViewData["disabled"] != null)
+    {
+        //attr = new { @class = "k-widget form-control", disabled = "disabled" };
+        attr.Add("disabled", "disabled");
+    }
+}
+@Html.TextAreaFor(m => m, 4, 0, attr)

@@ -1,0 +1,14 @@
+﻿@model Boolean?
+
+@{
+    var icon = "glyphicon-unchecked";
+    if (Model.HasValue)
+    {
+        if (Model.Value)
+        {
+            icon = "glyphicon-check green-color";
+        }
+    }
+}
+
+<span class="glyphicon @icon" style="font-size: 1.2em; cursor: not-allowed;"></span>

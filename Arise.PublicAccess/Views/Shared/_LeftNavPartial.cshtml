@@ -1,0 +1,53 @@
+﻿@{
+    var treeViewItems = (List<Arise.PublicAccess.Models.TreeViewItemModel>)ViewBag.LeftNavItems;
+}
+
+@*@if (Request.Browser.IsMobileDevice)
+{
+    @(Html.Kendo().MobileDrawer()
+        .Name("left-nav-drawer")
+        .Views()
+        .Content(content =>
+            Html.Kendo().MobileListView().Type("group")
+                .Items(root =>
+                {
+                    foreach (var tv in treeViewItems)
+                    {
+                        root.Add().Text(tv.Text).Items(items =>
+                            {
+                                foreach (var sub in tv.Items)
+                                {
+                                    items.AddLink().Url(Url.Action(sub.Action, sub.Controller)).Text(sub.Text);
+                                }
+                            });
+                    }
+                })
+        )
+        .HtmlAttributes(new { @class = "mobile-left-drawer" })
+    )
+}
+else
+{
+}*@
+
+<div class="col-lg-3 col-md-3 col-xs-4" style="max-width: 250px;">
+    @*<h2 class="left-nav-header">Navigation</h2>*@
+    <nav class="navbar navbar-default left-nav-bar" role="navigation">
+        <div id="left-menu-nav" class="">
+            <ul class="list-group">
+                @foreach (var root in treeViewItems)
+                {
+                    <li class="list-group-item">
+                        <span>@root.Text</span>
+                        <ul class="list-group">
+                            @foreach (var sub in root.Items)
+                            {
+                                @Html.ActionLink(sub.Text, sub.Action, sub.Controller, null, new { id = sub.ClientID, @class = "list-group-item" });
+                            }
+                        </ul>
+                    </li>
+                }
+            </ul>
+        </div>
+    </nav>
+</div>

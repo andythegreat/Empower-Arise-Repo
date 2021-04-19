@@ -1,0 +1,44 @@
+﻿@model decimal?
+@{
+    var attrs = new Dictionary<string, object>();
+
+    attrs.Add("placeholder", ViewData.ModelMetadata.GetDisplayName());
+
+    if (ViewData["class"] != null)
+    {
+        attrs.Add("class", ViewData["class"]);
+    }
+
+    if (ViewData["max"] != null)
+    {
+        if (attrs.ContainsKey("max"))
+        {
+            if ((int)attrs["max"] > (int)ViewData["max"])
+            {
+                attrs["maxlength"] = ViewData["max"];
+            }
+        }
+        else
+        {
+            attrs.Add("max", ViewData["max"]);
+        }
+    }
+
+    if (ViewData["size"] != null)
+    {
+        if (attrs.ContainsKey("size"))
+        {
+            if ((int)attrs["size"] > (int)ViewData["size"])
+            {
+                attrs["size"] = ViewData["size"];
+            }
+        }
+        else
+        {
+            attrs.Add("size", ViewData["size"]);
+        }
+    }
+
+}
+
+@Html.Kendo().NumericTextBoxFor(m => m).Format("c")
