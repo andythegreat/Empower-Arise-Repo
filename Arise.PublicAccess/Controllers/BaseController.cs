@@ -77,6 +77,7 @@ namespace Arise.PublicAccess.Controllers
             var mainItems = new List<Models.TreeViewItemModel>();
             mainItems.Add(new Models.TreeViewItemModel { Text = "Messages", Action = "Index", Controller = "Home", ClientID = "lnkHome" });
             mainItems.Add(new Models.TreeViewItemModel { Text = "Provider Profile", Action = "Index", Controller = "ProviderProfile", ClientID = "lnkProviderProfile" });
+            mainItems.Add(new Models.TreeViewItemModel { Text = "Application", Action = "Index", Controller = "Orientation", ClientID = "lnkApplication" });
 
             if (_domainService.PermitStatusID == Empower.Model.LookupIDs.PermitStatuses.Issued)
             {
