@@ -21,24 +21,14 @@
     }
     <div id="divNavbarWrapper" class="navbar navbar-default navbar-fixed-top">
         <div class="@containerNavbarClasses">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#divMainNavbar" aria-expanded="false">
-                    <span class="sr-only">Toggle Navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" style="box-sizing: border-box; padding: 0px 15px;" href="@Url.Content("~/")">
-                    <img src="~/Images/ccms-Logo-navbar.png" style="height: 50px;" />
-                </a>
-            </div>
-            <h3 style="margin-top:12px; margin-bottom: 0px; margin-left: 80px; color: white;">PROVIDER ACCESS</h3>
+            @Html.Partial("_PublicAccessHeader")
             @if (ViewBag.ShowUserDetails != null && ViewBag.ShowUserDetails)
             {
                 @Html.Partial("_UserDetails")
             }
         </div>
     </div>
+    @Html.Partial("_PublicAccessFooter")
     @{
         var containerClasses = "container-fluid";
         var leftNavClass = String.Empty;
@@ -144,10 +134,10 @@
     }
 
     @*<div id="divPasswordWrapper">
-        <div id="divPassword">
-            @Html.Partial("_ChangePasswordPartial", new Arise.PublicAccess.Models.ManageUserViewModel { })
-        </div>
-    </div>*@
+            <div id="divPassword">
+                @Html.Partial("_ChangePasswordPartial", new Arise.PublicAccess.Models.ManageUserViewModel { })
+            </div>
+        </div>*@
 
     <div>
         @(Html.Kendo().Window()
