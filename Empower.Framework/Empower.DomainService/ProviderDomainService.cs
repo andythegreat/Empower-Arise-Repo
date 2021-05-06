@@ -570,7 +570,7 @@ namespace Empower.DomainService
             var providerInfo = Repository.Providers.Where(p => p.ID == ProviderId).Select(p => new
             {
                 Provider = p,
-                LastName = (p.ProviderTypeID == Model.LookupIDs.ProviderTypes.Center || p.ProviderTypeID == Model.LookupIDs.ProviderTypes.SACC) ? p.BusinessName : p.Person.LastName,
+                LastName = (p.ProviderTypeID == Model.LookupIDs.ProviderTypes.CDC || p.ProviderTypeID == Model.LookupIDs.ProviderTypes.SACC) ? p.BusinessName : p.Person.LastName,
                 p.MainAddress.Zip,
             }).WithTranslations().FirstOrDefault();
 
