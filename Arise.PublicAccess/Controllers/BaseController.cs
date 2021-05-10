@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Linq.Translations;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -25,6 +26,9 @@ namespace Arise.PublicAccess.Controllers
     {
         public const string ApplicationTitle = "Arise - ";
         public const string ProgramIdClaim = "ProgramID";
+
+        public const string JavascriptHeader = "application/javascript";
+
 
         private ILogger _logger;
         private ICacheProvider _cache;
@@ -354,6 +358,16 @@ namespace Arise.PublicAccess.Controllers
             {
                 return Request != null && Request.Headers != null && Request.Headers["X-Requested-With"] == "XMLHttpRequest";
             }
+        }
+
+        public IActionResult JavaScript(string script)
+        {
+            return Content(script, JavascriptHeader);
+        }
+
+        public JsonResult PreservedJson(object data)
+        {
+            return Json(data, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.Objects });
         }
     }
 }
