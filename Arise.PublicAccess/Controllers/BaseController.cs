@@ -78,81 +78,76 @@ namespace Arise.PublicAccess.Controllers
 
         private List<Models.TreeViewItemModel> GetLeftNavItems()
         {
-            var mainItems = new List<Models.TreeViewItemModel>();
-            mainItems.Add(new Models.TreeViewItemModel { Text = "Messages", Action = "Index", Controller = "Home", ClientID = "lnkHome" });
-            mainItems.Add(new Models.TreeViewItemModel { Text = "Provider Profile", Action = "Index", Controller = "ProviderProfile", ClientID = "lnkProviderProfile" });
-            mainItems.Add(new Models.TreeViewItemModel { Text = "Application", Action = "Index", Controller = "Application", ClientID = "lnkApplication" });
-
+            var profileItems = new List<Models.TreeViewItemModel>();
+            profileItems.Add(new Models.TreeViewItemModel { Text = "Messages and Notification", Action = "Index", Controller = "Home", ClientID = "lnkHome" });
+            profileItems.Add(new Models.TreeViewItemModel { Text = "Provider Profile", Action = "Index", Controller = "ProviderProfile", ClientID = "lnkProviderProfile" });
             if (_domainService.PermitStatusID == Empower.Model.LookupIDs.PermitStatuses.Issued)
             {
-                mainItems.Add(new Models.TreeViewItemModel { Text = "Permit Status", Action = "Index", Controller = "PermitStatus", ClientID = "lnkPermitStatus" });
+                profileItems.Add(new Models.TreeViewItemModel { Text = "License Status", Action = "Index", Controller = "PermitStatus", ClientID = "lnkPermitStatus" });
             }
 
+            profileItems.Add(new Models.TreeViewItemModel { Text = "Application", Action = "Index", Controller = "Application", ClientID = "lnkApplication" });
             if (ProviderDomainService.IsCEPS)
             {
-                mainItems.Add(new Models.TreeViewItemModel { Text = "Permit Fee Payments", Action = "Index", Controller = "FeePayment", ClientID = "lnkPayment" });
+                profileItems.Add(new Models.TreeViewItemModel { Text = "Payments", Action = "Index", Controller = "FeePayment", ClientID = "lnkPayment" });
             }
 
-            var ccarItems = new List<Models.TreeViewItemModel>();
+            var reportingItems= new List<Models.TreeViewItemModel>();
+            reportingItems.Add(new Models.TreeViewItemModel { Text = "Waivers", Action = "", Controller = "", ClientID = "" });
+            reportingItems.Add(new Models.TreeViewItemModel { Text = "Incident Reports", Action = "", Controller = "", ClientID = "" });
+            
+            var attendanceItems = new List<Models.TreeViewItemModel>();
+            attendanceItems.Add(new Models.TreeViewItemModel { Text = "Attendance", Action = "Index", Controller = "Attendance", ClientID = "lnkAttendance" });
+            attendanceItems.Add(new Models.TreeViewItemModel { Text = "Adjustments", Action = "Index", Controller = "Adjustment", ClientID = "lnkAdjustment" });
+
+            var reimbursementItems = new List<Models.TreeViewItemModel>();
             if (ProviderDomainService.IsCCAR)
             {
-                ccarItems.Add(new Models.TreeViewItemModel { Text = "Attendance", Action = "Index", Controller = "Attendance", ClientID = "lnkAttendance" });
-                ccarItems.Add(new Models.TreeViewItemModel { Text = "Adjustments", Action = "Index", Controller = "Adjustment", ClientID = "lnkAdjustment" });
-                ccarItems.Add(new Models.TreeViewItemModel { Text = "Reimbursement Summary", Action = "Index", Controller = "ReimbursementSummary", ClientID = "lnkReimbursementSummary" });
-                ccarItems.Add(new Models.TreeViewItemModel { Text = "CCAR Enrollments", Action = "Index", Controller = "CCAREnrollments", ClientID = "lnkCCAREnrollments" });
+                reimbursementItems.Add(new Models.TreeViewItemModel { Text = "Reimbursements ", Action = "Index", Controller = "ReimbursementSummary", ClientID = "lnkReimbursementSummary" });
+                reimbursementItems.Add(new Models.TreeViewItemModel { Text = "Children Enrollment", Action = "Index", Controller = "CCAREnrollments", ClientID = "lnkCCAREnrollments" });
             }
-
-            var rnrItems = new List<Models.TreeViewItemModel>();
-            rnrItems.Add(new Models.TreeViewItemModel { Text = "Child Care Services", Action = "ChildCareServices", Controller = "ResourceAndReferral", ClientID = "lnkChildCareServices" });
-            rnrItems.Add(new Models.TreeViewItemModel { Text = "Special Services", Action = "SpecialServices", Controller = "ResourceAndReferral", ClientID = "lnkSpecialServices" });
-            rnrItems.Add(new Models.TreeViewItemModel { Text = "Languages", Action = "Languages", Controller = "ResourceAndReferral", ClientID = "lnkLanguages" });
-            rnrItems.Add(new Models.TreeViewItemModel { Text = "Transportation", Action = "Transportation", Controller = "ResourceAndReferral", ClientID = "lnkTransportation" });
-            rnrItems.Add(new Models.TreeViewItemModel { Text = "Private Market Rates", Action = "PrivateMarketRates", Controller = "ResourceAndReferral", ClientID = "lnkPrivateMarketRates" });
-            rnrItems.Add(new Models.TreeViewItemModel { Text = "Accreditation", Action = "Accreditation", Controller = "ResourceAndReferral", ClientID = "lnkAccreditation" });
-            rnrItems.Add(new Models.TreeViewItemModel { Text = "Environment", Action = "Environment", Controller = "ResourceAndReferral", ClientID = "lnkEnvironment" });
-            rnrItems.Add(new Models.TreeViewItemModel { Text = "Professional Experience", Action = "ProfessionalExperience", Controller = "ResourceAndReferral", ClientID = "lnkProfessionExperience" });
-
-            var qualityRatingItems = new List<Models.TreeViewItemModel>();
-            qualityRatingItems.Add(new Models.TreeViewItemModel { Text = "QRIS Application", Action = "Index", Controller = "QRISApplication", ClientID = "lnkQRISApplication" });
-
-            var additionalItems = new List<Models.TreeViewItemModel>();
-            additionalItems.Add(new Models.TreeViewItemModel { Text = "Links, Forms & Surveys", Action = "Index", Controller = "LinksFormsSurveys", ClientID = "lnkLinksFormsSurveys" });
 
             var ProviderRegulatoryAgency = ProviderDomainService.Repository.Providers.Include(p => p.ProviderRegulatoryAgency).Where(p => p.ID == ProviderDomainService.ProviderID).FirstOrDefault();
-
+            var fmItems = new List<Models.TreeViewItemModel>();
+            fmItems.Add(new Models.TreeViewItemModel { Text = "Facilities", Action = "", Controller = "", ClientID = "#" });
+            fmItems.Add(new Models.TreeViewItemModel { Text = "Staff Management", Action = "", Controller = "", ClientID = "#" });
             if (ProviderRegulatoryAgency != null && ProviderRegulatoryAgency.ProviderRegulatoryAgencyID == Empower.Model.LookupIDs.ProviderRegulatoryAgencies.FairfaxCountyPermit)
             {
-                additionalItems.Add(new Models.TreeViewItemModel { Text = "Training Summary", Action = "Index", Controller = "ProviderTrainings", ClientID = "lnkTrainingSummary" });
+                fmItems.Add(new Models.TreeViewItemModel { Text = "Training Summary", Action = "Index", Controller = "ProviderTrainings", ClientID = "lnkTrainingSummary" });
             }
 
-            //additionalItems.Add(new Models.TreeViewItemModel { Text = "Program Participation", Action = "Index", Controller = "ProgramParticipation", ClientID = "lnkProgramParticipation" });
-            //if (ProviderDomainService.IsCCAR)
-            //    additionalItems.Add(new Models.TreeViewItemModel { Text = "Contact CCAR", Action = "CCAR", Controller = "RequestContact", ClientID = "lnkRequestContactCCAR" });
-
+            fmItems.Add(new Models.TreeViewItemModel { Text = "Certification and Accreditations", Action = "Accreditation", Controller = "ResourceAndReferral", ClientID = "lnkAccreditation" });
+            fmItems.Add(new Models.TreeViewItemModel { Text = "Services", Action = "ChildCareServices", Controller = "ResourceAndReferral", ClientID = "lnkChildCareServices" });
+            fmItems.Add(new Models.TreeViewItemModel { Text = "Environment", Action = "Environment", Controller = "ResourceAndReferral", ClientID = "lnkEnvironment" });
+            fmItems.Add(new Models.TreeViewItemModel { Text = "Children's record", Action = "", Controller = "", ClientID = "#" });
             if (ProviderDomainService.IsCEPS)
             {
-                additionalItems.Add(new Models.TreeViewItemModel { Text = "Contact CEPS", Action = "CEPS", Controller = "RequestContact", ClientID = "lnkRequestContactCEPS" });
-                additionalItems.Add(new Models.TreeViewItemModel { Text = "Scheduled Inspections", Action = "Index", Controller = "ScheduledInspections", ClientID = "lnkScheduledInspection" });
+                fmItems.Add(new Models.TreeViewItemModel { Text = "Inspections", Action = "Index", Controller = "ScheduledInspections", ClientID = "lnkScheduledInspection" });
             }
 
-            additionalItems.Add(new Models.TreeViewItemModel { Text = "Contact", Action = "ContactUs", Controller = "Home", ClientID = "lnkContactUs" });
-            //additionalItems.Add(new Models.TreeViewItemModel { Text = "Program Participation", Action = "Index", Controller = "ProgramParticipation", ClientID = "lnkProgramParticipation" });
-            //if (ProviderDomainService.IsCEPS)
-            //    additionalItems.Add(new Models.TreeViewItemModel { Text = "Permit Fee Payments", Action = "Index", Controller = "FeePayment", ClientID = "lnkPayment" });
+            fmItems.Add(new Models.TreeViewItemModel { Text = "Private Market Rates", Action = "PrivateMarketRates", Controller = "ResourceAndReferral", ClientID = "lnkPrivateMarketRates" });
+
+            var qualityRatingItems = new List<Models.TreeViewItemModel>();
+            qualityRatingItems.Add(new Models.TreeViewItemModel { Text = "QRIS Pages", Action = "Index", Controller = "QRISApplication", ClientID = "lnkQRISApplication" });
+
+            var additionalItems = new List<Models.TreeViewItemModel>();
+            if (ProviderDomainService.IsCEPS)
+            {
+                additionalItems.Add(new Models.TreeViewItemModel { Text = "Contact Us", Action = "CEPS", Controller = "RequestContact", ClientID = "lnkRequestContactCEPS" });
+            }
 
             var treeViewItems = new List<Models.TreeViewItemModel>();
-
-            treeViewItems.Add(new Models.TreeViewItemModel { Text = "Main", Items = mainItems });
-
+            treeViewItems.Add(new Models.TreeViewItemModel { Text = "Profile", Items = profileItems });
             if (ProviderDomainService.IsCCAR)
             {
-                treeViewItems.Add(new Models.TreeViewItemModel { Text = "Child Care Assistance & Referral", Items = ccarItems });
+                treeViewItems.Add(new Models.TreeViewItemModel { Text = "Reporting", Items = reportingItems });
             }
 
-            treeViewItems.Add(new Models.TreeViewItemModel { Text = "Resource & Referral", Items = rnrItems });
-            treeViewItems.Add(new Models.TreeViewItemModel { Text = "Quality Rating", Items = qualityRatingItems });
+            treeViewItems.Add(new Models.TreeViewItemModel { Text = "Attendance", Items = attendanceItems });
+            treeViewItems.Add(new Models.TreeViewItemModel { Text = "Reimbursement", Items = reimbursementItems });
+            treeViewItems.Add(new Models.TreeViewItemModel { Text = "Facility Management", Items = fmItems });
+            treeViewItems.Add(new Models.TreeViewItemModel { Text = "Quality Rating  ", Items = qualityRatingItems });
             treeViewItems.Add(new Models.TreeViewItemModel { Text = "Additional", Items = additionalItems });
-
             return treeViewItems;
         }
 
