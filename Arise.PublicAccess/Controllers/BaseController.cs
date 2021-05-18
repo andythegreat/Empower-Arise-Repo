@@ -86,7 +86,7 @@ namespace Arise.PublicAccess.Controllers
                 profileItems.Add(new Models.TreeViewItemModel { Text = "License Status", Action = "Index", Controller = "PermitStatus", ClientID = "lnkPermitStatus" });
             }
 
-            profileItems.Add(new Models.TreeViewItemModel { Text = "Application", Action = "Index", Controller = "Application", ClientID = "lnkApplication" });
+            profileItems.Add(new Models.TreeViewItemModel { Text = "Application", Action = "Index", Controller = "Home", ClientID = "lnkApplication" });
             if (ProviderDomainService.IsCEPS)
             {
                 profileItems.Add(new Models.TreeViewItemModel { Text = "Payments", Action = "Index", Controller = "FeePayment", ClientID = "lnkPayment" });
