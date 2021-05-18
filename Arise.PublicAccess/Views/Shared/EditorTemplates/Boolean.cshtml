@@ -1,0 +1,19 @@
+﻿@model bool?
+
+@{
+    var attrs = new Dictionary<string, object>();
+    if (ViewData["class"] != null)
+    {
+        attrs.Add("class", ViewData["class"]);
+    }
+    if (ViewData["disabled"] != null)
+    {
+        attrs.Add("disabled", ViewData["disabled"]);
+    }
+    if (ViewData["change"] != null)
+    {
+        attrs.Add("onchange", ViewData["change"]);
+    }
+}
+
+@Html.CheckBox("", Model.GetValueOrDefault(), attrs)
