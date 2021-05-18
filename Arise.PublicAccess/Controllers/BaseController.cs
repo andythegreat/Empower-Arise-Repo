@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Security.Claims;
+using static Empower.Common.Constant;
 
 namespace Arise.PublicAccess.Controllers
 {
@@ -69,6 +70,8 @@ namespace Arise.PublicAccess.Controllers
         {
             get { return _cache; }
         }
+
+        public int UserID => int.Parse(User.FindFirstValue(Authentication.Claim.UserID) ?? "0");
 
         public string UserName => User.Identity.Name;
 
