@@ -17,6 +17,7 @@ namespace Empower.DomainService
         public int PermitStatusID { get; set; }
         public bool IsCEPS { get; set; }
         public bool IsCCAR { get; set; }
+        public int FacilityApplicationId { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProviderDomainService"/> class.
