@@ -1,6 +1,4 @@
-﻿@model object
-
-@*@Html.Kendo().TextBoxFor(model => model)*@
+﻿@model string
 
 @{
     var attrs = new Dictionary<string, object>();
@@ -14,10 +12,12 @@
     }
 
     var style = " ";
+
     if (ViewData["style"] != null)
     {
         style += ViewData["style"];
     }
+
     attrs.Add("style", style);
 
     //if (!String.IsNullOrEmpty(ViewContext.FormContext.FormId) && ViewContext.FormContext.FormId.ToLower().Contains("grid"))
@@ -41,7 +41,6 @@
     //    attrs.Add("size", length);
     //}
 
-
     if (ViewData["size"] != null)
     {
         if (attrs.ContainsKey("size"))
@@ -61,7 +60,6 @@
     {
         attrs.Add("data-val-required", ViewData["data_val_required"]);
     }
-
 }
-@*@Html.TextBox("", ViewData.TemplateInfo.FormattedModelValue, attrs)*@
+
 @Html.Kendo().TextBoxFor(model => model).HtmlAttributes(attrs)
