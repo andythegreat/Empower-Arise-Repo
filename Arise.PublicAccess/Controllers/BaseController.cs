@@ -231,6 +231,11 @@ namespace Arise.PublicAccess.Controllers
             //}
             //else
             //{
+            if (RouteData.Values["appId"] != null)
+            {
+                ProviderDomainService.FacilityApplicationId = int.Parse((string)RouteData.Values["appId"]);
+                ViewBag.FacilityApplicationId = ProviderDomainService.FacilityApplicationId;
+            }
             if (User.Identity.IsAuthenticated)
             {
                 var provider = _domainService.Repository.Providers.Where(p => p.User.UserName == UserName)
