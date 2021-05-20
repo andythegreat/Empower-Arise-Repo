@@ -233,8 +233,8 @@ namespace Arise.PublicAccess.Controllers
             //{
             if (RouteData.Values["appId"] != null)
             {
-                ProviderDomainService.FacilityApplicationId = int.Parse((string)RouteData.Values["appId"]);
-                ViewBag.FacilityApplicationId = ProviderDomainService.FacilityApplicationId;
+                ProviderDomainService.FacilityApplicationID = int.Parse((string)RouteData.Values["appId"]);
+                ViewBag.FacilityApplicationId = ProviderDomainService.FacilityApplicationID;
             }
             if (User.Identity.IsAuthenticated)
             {
