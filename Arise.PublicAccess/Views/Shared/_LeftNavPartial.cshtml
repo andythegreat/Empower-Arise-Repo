@@ -42,7 +42,7 @@ else
                         <ul class="list-group">
                             @foreach (var sub in root.Items)
                             {
-                                @Html.ActionLink(sub.Text, sub.Action, sub.Controller, null, new { id = sub.ClientID, @class = "list-group-item" });
+                                @Html.ActionLink(sub.Text, sub.Action, sub.Controller, new { area = "" }, new { id = sub.ClientID, @class = "list-group-item" });
                             }
                         </ul>
                     </li>
