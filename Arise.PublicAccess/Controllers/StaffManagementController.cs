@@ -40,6 +40,9 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
             StaffManagementViewModel staffManagementViewModel = new StaffManagementViewModel {
                 ProviderTypeIDs = ProviderDomainService.Repository.GetBindToItems<ProviderType>().ToList(),
                 InformationSourceIDs = ProviderDomainService.Repository.GetBindToItems<InformationSource>().ToList(),
+                PreFixIDs = ProviderDomainService.Repository.GetBindToItems<Prefix>().ToList(),
+                SuffixIDs = ProviderDomainService.Repository.GetBindToItems<Suffix>().ToList(),
+                MainAddress = new ProviderAddress(),
             };
             return View(staffManagementViewModel);
         }
