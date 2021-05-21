@@ -8,6 +8,7 @@ using Empower.Messaging;
 using Empower.Model;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult AddNewStaff()
         {
             StaffManagementViewModel staffManagementViewModel = new StaffManagementViewModel {
@@ -43,25 +45,22 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddNewStaff([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel)
+        [AllowAnonymous]
+        public ActionResult AddNewStaff(StaffManagementViewModel staffManagementViewModel)
         {
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    
+
                 }
                 catch (Exception ex)
-                {
-                    if (ex.InnerException != null && ex.InnerException.Message.Contains("duplicate key"))
-                        ModelState.AddModelError(nameof(FiscalYear.FiscalYearRange), "Fiscal Year already exists.");
-                    else
-                        ModelState.AddModelError("", "Error while updating the Fiscal Year.");
+                { 
                 }
             }
 
-            return Json(new[] { staffManagementViewModel }.ToDataSourceResult(request, ModelState));
+            return View(staffManagementViewModel);
         }
     }
 }
