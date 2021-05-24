@@ -42,6 +42,8 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 InformationSourceIDs = ProviderDomainService.Repository.GetBindToItems<InformationSource>().ToList(),
                 PreFixIDs = ProviderDomainService.Repository.GetBindToItems<Prefix>().ToList(),
                 SuffixIDs = ProviderDomainService.Repository.GetBindToItems<Suffix>().ToList(),
+                LanguageIDs= ProviderDomainService.Repository.GetBindToItems<Language>().ToList(),
+                StaffIDs = ProviderDomainService.Repository.GetBindToItems<StaffType>().ToList(),
                 MainAddress = new ProviderAddress(),
             };
             return View(staffManagementViewModel);
