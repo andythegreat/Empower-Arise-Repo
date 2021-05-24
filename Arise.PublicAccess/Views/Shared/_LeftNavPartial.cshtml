@@ -1,4 +1,6 @@
-﻿@{
+﻿@using Arise.PublicAccess.Areas.ProviderApplication.Controllers;
+
+@{
     var treeViewItems = (List<Arise.PublicAccess.Models.TreeViewItemModel>)ViewBag.LeftNavItems;
 }
 
@@ -42,7 +44,15 @@ else
                         <ul class="list-group">
                             @foreach (var sub in root.Items)
                             {
-                                @Html.ActionLink(sub.Text, sub.Action, sub.Controller, new { area = "" }, new { id = sub.ClientID, @class = "list-group-item" });
+                                if (sub.Controller == nameof(HomeController).Replace("Controller", ""))
+                                {
+                                    <a class="list-group-item" href="@Url.Action(sub.Action, sub.Controller, new { area = Empower.Common.Constant.PublicAccessApp.Modules.ProviderApplication })">@sub.Text</a>
+                                }
+                                else
+                                {
+                                    @Html.ActionLink(sub.Text, sub.Action, sub.Controller, null, new { id = sub.ClientID, @class = "list-group-item" });
+
+                                }
                             }
                         </ul>
                     </li>
