@@ -89,7 +89,7 @@ namespace Arise.PublicAccess.Controllers
                 profileItems.Add(new Models.TreeViewItemModel { Text = "License Status", Action = "Index", Controller = "PermitStatus", ClientID = "lnkPermitStatus" });
             }
 
-            profileItems.Add(new Models.TreeViewItemModel { Text = "Application", Action = "Index", Controller = "Application", ClientID = "lnkApplication" });
+            profileItems.Add(new Models.TreeViewItemModel { Text = "Application", Action = "Index", Controller = "Home", ClientID = "lnkApplication" });
             if (ProviderDomainService.IsCEPS)
             {
                 profileItems.Add(new Models.TreeViewItemModel { Text = "Payments", Action = "Index", Controller = "FeePayment", ClientID = "lnkPayment" });
@@ -231,6 +231,11 @@ namespace Arise.PublicAccess.Controllers
             //}
             //else
             //{
+            if (RouteData.Values["appId"] != null)
+            {
+                ProviderDomainService.FacilityApplicationID = int.Parse((string)RouteData.Values["appId"]);
+                ViewBag.FacilityApplicationId = ProviderDomainService.FacilityApplicationID;
+            }
             if (User.Identity.IsAuthenticated)
             {
                 var provider = _domainService.Repository.Providers.Where(p => p.User.UserName == UserName)
