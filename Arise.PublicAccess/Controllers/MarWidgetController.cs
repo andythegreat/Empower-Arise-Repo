@@ -1,8 +1,6 @@
 ﻿using Empower.AccessControl;
 using Empower.Common.CacheProviders;
-using Empower.DAL;
 using Empower.DomainService;
-using Empower.Logging;
 using Empower.Model;
 using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Mvc;
@@ -14,8 +12,8 @@ using System.Text;
 namespace Arise.PublicAccess.Controllers
 {
     public class AddressViewComponent/*<TDomainService, TDomainServiceEntity>*/ : ViewComponent
-        //where TDomainService : DomainServiceBase<TDomainServiceEntity>
-        //where TDomainServiceEntity : EntityBase
+    //where TDomainService : DomainServiceBase<TDomainServiceEntity>
+    //where TDomainServiceEntity : EntityBase
     {
         private readonly ProviderDomainService _domainService;
 
@@ -29,7 +27,7 @@ namespace Arise.PublicAccess.Controllers
             var vmAddress = new Models.AddressViewModel(address);
 
             vmAddress.StateCodes = new SelectList(_domainService.Repository.States.AsNoTracking().OrderBy(s => s.Code).ToList(), nameof(State.Code), nameof(State.Code));
-            vmAddress.MagisterialDistricts = new SelectList(_domainService.Repository.MagisterialDistricts.AsNoTracking().OrderBy(md => md.Name).ToList(), nameof(MagisterialDistrict.ID), nameof(MagisterialDistrict.Name));
+            // vmAddress.MagisterialDistricts = new SelectList(_domainService.Repository.MagisterialDistricts.AsNoTracking().OrderBy(md => md.Name).ToList(), nameof(MagisterialDistrict.ID), nameof(MagisterialDistrict.Name));
             vmAddress.Wards = new SelectList(_domainService.Repository.Wards.AsNoTracking().OrderBy(md => md.Name).ToList(), nameof(Ward.ID), nameof(Ward.Name));
 
             ViewData.TemplateInfo.HtmlFieldPrefix = htmlFieldPrefix;
