@@ -1,4 +1,5 @@
-﻿using Empower.DomainService;
+﻿using Empower.Common.Extensions;
+using Empower.DomainService;
 using Empower.Model;
 using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Mvc;
@@ -116,7 +117,7 @@ namespace Arise.Shared.ViewComponents.Address
             sb.AppendLine("\tkendo.ui.progress(ma, true);");
             sb.AppendLine("\tma.slideDown();");
             sb.AppendLine();
-            sb.AppendLine("\tvar getUrl = '" + Url.Action("GetAddressWidget", "MarWidget", new { area = "" }) + "';");
+            sb.AppendLine("\tvar getUrl = '" + Url.Action("GetAddressWidget", nameof(AddressController).RemoveControllerFromName(), new { area = "" }) + "';");
             sb.AppendLine("\tvar addressID = " + addressID + " +0;");
             sb.AppendLine();
             sb.AppendLine("\t$.ajax({");
