@@ -1,6 +1,6 @@
 ﻿@model Arise.Shared.ViewComponents.Address.AddressViewModel
 
-@{ 
+@{
     var htmlFieldPrefix = ViewData.TemplateInfo.HtmlFieldPrefix;
     var fhAddress = htmlFieldPrefix + "_fhAddress";
     var fgAddress2 = htmlFieldPrefix + "_fgAddressLine2";
@@ -116,6 +116,7 @@
         </div>
     </div>
 </div>
+</div>
 
 @(Html.Kendo().Window()
     .Name(verifyAddressWindow)
@@ -167,9 +168,9 @@
         $.validator.unobtrusive.parse(form);
 
         @*@if (Model.AddressTypeID != Empower.Model.LookupIDs.AddressTypes.Mailing)
-        {<text>
         SetRequiredField(true, '@Html.IdFor(model => model.MagisterialDistrictID)');
         </text>}*@
+        </text>}
 
         setRequiredLabels('@fhAddress');
         ColorRequiredStarsCorrectly('@fhAddress');
