@@ -392,7 +392,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                     StaffEducationID = s.ID,
                     StaffID = s.StaffID,
                     StaffQualificationID = s.StaffQualificationID,
-                    NameoftheInstitute = s.InstitutName,
+                    InstitutName = s.InstitutName,
                     DateAwarded = (DateTime)s.DateAwarded,
                     IsDeleted = s.IsDeleted,
                 }
@@ -406,9 +406,10 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
             {
                 StaffID = StaffID,
                 StaffQualificationID = staffManagementViewModel.StaffQualificationID,
-                InstitutName = staffManagementViewModel.NameoftheInstitute,
+                InstitutName = staffManagementViewModel.InstitutName,
                 DateAwarded = staffManagementViewModel.DateAwarded,
             };
+
             ProviderDomainService.Repository.Add(pA_StaffEducation);
             ProviderDomainService.Repository.Save();
             staffManagementViewModel.StaffEducationID = pA_StaffEducation.ID;
@@ -416,20 +417,25 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
             return Json(new[] { staffManagementViewModel }.ToDataSourceResult(request));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UpdateStaffEducation([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel)
+        
+        public async Task<IActionResult> UpdateStaffEducationAsync([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel)
         {
             if (staffManagementViewModel.StaffEducationID > 0)
             {
                 var objStaffQualification = ProviderDomainService.Repository.PA_StaffEducations.Where(S => S.ID == staffManagementViewModel.StaffEducationID).FirstOrDefault();
-                objStaffQualification.StaffQualificationID = staffManagementViewModel.StaffQualificationID;
-                objStaffQualification.InstitutName = staffManagementViewModel.NameoftheInstitute;
-                objStaffQualification.DateAwarded = staffManagementViewModel.DateAwarded;
-                objStaffQualification.StaffID = StaffID;
-                ProviderDomainService.Repository.Update(objStaffQualification, staffManagementViewModel.StaffEducationID);
-                ProviderDomainService.Save();
 
+                //objStaffQualification.StaffQualificationID = staffManagementViewModel.StaffQualificationID;
+                //objStaffQualification.InstitutName = staffManagementViewModel.InstitutName;
+                //objStaffQualification.DateAwarded = staffManagementViewModel.DateAwarded;
+                //objStaffQualification.StaffID = StaffID;
+                //ProviderDomainService.Repository.Update(objStaffQualification, staffManagementViewModel.StaffEducationID);
+                //ProviderDomainService.Save();
+                if (await TryUpdateModelAsync(objStaffQualification, nameof(staffManagementViewModel)))
+                {
+                    ProviderDomainService.Repository.Save();
+                }
             }
+           
             return Json(new[] { staffManagementViewModel }.ToDataSourceResult(request));
         }
         [HttpPost]
