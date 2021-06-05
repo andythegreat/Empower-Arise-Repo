@@ -50,7 +50,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult AddNewStaff(int? ID)
+        public IActionResult Edit(int? ID)
         {
             StaffManagementViewModel staffManagementViewModel = new StaffManagementViewModel();
             staffManagementViewModel.ProviderTypeIDs = ProviderDomainService.Repository.GetBindToItems<ProviderType>().ToList();
@@ -70,7 +70,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
             {
                 StaffID = Convert.ToInt32(ID);
                 staffManagementViewModel.InformationSourceID = staff.InformationSourceID;
-                staffManagementViewModel.ProviderTypeID = staff.ProviderTypeID;
+                staffManagementViewModel.FacilityTypeID = staff.FacilityTypeID;
                 staffManagementViewModel.ID = staff.ID;
                 staffManagementViewModel.Prefix = staff.Prefix;
                 staffManagementViewModel.Suffix = staff.Suffix;
@@ -94,10 +94,10 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
             if (staffCharacteristic != null)
             {
                 staffManagementViewModel.StaffCharacteristicID = staffCharacteristic.ID;
-                staffManagementViewModel.TitleofPosition = staffCharacteristic.TitleofPosition;
+                staffManagementViewModel.TitleOfPosition = staffCharacteristic.TitleOfPosition;
                 staffManagementViewModel.DateHired = staffCharacteristic.DateHired;
                 staffManagementViewModel.SeparationDate = staffCharacteristic.SeparationDate;
-                staffManagementViewModel.YearOfExperience = staffCharacteristic.YearsofRequiredExperience;
+                staffManagementViewModel.YearOfExperience = staffCharacteristic.YearsOfRequiredExperience;
                 staffManagementViewModel.Language = staffCharacteristic.LanguageID;
                 staffManagementViewModel.ProfessionalDevelopmentCourses = staffCharacteristic.ProfessionalDevelopmentCourse;
                 staffManagementViewModel.SupervisedOccupationExperience = staffCharacteristic.SupervisedOccupationExperience;
@@ -158,7 +158,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> AddNewStaff(StaffManagementViewModel staffManagementViewModel)
+        public async Task<IActionResult> Edit(StaffManagementViewModel staffManagementViewModel)
         {
             string fileName = "";
             byte[] fileData = null;
@@ -172,7 +172,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
             {
                 var objStaff = ProviderDomainService.Repository.PA_Staffs.Where(p => p.ID == staffManagementViewModel.ID).FirstOrDefault();
                 objStaff.InformationSourceID = staffManagementViewModel.InformationSourceID;
-                objStaff.ProviderTypeID = staffManagementViewModel.ProviderTypeID;
+                objStaff.FacilityTypeID = staffManagementViewModel.FacilityTypeID;
                 objStaff.FirstName = staffManagementViewModel.FirstName;
                 objStaff.LastName = staffManagementViewModel.LastName;
                 objStaff.Prefix = staffManagementViewModel.Prefix;
@@ -196,10 +196,10 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 var objStaffCharacteristic = ProviderDomainService.Repository.PA_StaffCharacteristics.Where(p => p.ID == staffManagementViewModel.StaffCharacteristicID).FirstOrDefault();
                 objStaffCharacteristic.StaffID = staffManagementViewModel.ID;
                 objStaffCharacteristic.ID = staffManagementViewModel.StaffCharacteristicID;
-                objStaffCharacteristic.TitleofPosition = staffManagementViewModel.TitleofPosition;
+                objStaffCharacteristic.TitleOfPosition = staffManagementViewModel.TitleOfPosition;
                 objStaffCharacteristic.DateHired = staffManagementViewModel.DateHired;
                 objStaffCharacteristic.SeparationDate = staffManagementViewModel.SeparationDate;
-                objStaffCharacteristic.YearsofRequiredExperience = staffManagementViewModel.YearOfExperience;
+                objStaffCharacteristic.YearsOfRequiredExperience = staffManagementViewModel.YearOfExperience;
                 objStaffCharacteristic.LanguageID = staffManagementViewModel.Language;
                 objStaffCharacteristic.FileName = fileName;
                 objStaffCharacteristic.ProfileImage = fileData;
@@ -255,7 +255,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 PA_Staff pA_Staff = new PA_Staff
                 {
                     InformationSourceID = staffManagementViewModel.InformationSourceID,
-                    ProviderTypeID = staffManagementViewModel.ProviderTypeID,
+                    FacilityTypeID = staffManagementViewModel.FacilityTypeID,
                     FirstName = staffManagementViewModel.FirstName,
                     LastName = staffManagementViewModel.LastName,
                     Prefix = staffManagementViewModel.Prefix,
@@ -283,10 +283,10 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 PA_StaffCharacteristic PA_StaffCharacteristic = new PA_StaffCharacteristic
                 {
                     StaffID = pA_Staff.ID,
-                    TitleofPosition = staffManagementViewModel.TitleofPosition,
+                    TitleOfPosition = staffManagementViewModel.TitleOfPosition,
                     DateHired = staffManagementViewModel.DateHired,
                     SeparationDate = staffManagementViewModel.SeparationDate,
-                    YearsofRequiredExperience = staffManagementViewModel.YearOfExperience,
+                    YearsOfRequiredExperience = staffManagementViewModel.YearOfExperience,
                     FileName = fileName,
                     ProfileImage = fileData,
                     LanguageID = staffManagementViewModel.Language,
@@ -351,12 +351,12 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
 
             var objStaffData = (from s in ProviderDomainService.Repository.PA_Staffs
                                 join sc in ProviderDomainService.Repository.PA_StaffCharacteristics on s.ID equals sc.StaffID
-                                join st in ProviderDomainService.Repository.StaffTypes on sc.TitleofPosition equals st.ID
-                                join pt in ProviderDomainService.Repository.ProviderTypes on s.ProviderTypeID equals pt.ID
+                                join st in ProviderDomainService.Repository.StaffTypes on sc.TitleOfPosition equals st.ID
+                                join pt in ProviderDomainService.Repository.ProviderTypes on s.FacilityTypeID equals pt.ID
                                 select new StaffManagementViewModel
                                 {
                                     ID = s.ID,
-                                    ProviderTypeID = s.ProviderTypeID,
+                                    FacilityTypeID = s.FacilityTypeID,
                                     StaffKey = s.StaffKey + " / " + s.FirstName + "  " + s.LastName,
                                     StaffType = st.Name,
                                     FacilityName = pt.Name,
@@ -368,7 +368,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
 
             if (facilityTypeID > 0)
             {
-                objStaffData = objStaffData.Where(s => s.ProviderTypeID == facilityTypeID).ToList();
+                objStaffData = objStaffData.Where(s => s.FacilityTypeID == facilityTypeID).ToList();
             }
 
             return Json(objStaffData.ToDataSourceResult(request));
