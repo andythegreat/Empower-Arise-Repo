@@ -11,8 +11,8 @@ using System.Text;
 namespace Arise.Shared.ViewComponents.Address
 {
     public class AddressViewComponent/*<TDomainService, TDomainServiceEntity>*/ : ViewComponent
-        //where TDomainService : DomainServiceBase<TDomainServiceEntity>
-        //where TDomainServiceEntity : EntityBase
+    //where TDomainService : DomainServiceBase<TDomainServiceEntity>
+    //where TDomainServiceEntity : EntityBase
     {
         private readonly ProviderDomainService _domainService;
 

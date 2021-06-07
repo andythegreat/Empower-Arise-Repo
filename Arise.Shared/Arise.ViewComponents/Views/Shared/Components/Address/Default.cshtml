@@ -1,6 +1,6 @@
 ﻿@model Arise.Shared.ViewComponents.Address.AddressViewModel
 
-@{ 
+@{
     var htmlFieldPrefix = ViewData.TemplateInfo.HtmlFieldPrefix;
     var fhAddress = htmlFieldPrefix + "_fhAddress";
     var fgAddress2 = htmlFieldPrefix + "_fgAddressLine2";
@@ -15,7 +15,7 @@
     var btnConfirmVerify = htmlFieldPrefix + "_btnConfirmVerify";
     var verifyAddressWindow = htmlFieldPrefix + "_VerifyAddressWindow";
 
-    var labelWidth = "col-md-3";
+    var labelWidth = "col-md-2";
     var offset = "col-md-offset-3";
     var labelClasses = "control-label " + labelWidth;
     var controlWidth = "col-md-9";
@@ -37,7 +37,8 @@
 
 <div id="@fhAddress" class="form-horizontal">
     <div class="form-group form-group-tight">
-        @Html.LabelFor(model => model.Address1, new { @class = labelClasses })
+        @*@Html.LabelFor(model => model.Address1, new { @class = labelClasses })*@
+        @Html.LabelFor(model => model.Address1, "Physical Street Address of the Owner", new { @class = labelClasses })
         <div class="@controlWidth">
             <div class="input-group">
                 <div class="form-horizontal">
@@ -88,7 +89,7 @@
         </div>
     </div>
 
-    @*<div id="@fgMagisterialDistrict" class="form-group form-group-tight" style="@(Model.AddressTypeID == Empower.Model.LookupIDs.AddressTypes.Mailing ? "display: none;" : "")">
+    <div id="@fgMagisterialDistrict" class="form-group form-group-tight" style="@(Model.AddressTypeID == Empower.Model.LookupIDs.AddressTypes.Mailing ? "display: none;" : "")">
         @Html.LabelFor(model => model.MagisterialDistrictID, new { @class = labelClasses })
         <div class="col-md-5">
             @(Html.Kendo().DropDownListFor(model => model.MagisterialDistrictID)
@@ -97,7 +98,7 @@
             )
             @Html.ValidationMessageFor(model => model.MagisterialDistrictID)
         </div>
-    </div>*@
+    </div>
 
     <div id="@fgWard" class="form-group form-group-tight" style="@(Model.AddressTypeID == Empower.Model.LookupIDs.AddressTypes.Mailing ? "display: none;" : "")">
         @Html.LabelFor(model => model.WardID, new { @class = labelClasses })
@@ -146,7 +147,7 @@
                             <button id="@btnConfirmVerify" class="btn btn-primary">Verify</button>
                         </div>
                         <div class="col-md-6 text-right">
-                            <button class="btn btn-default" onclick="@(htmlFieldPrefix)_CloseConfirmVerify();">Cancel</button>
+                            <button class="btn btn-default" onclick="CloseConfirmVerify();">Cancel</button>
                         </div>
                     </div>
                 </div>
@@ -175,7 +176,7 @@
         ColorRequiredStarsCorrectly('@fhAddress');
     });
 
-    function @(htmlFieldPrefix)_VerifyAddress(sender) {
+    function VerifyAddress(sender) {
         var addessLine1 = $('#@Html.IdFor(model => model.Address1)').val();
 
         if (addessLine1 == '') {
@@ -205,7 +206,7 @@
         });
     }
 
-    function @(htmlFieldPrefix)_CloseConfirmVerify() {
+    function CloseConfirmVerify() {
         $('#@verifyAddressWindow').data('kendoWindow').close();
         var btnConfirm = $("#@btnConfirmVerify");
         btnConfirm.off();
@@ -216,17 +217,17 @@
         btnConfirm.off();
     }
 
-    function @(htmlFieldPrefix)_ConfirmSelectedAddress(addressKey) {
+    function ConfirmSelectedAddress(addressKey) {
         var btnConfirm = $("#@btnConfirmVerify");
         btnConfirm.click(function () {
-            @(htmlFieldPrefix)_SelectValidAddress(addressKey);
+            SelectValidAddress(addressKey);
         });
 
         var w = $("#@verifyAddressWindow").data("kendoWindow");
         w.center().open();
     }
 
-    function @(htmlFieldPrefix)_SelectValidAddress(addressKey) {
+    function SelectValidAddress(addressKey) {
         var getUrl = '@Url.Action("SelectMARAddress", "MARWidget", new { area = "" })';
 
         var w = $("#@verifyAddressWindow").data("kendoWindow");
@@ -243,7 +244,7 @@
                 kendo.ui.progress(x, false);
                 w.close();
 
-                @(htmlFieldPrefix)_PopulateAddressFields(data);
+                PopulateAddressFields(data);
 
                 $('#@fgMARAddressResults').slideUp();
             },
@@ -255,10 +256,10 @@
             cache: false
         });
 
-        @(htmlFieldPrefix)_ShowRemainingAddressFields();
+        ShowRemainingAddressFields();
     }
 
-    function @(htmlFieldPrefix)_PopulateAddressFields(addressObj) {
+    function PopulateAddressFields(addressObj) {
         if (addressObj != null) {
             $('#@Html.IdFor(model => model.Address1)').val(addressObj.Address1);
             $('#@Html.IdFor(model => model.City)').val(addressObj.City);
@@ -293,11 +294,11 @@
         }
     }
 
-    function @(htmlFieldPrefix)_gridMARAddressesDataBound(e) {
-        @(htmlFieldPrefix)_ShowRemainingAddressFields();
+    function gridMARAddressesDataBound(e) {
+        ShowRemainingAddressFields();
     }
 
-    function @(htmlFieldPrefix)_ShowRemainingAddressFields() {
+    function ShowRemainingAddressFields() {
         $('#@fgAddress2').slideDown();
         $('#@fgCityStateZip').slideDown();
 
