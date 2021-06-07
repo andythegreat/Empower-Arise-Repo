@@ -38,9 +38,9 @@ namespace Arise.PublicAccess.Controllers
 
     public class AddressUnrequiredViewComponent : ViewComponent
     {
-        private readonly CaseDomainService _domainService;
+        private readonly ProviderDomainService _domainService;
 
-        public AddressUnrequiredViewComponent(CaseDomainService domainService)
+        public AddressUnrequiredViewComponent(ProviderDomainService domainService)
         {
             _domainService = domainService;
         }
@@ -50,7 +50,7 @@ namespace Arise.PublicAccess.Controllers
             var vmAddress = new Models.AddressUnrequiredViewModel(address);
 
             vmAddress.StateCodes = new SelectList(_domainService.Repository.States.AsNoTracking().OrderBy(s => s.Code).ToList(), nameof(State.Code), nameof(State.Code));
-
+            vmAddress.Wards = new SelectList(_domainService.Repository.Wards.AsNoTracking().OrderBy(md => md.Name).ToList(), nameof(Ward.ID), nameof(Ward.Name));
             ViewData.TemplateInfo.HtmlFieldPrefix = htmlFieldPrefix;
 
             return View(vmAddress);
