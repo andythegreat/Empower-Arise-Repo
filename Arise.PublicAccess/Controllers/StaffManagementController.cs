@@ -240,7 +240,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
             else
             {
                 PA_Staff pA_Staff = new PA_Staff();
-                _ = TryUpdateModelAsync<PA_Staff>(pA_Staff);
+                 TryUpdateModelAsync<PA_Staff>(pA_Staff);
                 pA_Staff.Address1 = staffManagementViewModel.MainAddress.Address1;
                 pA_Staff.Address2 = staffManagementViewModel.MainAddress.Address2;
                 pA_Staff.City = staffManagementViewModel.MainAddress.City;
@@ -255,7 +255,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 ProviderDomainService.Repository.Save();
 
                 PA_StaffCharacteristic pA_StaffCharacteristic = new PA_StaffCharacteristic();
-                _ = TryUpdateModelAsync<PA_StaffCharacteristic>(pA_StaffCharacteristic);
+                 TryUpdateModelAsync<PA_StaffCharacteristic>(pA_StaffCharacteristic);
                 pA_StaffCharacteristic.StaffID = pA_Staff.ID;
                 pA_StaffCharacteristic.YearsOfRequiredExperience = staffManagementViewModel.YearOfExperience;
                 pA_StaffCharacteristic.FileName = fileName;
@@ -265,7 +265,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 ProviderDomainService.Repository.Save();
 
                 PA_StaffHealthInformation pA_staffHealthInformation = new PA_StaffHealthInformation();
-                _ = TryUpdateModelAsync<PA_StaffHealthInformation>(pA_staffHealthInformation);
+                 TryUpdateModelAsync<PA_StaffHealthInformation>(pA_staffHealthInformation);
                 pA_staffHealthInformation.StaffID = pA_Staff.ID;
                 pA_staffHealthInformation.FirstName = staffManagementViewModel.PhysicianFirstName;
                 pA_staffHealthInformation.LastName = staffManagementViewModel.PhysicianLastName;
@@ -364,7 +364,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
         public IActionResult AddStaffEducation([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel)
         {
             PA_StaffEducation pA_StaffEducation = new PA_StaffEducation();
-            _ = TryUpdateModelAsync<PA_StaffEducation>(pA_StaffEducation);
+             TryUpdateModelAsync<PA_StaffEducation>(pA_StaffEducation);
             pA_StaffEducation.StaffID = StaffID;
             ProviderDomainService.Repository.Add(pA_StaffEducation);
             ProviderDomainService.Repository.Save();
@@ -379,7 +379,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
             {
                 var objStaffQualification = ProviderDomainService.Repository.PA_StaffEducations.Where(S => S.ID == staffManagementViewModel.StaffEducationID).FirstOrDefault();
                 PA_StaffEducation pA_StaffEducation = new PA_StaffEducation();
-                _ = TryUpdateModelAsync<PA_StaffEducation>(objStaffQualification);
+                 TryUpdateModelAsync<PA_StaffEducation>(objStaffQualification);
                 objStaffQualification.ID = staffManagementViewModel.StaffEducationID;
                 ProviderDomainService.Repository.Update(objStaffQualification, objStaffQualification.ID);
                 ProviderDomainService.Save();
