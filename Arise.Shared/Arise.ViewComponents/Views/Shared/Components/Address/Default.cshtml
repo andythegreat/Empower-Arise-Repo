@@ -1,7 +1,7 @@
 ﻿@model Arise.Shared.ViewComponents.Address.AddressViewModel
 
 @{
-    var htmlFieldPrefix = ViewData.TemplateInfo.HtmlFieldPrefix;
+    var htmlFieldPrefix = string.IsNullOrEmpty(ViewData.TemplateInfo.HtmlFieldPrefix) ? "" : ViewData.TemplateInfo.HtmlFieldPrefix.Replace(".", "_");
     var fhAddress = htmlFieldPrefix + "_fhAddress";
     var fgAddress2 = htmlFieldPrefix + "_fgAddressLine2";
     var fgCityStateZip = htmlFieldPrefix + "_fgCityStateZip";
