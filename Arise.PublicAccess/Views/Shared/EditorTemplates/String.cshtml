@@ -4,7 +4,7 @@
     var attrs = new Dictionary<string, object>();
     attrs.Add("placeholder", ViewData.ModelMetadata.GetDisplayName());
 
-    var classes = "form-control";
+    var classes = "form-control ";
 
     if (ViewData["class"] != null)
     {
@@ -62,4 +62,5 @@
     }
 }
 
-@Html.Kendo().TextBoxFor(model => model).HtmlAttributes(attrs)
+@Html.TextBoxFor(m => m, attrs)
+@*@Html.Kendo().TextBoxFor(model => model).HtmlAttributes(attrs)*@
