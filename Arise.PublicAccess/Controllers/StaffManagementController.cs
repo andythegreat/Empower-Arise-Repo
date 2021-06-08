@@ -1,9 +1,7 @@
-﻿
-using Arise.PublicAccess.Areas.ProviderApplication.Models;
+﻿using Arise.PublicAccess.Areas.ProviderApplication.Models;
 using Arise.PublicAccess.Controllers;
 using Arise.PublicAccess.Helpers;
 using Arise.PublicAccess.Models;
-using Arise.PublicAccess.Views.Shared.Components.Phone;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Office2013.PowerPoint.Roaming;
 using Empower.AccessControl;
@@ -152,7 +150,6 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 staffManagementViewModel.EmergencyMobilePhone = staffEmergencyContatctInformation.MobilePhone;
                 staffManagementViewModel.RelationShipID = Convert.ToInt32(staffEmergencyContatctInformation.RelationshipID);
             }
-
             return View(staffManagementViewModel);
         }
 
@@ -237,6 +234,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 ProviderDomainService.Repository.Update(objStaffCharacteristic, objStaffEmergencyContactInformation.ID);
                 ProviderDomainService.Save();
             }
+
             else
             {
                 PA_Staff pA_Staff = new PA_Staff();
@@ -307,8 +305,10 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 ProviderDomainService.Repository.Add(pA_StaffEmergencyContactInformation);
                 ProviderDomainService.Repository.Save();
             }
+
             return RedirectToAction("Index", "StaffManagement");
         }
+
         public IActionResult GetStaffs([DataSourceRequest] DataSourceRequest request, int facilityTypeID)
         {
             var objStaffData = (from s in ProviderDomainService.Repository.PA_Staffs
@@ -361,6 +361,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
 
             return Json(staffQualification.ToDataSourceResult(request));
         }
+
         public IActionResult AddStaffEducation([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel)
         {
             PA_StaffEducation pA_StaffEducation = new PA_StaffEducation();
@@ -387,6 +388,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
 
             return Json(new[] { staffManagementViewModel }.ToDataSourceResult(request));
         }
+
         [HttpPost]
         public ActionResult DeleteStaffEducation([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel)
         {
