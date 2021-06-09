@@ -19,7 +19,6 @@
         <script src="~/lib/modernizr/modernizr.js"></script>
         <script src="~/lib/jquery/jquery.js"></script>
         <script src="~/lib/jquery-unobtrusive/jquery.unobtrusive-ajax.js"></script>
-        <script src="~/lib/jquery-cookie/jquery.cookie.js"></script>
         <script src="~/lib/kendo-2021.2.511/js/kendo.all.min.js"></script>
         <script src="~/lib/kendo-2021.2.511/js/kendo.aspnetmvc.min.js"></script>
     </environment>
@@ -200,9 +199,6 @@
         )
 
     </div>
-
-    @await Component.InvokeAsync(typeof(Arise.Shared.ViewComponents.InformationActionBox.InformationActionBoxViewComponent))
-
     <div>
         @(Html.Kendo().Notification()
             .Name("CenteredPopup")
