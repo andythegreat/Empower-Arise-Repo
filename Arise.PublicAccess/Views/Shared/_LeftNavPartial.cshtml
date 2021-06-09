@@ -42,15 +42,7 @@
                     <ul class="list-group">
                         @foreach (var sub in root.Items)
                         {
-                            if (sub.Controller == nameof(HomeController).Replace("Controller", ""))
-                            {
-                                <a class="list-group-item" href="@Url.Action(sub.Action, sub.Controller, new { area = Empower.Common.Constant.PublicAccessApp.Modules.ProviderApplication })">@sub.Text</a>
-                            }
-                            else
-                            {
-                                @Html.ActionLink(sub.Text, sub.Action, sub.Controller, null, new { id = sub.ClientID, @class = "list-group-item" });
-
-                            }
+                            @Html.ActionLink(sub.Text, sub.Action, sub.Controller, new { area = sub.Area }, new { id = sub.ClientID, @class = "list-group-item" });
                         }
                     </ul>
                 </li>
