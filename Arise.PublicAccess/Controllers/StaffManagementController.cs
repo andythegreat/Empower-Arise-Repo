@@ -67,15 +67,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
             if (staff != null)
             {
                 StaffID = Convert.ToInt32(ID);
-                staffManagementViewModel.InformationSourceID = staff.InformationSourceID;
-                staffManagementViewModel.FacilityTypeID = staff.FacilityTypeID;
-                staffManagementViewModel.ID = staff.ID;
-                staffManagementViewModel.Prefix = staff.Prefix;
-                staffManagementViewModel.Suffix = staff.Suffix;
-                staffManagementViewModel.LastName = staff.LastName;
-                staffManagementViewModel.MiddleName = staff.MiddleName;
-                staffManagementViewModel.FirstName = staff.FirstName;
-                staffManagementViewModel.Suffix = staff.Suffix;
+                staffManagementViewModel.Staff= staff;
                 staffManagementViewModel.MainAddress.Address1 = staff.Address1;
                 staffManagementViewModel.MainAddress.Address2 = staff.Address2;
                 staffManagementViewModel.MainAddress.City = staff.City;
@@ -83,22 +75,14 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 staffManagementViewModel.MainAddress.Zip = staff.Zip;
                 staffManagementViewModel.MainAddress.MagisterialDistrictID = staff.MagisterialDistrictID;
                 staffManagementViewModel.MainAddress.WardID = staff.WardID;
-                staffManagementViewModel.HomePhone = staff.HomePhone;
-                staffManagementViewModel.DateOfBirth = staff.DateOfBirth;
-                staffManagementViewModel.FaxNumber = staff.FaxNumber;
+                staffManagementViewModel.PhoneConfig.HomePhone = staff.HomePhone;
             }
 
             var staffCharacteristic = ProviderDomainService.Repository.PA_StaffCharacteristics.Where(s => s.StaffID == ID).FirstOrDefault();
             if (staffCharacteristic != null)
             {
                 staffManagementViewModel.StaffCharacteristicID = staffCharacteristic.ID;
-                staffManagementViewModel.TitleOfPosition = staffCharacteristic.TitleOfPosition;
-                staffManagementViewModel.DateHired = staffCharacteristic.DateHired;
-                staffManagementViewModel.SeparationDate = staffCharacteristic.SeparationDate;
-                staffManagementViewModel.YearOfExperience = staffCharacteristic.YearsOfRequiredExperience;
-                staffManagementViewModel.Language = staffCharacteristic.LanguageID;
-                staffManagementViewModel.ProfessionalDevelopmentCourses = staffCharacteristic.ProfessionalDevelopmentCourse;
-                staffManagementViewModel.SupervisedOccupationExperience = staffCharacteristic.SupervisedOccupationExperience;
+                staffManagementViewModel.StaffCharacteristic = staffCharacteristic;
                 if (staffCharacteristic.ProfileImage != null)
                 {
                     staffManagementViewModel.Image = "data:image/jpeg;base64," + "" + Convert.ToBase64String(staffCharacteristic.ProfileImage);
@@ -109,10 +93,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
             if (staffHealthInformation != null)
             {
                 staffManagementViewModel.StaffHealthInformationID = staffHealthInformation.ID;
-                staffManagementViewModel.PhysicianFirstName = staffHealthInformation.FirstName;
-                staffManagementViewModel.PhysicianLastName = staffHealthInformation.LastName;
-                staffManagementViewModel.PhysicianPrefix = staffHealthInformation.Prefix;
-                staffManagementViewModel.PhysicianSuffix = staffHealthInformation.Suffix;
+                staffManagementViewModel.StaffHealthInformation = staffHealthInformation;
                 staffManagementViewModel.MainAddress1.Address1 = staffHealthInformation.Address1;
                 staffManagementViewModel.MainAddress1.Address2 = staffHealthInformation.Address2;
                 staffManagementViewModel.MainAddress1.City = staffHealthInformation.City;
@@ -120,23 +101,13 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 staffManagementViewModel.MainAddress1.Zip = staffHealthInformation.Zip;
                 staffManagementViewModel.MainAddress1.MagisterialDistrictID = staffHealthInformation.MagisterialDistrictID;
                 staffManagementViewModel.MainAddress1.WardID = staffHealthInformation.WardID;
-                staffManagementViewModel.PhysicianHomePhone = staffHealthInformation.HomePhone;
-                staffManagementViewModel.PhysicianWorkPhone = staffHealthInformation.WorkPhone;
-                staffManagementViewModel.PhysicianWorkPhoneExtension = staffHealthInformation.WorkPhoneExtension;
-                staffManagementViewModel.PhysicianMobilePhone = staffHealthInformation.MobilePhone;
-                staffManagementViewModel.Allergies = staffHealthInformation.KnownAllergies;
-                staffManagementViewModel.InsurencePhoneNumber = staffHealthInformation.InsurencePhoneNumber;
-                staffManagementViewModel.HealthInsuranceCompany = staffHealthInformation.HealthInsuranceCompany;
             };
 
             var staffEmergencyContatctInformation = ProviderDomainService.Repository.PA_StaffEmergencyContactInformations.Where(s => s.StaffID == ID).FirstOrDefault();
             if (staffEmergencyContatctInformation != null)
             {
                 staffManagementViewModel.StaffEmenrgencyContactID = staffEmergencyContatctInformation.ID;
-                staffManagementViewModel.EmergencyFirstName = staffEmergencyContatctInformation.FirstName;
-                staffManagementViewModel.EmergencyLastName = staffEmergencyContatctInformation.LastName;
-                staffManagementViewModel.EmergencyPrefix = staffEmergencyContatctInformation.Prefix;
-                staffManagementViewModel.EmergencySuffix = staffEmergencyContatctInformation.Suffix;
+                staffManagementViewModel.StaffEmergencyContactInformation = staffEmergencyContatctInformation;
                 staffManagementViewModel.EmergencyAddress.Address1 = staffEmergencyContatctInformation.Address1;
                 staffManagementViewModel.EmergencyAddress.Address2 = staffEmergencyContatctInformation.Address2;
                 staffManagementViewModel.EmergencyAddress.City = staffEmergencyContatctInformation.City;
@@ -144,18 +115,13 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 staffManagementViewModel.EmergencyAddress.Zip = staffEmergencyContatctInformation.Zip;
                 staffManagementViewModel.EmergencyAddress.MagisterialDistrictID = staffEmergencyContatctInformation.MagisterialDistrictID;
                 staffManagementViewModel.EmergencyAddress.WardID = staffEmergencyContatctInformation.WardID;
-                staffManagementViewModel.EmergencyHomePhone = staffEmergencyContatctInformation.HomePhone;
-                staffManagementViewModel.EmergencyWorkPhone = staffEmergencyContatctInformation.WorkPhone;
-                staffManagementViewModel.EmergencyWorkPhoneExtension = staffEmergencyContatctInformation.WorkPhoneExtension;
-                staffManagementViewModel.EmergencyMobilePhone = staffEmergencyContatctInformation.MobilePhone;
-                staffManagementViewModel.RelationShipID = Convert.ToInt32(staffEmergencyContatctInformation.RelationshipID);
             }
             return View(staffManagementViewModel);
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult Edit(StaffManagementViewModel staffManagementViewModel)
+        public async Task<IActionResult> EditAsync(StaffManagementViewModel staffManagementViewModel)
         {
             string fileName = "";
             byte[] fileData = null;
@@ -168,144 +134,126 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
             if (staffManagementViewModel.ID > 0)
             {
                 var objStaff = ProviderDomainService.Repository.PA_Staffs.Where(p => p.ID == staffManagementViewModel.ID).FirstOrDefault();
-                TryUpdateModelAsync<PA_Staff>(objStaff);
-                objStaff.Address1 = staffManagementViewModel.MainAddress.Address1;
-                objStaff.Address2 = staffManagementViewModel.MainAddress.Address2;
-                objStaff.City = staffManagementViewModel.MainAddress.City;
-                objStaff.State = staffManagementViewModel.MainAddress.State;
-                objStaff.WardID = Convert.ToInt32(staffManagementViewModel.MainAddress.WardID);
-                objStaff.Zip = staffManagementViewModel.MainAddress.Zip;
-                objStaff.MagisterialDistrictID = Convert.ToInt32(staffManagementViewModel.MainAddress.MagisterialDistrictID);
-                ProviderDomainService.Repository.Update(objStaff, staffManagementViewModel.ID);
-                ProviderDomainService.Save();
+
+                if (await TryUpdateModelAsync<PA_Staff>(objStaff, nameof(staffManagementViewModel.MainAddress)))
+                {
+                    ProviderDomainService.Save();
+                }
+
+                if (await TryUpdateModelAsync<PA_Staff>(objStaff, nameof(staffManagementViewModel.PhoneConfig)))
+                {
+                    ProviderDomainService.Save();
+                }
+
+                if (await TryUpdateModelAsync<PA_Staff>(objStaff, nameof(staffManagementViewModel.Staff)))
+                {
+                    ProviderDomainService.Save();
+                }
 
                 var objStaffCharacteristic = ProviderDomainService.Repository.PA_StaffCharacteristics.Where(p => p.ID == staffManagementViewModel.StaffCharacteristicID).FirstOrDefault();
-                 TryUpdateModelAsync<PA_StaffCharacteristic>(objStaffCharacteristic);
-                objStaffCharacteristic.ID = staffManagementViewModel.StaffCharacteristicID;
-                objStaffCharacteristic.StaffID = staffManagementViewModel.ID;
-                objStaffCharacteristic.YearsOfRequiredExperience = staffManagementViewModel.YearOfExperience;
                 objStaffCharacteristic.FileName = fileName;
                 objStaffCharacteristic.ProfileImage = fileData;
-                objStaffCharacteristic.ProfessionalDevelopmentCourse = staffManagementViewModel.ProfessionalDevelopmentCourses;
-                objStaffCharacteristic.LanguageID = staffManagementViewModel.Language;
-                ProviderDomainService.Repository.Update(objStaffCharacteristic, objStaffCharacteristic.ID);
+                await TryUpdateModelAsync<PA_StaffCharacteristic>(objStaffCharacteristic, nameof(staffManagementViewModel.StaffCharacteristic));
                 ProviderDomainService.Save();
 
                 var objStaffHealthInformation = ProviderDomainService.Repository.PA_StaffHealthInformations.Where(p => p.ID == staffManagementViewModel.StaffHealthInformationID).FirstOrDefault();
-                TryUpdateModelAsync<PA_StaffHealthInformation>(objStaffHealthInformation);
-                objStaffHealthInformation.StaffID = staffManagementViewModel.ID;
-                objStaffHealthInformation.FirstName = staffManagementViewModel.PhysicianFirstName;
-                objStaffHealthInformation.LastName = staffManagementViewModel.PhysicianLastName;
-                objStaffHealthInformation.Prefix = staffManagementViewModel.PhysicianPrefix;
-                objStaffHealthInformation.Suffix = staffManagementViewModel.PhysicianSuffix;
-                objStaffHealthInformation.Address1 = staffManagementViewModel.MainAddress1.Address1;
-                objStaffHealthInformation.Address2 = staffManagementViewModel.MainAddress1.Address2;
-                objStaffHealthInformation.City = staffManagementViewModel.MainAddress1.City;
-                objStaffHealthInformation.State = staffManagementViewModel.MainAddress1.State;
-                objStaffHealthInformation.Zip = staffManagementViewModel.MainAddress1.Zip;
-                objStaffHealthInformation.MagisterialDistrictID = Convert.ToInt32(staffManagementViewModel.MainAddress1.MagisterialDistrictID);
-                objStaffHealthInformation.WardID = Convert.ToInt32(staffManagementViewModel.MainAddress1.WardID);
-                objStaffHealthInformation.HomePhone = staffManagementViewModel.PhysicianHomePhone;
-                objStaffHealthInformation.WorkPhone = staffManagementViewModel.PhysicianWorkPhone;
-                objStaffHealthInformation.WorkPhoneExtension = staffManagementViewModel.PhysicianWorkPhoneExtension;
-                objStaffHealthInformation.MobilePhone = staffManagementViewModel.PhysicianMobilePhone;
-                objStaffHealthInformation.KnownAllergies = staffManagementViewModel.Allergies;
-                ProviderDomainService.Repository.Update(objStaffCharacteristic, objStaffHealthInformation.ID);
+
+                if (await TryUpdateModelAsync<PA_StaffHealthInformation>(objStaffHealthInformation, nameof(staffManagementViewModel.MainAddress1)))
+                {
+                    ProviderDomainService.Save();
+                }
+
+                await TryUpdateModelAsync<PA_StaffHealthInformation>(objStaffHealthInformation, nameof(staffManagementViewModel.StaffHealthInformation));
                 ProviderDomainService.Save();
 
                 var objStaffEmergencyContactInformation = ProviderDomainService.Repository.PA_StaffEmergencyContactInformations.Where(p => p.ID == staffManagementViewModel.StaffEmenrgencyContactID).FirstOrDefault();
-                 TryUpdateModelAsync<PA_StaffEmergencyContactInformation>(objStaffEmergencyContactInformation);
-                objStaffEmergencyContactInformation.StaffID = staffManagementViewModel.ID;
-                objStaffEmergencyContactInformation.FirstName = staffManagementViewModel.EmergencyFirstName;
-                objStaffEmergencyContactInformation.LastName = staffManagementViewModel.EmergencyLastName;
-                objStaffEmergencyContactInformation.Prefix = staffManagementViewModel.EmergencyPrefix;
-                objStaffEmergencyContactInformation.Suffix = staffManagementViewModel.EmergencySuffix;
-                objStaffEmergencyContactInformation.Address1 = staffManagementViewModel.EmergencyAddress.Address1;
-                objStaffEmergencyContactInformation.Address2 = staffManagementViewModel.EmergencyAddress.Address2;
-                objStaffEmergencyContactInformation.City = staffManagementViewModel.EmergencyAddress.City;
-                objStaffEmergencyContactInformation.State = staffManagementViewModel.EmergencyAddress.State;
-                objStaffEmergencyContactInformation.Zip = staffManagementViewModel.EmergencyAddress.Zip;
-                objStaffEmergencyContactInformation.MagisterialDistrictID = Convert.ToInt32(staffManagementViewModel.EmergencyAddress.MagisterialDistrictID);
-                objStaffEmergencyContactInformation.WardID = Convert.ToInt32(staffManagementViewModel.EmergencyAddress.WardID);
-                objStaffEmergencyContactInformation.HomePhone = staffManagementViewModel.EmergencyHomePhone;
-                objStaffEmergencyContactInformation.WorkPhone = staffManagementViewModel.EmergencyWorkPhone;
-                objStaffEmergencyContactInformation.WorkPhoneExtension = staffManagementViewModel.EmergencyWorkPhoneExtension;
-                objStaffEmergencyContactInformation.MobilePhone = staffManagementViewModel.EmergencyMobilePhone;
-                ProviderDomainService.Repository.Update(objStaffCharacteristic, objStaffEmergencyContactInformation.ID);
+
+                if (await TryUpdateModelAsync<PA_StaffEmergencyContactInformation>(objStaffEmergencyContactInformation, nameof(staffManagementViewModel.EmergencyAddress)))
+                {
+                    ProviderDomainService.Save();
+                }
+                await TryUpdateModelAsync(objStaffEmergencyContactInformation, nameof(staffManagementViewModel.StaffEmergencyContactInformation));
+
                 ProviderDomainService.Save();
             }
 
             else
             {
-                PA_Staff pA_Staff = new PA_Staff();
-                 TryUpdateModelAsync<PA_Staff>(pA_Staff);
-                pA_Staff.Address1 = staffManagementViewModel.MainAddress.Address1;
-                pA_Staff.Address2 = staffManagementViewModel.MainAddress.Address2;
-                pA_Staff.City = staffManagementViewModel.MainAddress.City;
-                pA_Staff.State = staffManagementViewModel.MainAddress.State;
-                pA_Staff.WardID = Convert.ToInt32(staffManagementViewModel.MainAddress.WardID);
-                pA_Staff.Zip = staffManagementViewModel.MainAddress.Zip;
-                pA_Staff.MagisterialDistrictID = Convert.ToInt32(staffManagementViewModel.MainAddress.MagisterialDistrictID);
-                pA_Staff.IsDeleted = false;
-                ProviderDomainService.Repository.Add(pA_Staff);
+                var objStaff = new PA_Staff();
+                if (staffManagementViewModel.MainAddress != null)
+                {
+                    if (await TryUpdateModelAsync(objStaff, nameof(staffManagementViewModel.MainAddress)))
+                    {
+                        ProviderDomainService.Save();
+                    }
+                }
+                if (staffManagementViewModel.PhoneConfig != null)
+                {
+                    if (await TryUpdateModelAsync(objStaff, nameof(staffManagementViewModel.PhoneConfig)))
+                    {
+                        ProviderDomainService.Save();
+                    }
+
+                }
+
+                if (await TryUpdateModelAsync(objStaff, nameof(staffManagementViewModel.Staff)))
+                {
+                    ProviderDomainService.Save();
+                }
+
+                ProviderDomainService.Repository.Add(objStaff);
                 ProviderDomainService.Repository.Save();
-                pA_Staff.StaffKey = PA_Staff.GetFormattedKey(pA_Staff.ID);
+                objStaff.StaffKey = PA_Staff.GetFormattedKey(objStaff.ID);
                 ProviderDomainService.Repository.Save();
 
-                PA_StaffCharacteristic pA_StaffCharacteristic = new PA_StaffCharacteristic();
-                 TryUpdateModelAsync<PA_StaffCharacteristic>(pA_StaffCharacteristic);
-                pA_StaffCharacteristic.StaffID = pA_Staff.ID;
-                pA_StaffCharacteristic.YearsOfRequiredExperience = staffManagementViewModel.YearOfExperience;
-                pA_StaffCharacteristic.FileName = fileName;
-                pA_StaffCharacteristic.ProfileImage = fileData;
-                pA_StaffCharacteristic.LanguageID = staffManagementViewModel.Language;
-                ProviderDomainService.Repository.Add(pA_StaffCharacteristic);
+                PA_StaffCharacteristic ObjpA_StaffCharacteristic = new PA_StaffCharacteristic();
+               
+                ObjpA_StaffCharacteristic.StaffID = objStaff.ID;
+                ObjpA_StaffCharacteristic.FileName = fileName;
+                ObjpA_StaffCharacteristic.ProfileImage = fileData;
+                if (await TryUpdateModelAsync(ObjpA_StaffCharacteristic, nameof(staffManagementViewModel.StaffCharacteristic)))
+                {
+                    ProviderDomainService.Save();
+                }
+
+                ProviderDomainService.Repository.Add(ObjpA_StaffCharacteristic);
                 ProviderDomainService.Repository.Save();
 
-                PA_StaffHealthInformation pA_staffHealthInformation = new PA_StaffHealthInformation();
-                 TryUpdateModelAsync<PA_StaffHealthInformation>(pA_staffHealthInformation);
-                pA_staffHealthInformation.StaffID = pA_Staff.ID;
-                pA_staffHealthInformation.FirstName = staffManagementViewModel.PhysicianFirstName;
-                pA_staffHealthInformation.LastName = staffManagementViewModel.PhysicianLastName;
-                pA_staffHealthInformation.Prefix = staffManagementViewModel.PhysicianPrefix;
-                pA_staffHealthInformation.Suffix = staffManagementViewModel.PhysicianSuffix;
-                pA_staffHealthInformation.Address1 = staffManagementViewModel.MainAddress1.Address1;
-                pA_staffHealthInformation.Address2 = staffManagementViewModel.MainAddress1.Address2;
-                pA_staffHealthInformation.City = staffManagementViewModel.MainAddress1.City;
-                pA_staffHealthInformation.State = staffManagementViewModel.MainAddress1.State;
-                pA_staffHealthInformation.Zip = staffManagementViewModel.MainAddress1.Zip;
-                pA_staffHealthInformation.MagisterialDistrictID = Convert.ToInt32(staffManagementViewModel.MainAddress1.MagisterialDistrictID);
-                pA_staffHealthInformation.WardID = Convert.ToInt32(staffManagementViewModel.MainAddress1.WardID);
-                pA_staffHealthInformation.HomePhone = staffManagementViewModel.PhysicianHomePhone;
-                pA_staffHealthInformation.WorkPhone = staffManagementViewModel.PhysicianWorkPhone;
-                pA_staffHealthInformation.WorkPhoneExtension = staffManagementViewModel.PhysicianWorkPhoneExtension;
-                pA_staffHealthInformation.MobilePhone = staffManagementViewModel.PhysicianMobilePhone;
-                pA_staffHealthInformation.KnownAllergies = staffManagementViewModel.Allergies;
-                ProviderDomainService.Repository.Add(pA_staffHealthInformation);
+                var objStaffHealthInformation = new PA_StaffHealthInformation();
+                if (staffManagementViewModel.MainAddress1 != null)
+                {
+                    if (await TryUpdateModelAsync(objStaffHealthInformation, nameof(staffManagementViewModel.MainAddress1)))
+                    {
+                        ProviderDomainService.Save();
+                    }
+                }
+
+                if (await TryUpdateModelAsync(objStaffHealthInformation, nameof(staffManagementViewModel.StaffHealthInformation)))
+                {
+                    ProviderDomainService.Save();
+                }
+
+                objStaffHealthInformation.StaffID = objStaff.ID;
+                ProviderDomainService.Repository.Add(objStaffHealthInformation);
                 ProviderDomainService.Repository.Save();
 
-                PA_StaffEmergencyContactInformation pA_StaffEmergencyContactInformation = new PA_StaffEmergencyContactInformation();
-                 TryUpdateModelAsync<PA_StaffEmergencyContactInformation>(pA_StaffEmergencyContactInformation);
-                pA_StaffEmergencyContactInformation.StaffID = pA_Staff.ID;
-                pA_StaffEmergencyContactInformation.FirstName = staffManagementViewModel.EmergencyFirstName;
-                pA_StaffEmergencyContactInformation.LastName = staffManagementViewModel.EmergencyLastName;
-                pA_StaffEmergencyContactInformation.Prefix = staffManagementViewModel.EmergencyPrefix;
-                pA_StaffEmergencyContactInformation.Suffix = staffManagementViewModel.EmergencySuffix;
-                pA_StaffEmergencyContactInformation.Address1 = staffManagementViewModel.EmergencyAddress.Address1;
-                pA_StaffEmergencyContactInformation.Address2 = staffManagementViewModel.EmergencyAddress.Address2;
-                pA_StaffEmergencyContactInformation.City = staffManagementViewModel.EmergencyAddress.City;
-                pA_StaffEmergencyContactInformation.State = staffManagementViewModel.EmergencyAddress.State;
-                pA_StaffEmergencyContactInformation.Zip = staffManagementViewModel.EmergencyAddress.Zip;
-                pA_StaffEmergencyContactInformation.MagisterialDistrictID = Convert.ToInt32(staffManagementViewModel.EmergencyAddress.MagisterialDistrictID);
-                pA_StaffEmergencyContactInformation.WardID = Convert.ToInt32(staffManagementViewModel.EmergencyAddress.WardID);
-                pA_StaffEmergencyContactInformation.HomePhone = staffManagementViewModel.EmergencyHomePhone;
-                pA_StaffEmergencyContactInformation.WorkPhone = staffManagementViewModel.EmergencyWorkPhone;
-                pA_StaffEmergencyContactInformation.WorkPhoneExtension = staffManagementViewModel.EmergencyWorkPhoneExtension;
-                pA_StaffEmergencyContactInformation.MobilePhone = staffManagementViewModel.EmergencyMobilePhone;
-                ProviderDomainService.Repository.Add(pA_StaffEmergencyContactInformation);
+                var objStaffEmergencyContactInformation = new PA_StaffEmergencyContactInformation();
+                if (staffManagementViewModel.EmergencyAddress != null)
+                {
+                    if (await TryUpdateModelAsync(objStaffEmergencyContactInformation, nameof(staffManagementViewModel.EmergencyAddress)))
+                    {
+                        ProviderDomainService.Save();
+                    }
+                }
+                if (await TryUpdateModelAsync(objStaffEmergencyContactInformation, nameof(staffManagementViewModel.StaffEmergencyContactInformation)))
+                {
+                    ProviderDomainService.Save();
+                }
+                objStaffEmergencyContactInformation.StaffID = objStaff.ID;
+                ProviderDomainService.Repository.Add(objStaffEmergencyContactInformation);
                 ProviderDomainService.Repository.Save();
+
             }
-
             return RedirectToAction("Index", "StaffManagement");
         }
 
@@ -319,7 +267,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                                 {
                                     ID = s.ID,
                                     FacilityTypeID = s.FacilityTypeID,
-                                    StaffKey = s.StaffKey + " / " + s.FirstName + "  " + s.LastName,
+                                    StaffKey = s.StaffKey ,
                                     StaffType = st.Name,
                                     FacilityName = pt.Name,
                                     DateOfHireGridDateFormat = sc.DateHired,
@@ -353,7 +301,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                     StaffEducationID = s.ID,
                     StaffID = s.StaffID,
                     StaffQualificationID = s.StaffQualificationID,
-                    InstitutName = s.InstitutName,
+                    InstituteName = s.InstituteName,
                     DateAwarded = (DateTime)s.DateAwarded,
                     IsDeleted = s.IsDeleted,
                 }
@@ -365,7 +313,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
         public IActionResult AddStaffEducation([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel)
         {
             PA_StaffEducation pA_StaffEducation = new PA_StaffEducation();
-             TryUpdateModelAsync<PA_StaffEducation>(pA_StaffEducation);
+            TryUpdateModelAsync<PA_StaffEducation>(pA_StaffEducation);
             pA_StaffEducation.StaffID = StaffID;
             ProviderDomainService.Repository.Add(pA_StaffEducation);
             ProviderDomainService.Repository.Save();
@@ -374,13 +322,13 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
             return Json(new[] { staffManagementViewModel }.ToDataSourceResult(request));
         }
 
-        public async Task<IActionResult> UpdateStaffEducationAsync([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel)
+        public IActionResult UpdateStaffEducation([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel)
         {
             if (staffManagementViewModel.StaffEducationID > 0)
             {
                 var objStaffQualification = ProviderDomainService.Repository.PA_StaffEducations.Where(S => S.ID == staffManagementViewModel.StaffEducationID).FirstOrDefault();
                 PA_StaffEducation pA_StaffEducation = new PA_StaffEducation();
-                 TryUpdateModelAsync<PA_StaffEducation>(objStaffQualification);
+                TryUpdateModelAsync<PA_StaffEducation>(objStaffQualification);
                 objStaffQualification.ID = staffManagementViewModel.StaffEducationID;
                 ProviderDomainService.Repository.Update(objStaffQualification, objStaffQualification.ID);
                 ProviderDomainService.Save();
