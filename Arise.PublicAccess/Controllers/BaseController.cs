@@ -84,12 +84,14 @@ namespace Arise.PublicAccess.Controllers
             var profileItems = new List<Models.Old_TreeViewItemModel>();
             profileItems.Add(new Models.Old_TreeViewItemModel { Text = "Messages and Notification", Action = "Index", Controller = "Home", ClientID = "lnkHome" });
             profileItems.Add(new Models.Old_TreeViewItemModel { Text = "Provider Profile", Action = "Index", Controller = "ProviderProfile", ClientID = "lnkProviderProfile" });
+            
             if (_domainService.PermitStatusID == Empower.Model.LookupIDs.PermitStatuses.Issued)
             {
                 profileItems.Add(new Models.Old_TreeViewItemModel { Text = "License Status", Action = "Index", Controller = "PermitStatus", ClientID = "lnkPermitStatus" });
             }
 
-            profileItems.Add(new Models.Old_TreeViewItemModel { Text = "Application", Action = "Index", Controller = "Home", ClientID = "lnkApplication" });
+            profileItems.Add(new Models.Old_TreeViewItemModel { Text = "Application", Action = "Index", Controller = "Home", Area = Empower.Common.Constant.PublicAccessApp.Modules.ProviderApplication, ClientID = "lnkApplication" });
+            
             if (ProviderDomainService.IsCEPS)
             {
                 profileItems.Add(new Models.Old_TreeViewItemModel { Text = "Payments", Action = "Index", Controller = "FeePayment", ClientID = "lnkPayment" });
@@ -104,6 +106,7 @@ namespace Arise.PublicAccess.Controllers
             attendanceItems.Add(new Models.Old_TreeViewItemModel { Text = "Adjustments", Action = "Index", Controller = "Adjustment", ClientID = "lnkAdjustment" });
 
             var reimbursementItems = new List<Models.Old_TreeViewItemModel>();
+            
             if (ProviderDomainService.IsCCAR)
             {
                 reimbursementItems.Add(new Models.Old_TreeViewItemModel { Text = "Reimbursements ", Action = "Index", Controller = "ReimbursementSummary", ClientID = "lnkReimbursementSummary" });
@@ -114,6 +117,7 @@ namespace Arise.PublicAccess.Controllers
             var fmItems = new List<Models.Old_TreeViewItemModel>();
             fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Facilities", Action = "", Controller = "", ClientID = "#" });
             fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Staff Management", Action = "", Controller = "", ClientID = "#" });
+            
             if (ProviderRegulatoryAgency != null && ProviderRegulatoryAgency.ProviderRegulatoryAgencyID == Empower.Model.LookupIDs.ProviderRegulatoryAgencies.FairfaxCountyPermit)
             {
                 fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Training Summary", Action = "Index", Controller = "ProviderTrainings", ClientID = "lnkTrainingSummary" });
@@ -123,6 +127,7 @@ namespace Arise.PublicAccess.Controllers
             fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Services", Action = "ChildCareServices", Controller = "ResourceAndReferral", ClientID = "lnkChildCareServices" });
             fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Environment", Action = "Environment", Controller = "ResourceAndReferral", ClientID = "lnkEnvironment" });
             fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Children's record", Action = "", Controller = "", ClientID = "#" });
+            
             if (ProviderDomainService.IsCEPS)
             {
                 fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Inspections", Action = "Index", Controller = "ScheduledInspections", ClientID = "lnkScheduledInspection" });
@@ -134,6 +139,7 @@ namespace Arise.PublicAccess.Controllers
             qualityRatingItems.Add(new Models.Old_TreeViewItemModel { Text = "QRIS Pages", Action = "Index", Controller = "QRISApplication", ClientID = "lnkQRISApplication" });
 
             var additionalItems = new List<Models.Old_TreeViewItemModel>();
+            
             if (ProviderDomainService.IsCEPS)
             {
                 additionalItems.Add(new Models.Old_TreeViewItemModel { Text = "Contact Us", Action = "CEPS", Controller = "RequestContact", ClientID = "lnkRequestContactCEPS" });
@@ -141,6 +147,7 @@ namespace Arise.PublicAccess.Controllers
 
             var treeViewItems = new List<Models.Old_TreeViewItemModel>();
             treeViewItems.Add(new Models.Old_TreeViewItemModel { Text = "Profile", Items = profileItems });
+            
             if (ProviderDomainService.IsCCAR)
             {
                 treeViewItems.Add(new Models.Old_TreeViewItemModel { Text = "Reporting", Items = reportingItems });
@@ -151,6 +158,7 @@ namespace Arise.PublicAccess.Controllers
             treeViewItems.Add(new Models.Old_TreeViewItemModel { Text = "Facility Management", Items = fmItems });
             treeViewItems.Add(new Models.Old_TreeViewItemModel { Text = "Quality Rating  ", Items = qualityRatingItems });
             treeViewItems.Add(new Models.Old_TreeViewItemModel { Text = "Additional", Items = additionalItems });
+            
             return treeViewItems;
         }
 
