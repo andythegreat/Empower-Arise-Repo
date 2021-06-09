@@ -1,6 +1,19 @@
 ﻿@model object
-           
-@(
- Html.Kendo().DropDownListFor(m => m)        
-        .BindTo((SelectList)ViewData[ViewData.TemplateInfo.GetFullHtmlFieldName("") + "_Data"])
-)
+
+@{
+    var dropDown = Html.Kendo().DropDownListFor(m => m)
+        .OptionLabel(Empower.Common.Constant.UI.SelectList.DefaultOptionText)
+        .Events(e => e.DataBound("FixedWidthGridDropDownList"))
+        .BindTo((SelectList)ViewData[ViewData.TemplateInfo.GetFullHtmlFieldName("") + "_Data"]);
+
+    if (ViewData["data_val_required"] != null)
+    {
+        dropDown = dropDown.HtmlAttributes(new { data_value_primitive = "true", data_val_required = ViewData["data_val_required"] });
+    }
+    else
+    {
+        dropDown = dropDown.HtmlAttributes(new { data_value_primitive = "true" });
+    }
+}
+
+@dropDown
