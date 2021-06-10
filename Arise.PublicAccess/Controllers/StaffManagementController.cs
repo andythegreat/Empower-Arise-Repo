@@ -63,6 +63,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
             staffManagementViewModel.MainAddress1 = new ProviderAddress();
             staffManagementViewModel.EmergencyAddress = new ProviderAddress();
             staffManagementViewModel.DocumentUploadApplicableTypeIDs = ProviderDomainService.Repository.GetBindToItems<DocumentUploadApplicableType>().ToList();
+            
             var staff = ProviderDomainService.Repository.PA_Staffs.Where(s => s.ID == ID).FirstOrDefault();
             if (staff != null)
             {
