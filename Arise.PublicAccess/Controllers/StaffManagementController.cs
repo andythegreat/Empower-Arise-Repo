@@ -1,9 +1,6 @@
-﻿using Arise.PublicAccess.Areas.ProviderApplication.Models;
-using Arise.PublicAccess.Controllers;
-using Arise.PublicAccess.Helpers;
+﻿using Arise.PublicAccess.Controllers;
 using Arise.PublicAccess.Models;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using DocumentFormat.OpenXml.Office2013.PowerPoint.Roaming;
+using Arise.Shared.CoreUI.Helpers;
 using Empower.AccessControl;
 using Empower.Common.CacheProviders;
 using Empower.Common.Extensions;
@@ -14,14 +11,10 @@ using Empower.Model.Entities;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Linq.Translations;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
