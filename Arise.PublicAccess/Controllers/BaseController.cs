@@ -115,7 +115,7 @@ namespace Arise.PublicAccess.Controllers
 
             var ProviderRegulatoryAgency = ProviderDomainService.Repository.Providers.Include(p => p.ProviderRegulatoryAgency).Where(p => p.ID == ProviderDomainService.ProviderID).FirstOrDefault();
             var fmItems = new List<Models.Old_TreeViewItemModel>();
-            fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Facilities", Action = "", Controller = "", ClientID = "#" });
+            fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Facilities", Action = "Index", Controller = "Facilities", ClientID = "#" });
             fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Staff Management", Action = "", Controller = "", ClientID = "#" });
             
             if (ProviderRegulatoryAgency != null && ProviderRegulatoryAgency.ProviderRegulatoryAgencyID == Empower.Model.LookupIDs.ProviderRegulatoryAgencies.FairfaxCountyPermit)
