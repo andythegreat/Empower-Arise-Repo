@@ -61,83 +61,101 @@
     }
     @if (ViewBag.ShowLeftNav == true)
     {
-        <div class="@containerClasses" style="background-color: white; margin-top: 62px;">
+        <div class="@containerClasses" style="background-color: white; padding-top: 62px; padding-bottom: 40px;">
             <div class="row">
-                @Html.Partial("_LeftNavPartial")
-                <div class="col-lg-9 col-md-9 col-xs-8">
-                    <h2>@ViewBag.PageTitle</h2>
-                    <div id="divValidationSummary" class="form-horizontal" style="display: none;">
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                <div class="form-horizontal custom-validation-summary col-md-11">
-                                    <div class="form-group form-group-tight">
-                                        <div class="col-md-12">
-                                            <h4 class="text-danger" style="padding-left: 11px;">
-                                                <span class="k-icon k-i-warning"></span>
-                                                <span style="padding: 0 0 0 4px;">Please correct the following Errors</span>
-                                            </h4>
-                                        </div>
-
-                                    </div>
-                                    <div class="form-group form-group-tight">
-                                        <div class="col-md-12 " style="padding-left:25px; padding-bottom:10px">
-                                            <ul id="listValidationErrors">
-                                                @* Populated by ValidationSummary.js and the validationSummaryTemplate script (See scrips section below) *@
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="k-callout k-callout-n custom-callout"></div>
-                            </div>
+                <div class="col-xs-12">
+                    <div style="display: flex;">
+                        <div style="min-width: 250px;">
+                            @Html.Partial("_LeftNavPartial")
                         </div>
-                    </div>
-                    <script type="text/x-kendo-template" id="validationSummaryTemplate">
-                        # if (messages.length) { #
-                        # for (var i = 0; i < messages.length; ++i) { #
-                        <li>#= messages[i] #</li>
-                        # } #
-                        # } #
-                    </script>
-                    @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Any(e => e.Exception != null)))
-                    {
-                        <div class="form-horizontal">
-                            <div class="form-group">
-                                <div class="col-md-12">
-                                    <div class="form-horizontal custom-validation-summary col-md-11">
-                                        <div class="form-group form-group-tight">
-                                            <div class="col-md-12">
-                                                <h4 class="text-danger" style="padding-left: 11px;">
-                                                    <span class="k-icon k-i-warning"></span>
-                                                    <span style="padding: 0 0 0 4px;">Please correct the following Errors</span>
-                                                </h4>
+                        <div style="flex-grow: 2; padding-left: 15px;">
+                            @if (!string.IsNullOrWhiteSpace(ViewBag.PageTile))
+                            {
+                                <h2>@ViewBag.PageTitle</h2>
+                            }
+                            <div id="divValidationSummary" class="form-horizontal" style="display: none;">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <div class="form-horizontal custom-validation-summary col-md-11">
+                                            <div class="form-group form-group-tight">
+                                                <div class="col-md-12">
+                                                    <h4 class="text-danger" style="padding-left: 11px;">
+                                                        <span class="k-icon k-i-warning"></span>
+                                                        <span style="padding: 0 0 0 4px;">Please correct the following Errors</span>
+                                                    </h4>
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group form-group-tight">
+                                                <div class="col-md-12 " style="padding-left:25px; padding-bottom:10px">
+                                                    <ul id="listValidationErrors">
+                                                        @* Populated by ValidationSummary.js and the validationSummaryTemplate script (See scrips section below) *@
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </div>
-                                        @foreach (var item in ViewData.ModelState.Values)
-                                        {
-                                            foreach (var error in item.Errors)
-                                            {
-                                                if (error.Exception != null)
-                                                {
-                                                    <div class="form-group form-group-tight">
-                                                        <div class="col-md-12" style="padding-left:25px; padding-bottom:10px">
-                                                            <ul>
-                                                                <li>@error.Exception.Message</li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                }
-                                            }
-                                        }
+                                        <div class="k-callout k-callout-n custom-callout"></div>
                                     </div>
-                                    <div class="k-callout k-callout-n custom-callout"></div>
                                 </div>
                             </div>
+                            <script type="text/x-kendo-template" id="validationSummaryTemplate">
+                                # if (messages.length) { #
+                                # for (var i = 0; i < messages.length; ++i) { #
+                                <li>#= messages[i] #</li>
+                                # } #
+                                # } #
+                            </script>
+                            @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Any(e => e.Exception != null)))
+                            {
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <div class="form-horizontal custom-validation-summary col-md-11">
+                                                <div class="form-group form-group-tight">
+                                                    <div class="col-md-12">
+                                                        <h4 class="text-danger" style="padding-left: 11px;">
+                                                            <span class="k-icon k-i-warning"></span>
+                                                            <span style="padding: 0 0 0 4px;">Please correct the following Errors</span>
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                                @foreach (var item in ViewData.ModelState.Values)
+                                                {
+                                                    foreach (var error in item.Errors)
+                                                    {
+                                                        if (error.Exception != null)
+                                                        {
+                                                            <div class="form-group form-group-tight">
+                                                                <div class="col-md-12" style="padding-left:25px; padding-bottom:10px">
+                                                                    <ul>
+                                                                        <li>@error.Exception.Message</li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    }
+                                                }
+                                            </div>
+                                            <div class="k-callout k-callout-n custom-callout"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            <div id="contentBody" style="opacity: 0;">
+                                @RenderBody()
+                            </div>
                         </div>
-                    }
-                    <div id="contentBody" style="opacity: 0;">
-                        @RenderBody()
                     </div>
                 </div>
+
+
+
+
+
+                @*<div class="col-lg-3 col-md-3 col-xs-4" style="max-width: 250px;">
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-xs-8">
+                    </div>*@
             </div>
         </div>
     }
@@ -277,25 +295,8 @@
         <script src="~/lib/jquery-validate/jquery.validate.js"></script>
         <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
 
-        <!-- arise-public-access-validation.js -->
-        <script src="~/lib/custom-js/ValidationStyling.js"></script>
-        <script src="~/lib/custom-js/ValidationAmtCompare.js"></script>
-        <script src="~/lib/custom-js/ValidationDateCompare.js"></script>
-        <script src="~/lib/custom-js/ValidationFutureDate.js"></script>
-        <script src="~/lib/custom-js/ValidationFutureOrTodayDate.js"></script>
-        <script src="~/lib/custom-js/ValidationGridRequests.js"></script>
-        <script src="~/lib/custom-js/ValidationMaxDateCompare.js"></script>
-        <script src="~/lib/custom-js/ValidationMaxInclusiveValueCompare.js"></script>
-        <script src="~/lib/custom-js/ValidationMinInclusiveValueCompare.js"></script>
-        <script src="~/lib/custom-js/ValidationMinValueCompare.js"></script>
-        <script src="~/lib/custom-js/ValidationMustBeAge.js"></script>
-        <script src="~/lib/custom-js/ValidationNotFutureDate.js"></script>
-        <script src="~/lib/custom-js/ValidZip.js"></script>
-
         <!-- arise-public-access-site.js -->
         <script src="~/lib/custom-js/ModuleLayout.js"></script>
-        <script src="~/lib/custom-js/ConfirmationPopup.js"></script>
-        <script src="~/lib/custom-js/CustomNotifications.js"></script>
         <script src="~/lib/custom-js/site.js"></script>
     </environment>
 
@@ -304,6 +305,26 @@
         <script src="~/js/arise-public-access-validation.js"></script>
         <script src="~/js/arise-public-access-site.js"></script>
     </environment>
+
+    <script src="~/js/Permissions.js"></script>
+    <script src="~/js/CustomNotifications.js"></script>
+    <script src="~/js/ConfirmationPopup.js"></script>
+    <script src="~/js/panel-collapsible.js"></script>
+    <script src="~/js/old_typescript.js"></script>
+
+    <script src="~/js/validation/ValidationMaxInclusiveValueCompare.js"></script>
+    <script src="~/js/validation/ValidationStyling.js"></script>
+    <script src="~/js/validation/ValidationFutureDate.js"></script>
+    <script src="~/js/validation/ValidationAmtCompare.js"></script>
+    <script src="~/js/validation/ValidationMustBeAge.js"></script>
+    <script src="~/js/validation/ValidationMaxDateCompare.js"></script>
+    <script src="~/js/validation/ValidationMinValueCompare.js"></script>
+    <script src="~/js/validation/ValidationNotFutureDate.js"></script>
+    <script src="~/js/validation/ValidZip.js"></script>
+    <script src="~/js/validation/ValidationDateCompare.js"></script>
+    <script src="~/js/validation/ValidationFutureOrTodayDate.js"></script>
+    <script src="~/js/validation/ValidationMinInclusiveValueCompare.js"></script>
+    <script src="~/js/validation/ValidationGridRequests.js"></script>
 
     <script src="~/js/DocumentUploadViewComponent.js"></script>
     <script src="~/js/DialogViewComponent.js"></script>
