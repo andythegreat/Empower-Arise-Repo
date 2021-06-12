@@ -1,9 +1,0 @@
-﻿@model Nullable<bool>
-@{
-    object attrs = null;
-    if (ViewData["change"] != null)
-    {
-        attrs = new { onchange = ViewData["change"] };
-    }
-}
-@Html.CheckBox("", Model.GetValueOrDefault(), attrs)
