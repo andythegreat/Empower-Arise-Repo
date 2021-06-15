@@ -52,24 +52,23 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
             staffManagementViewModel.StaffIDs = ProviderDomainService.Repository.GetBindToItems<StaffType>().ToList();
             staffManagementViewModel.StaffQualificationIDs = ProviderDomainService.Repository.GetBindToItems<Empower.Model.StaffQualification>().ToList();
             staffManagementViewModel.RelationshipIDs = ProviderDomainService.Repository.GetBindToItems<Relationship>().ToList();
-            staffManagementViewModel.MainAddress = new ProviderAddress();
-            staffManagementViewModel.MainAddress1 = new ProviderAddress();
-            staffManagementViewModel.EmergencyAddress = new ProviderAddress();
+            staffManagementViewModel.MainAddress = new PA_Address();
+            staffManagementViewModel.HealthInformationAddress = new PA_Address();
+            staffManagementViewModel.EmergencyAddress = new PA_Address();
             staffManagementViewModel.DocumentUploadApplicableTypeIDs = ProviderDomainService.Repository.GetBindToItems<DocumentUploadApplicableType>().ToList();
+            staffManagementViewModel.GenderSelect = ProviderDomainService.Repository.GetBindToItems<Gender>(true);
+            var staff = ProviderDomainService.Repository.PA_Staffs
+                            .Include(x=>x.Address).Include(x=>x.Person).Include(x=>x.Phone)
+                            .Where(s => s.ID == ID).FirstOrDefault();
             
-            var staff = ProviderDomainService.Repository.PA_Staffs.Where(s => s.ID == ID).FirstOrDefault();
             if (staff != null)
             {
                 StaffID = Convert.ToInt32(ID);
                 staffManagementViewModel.Staff= staff;
-                staffManagementViewModel.MainAddress.Address1 = staff.Address1;
-                staffManagementViewModel.MainAddress.Address2 = staff.Address2;
-                staffManagementViewModel.MainAddress.City = staff.City;
-                staffManagementViewModel.MainAddress.State = staff.State;
-                staffManagementViewModel.MainAddress.Zip = staff.Zip;
-                staffManagementViewModel.MainAddress.MagisterialDistrictID = staff.MagisterialDistrictID;
-                staffManagementViewModel.MainAddress.WardID = staff.WardID;
-                staffManagementViewModel.PhoneConfig.HomePhone = staff.HomePhone;
+                staffManagementViewModel.Staff.Person = staff.Person;
+                staffManagementViewModel.MainAddress = staff.Address;
+                staffManagementViewModel.PhoneConfig = staff.Phone;
+                staffManagementViewModel.GenderSelect = ProviderDomainService.Repository.GetBindToItems<Gender>(true, false, staffManagementViewModel.Gender);
             }
 
             var staffCharacteristic = ProviderDomainService.Repository.PA_StaffCharacteristics.Where(s => s.StaffID == ID).FirstOrDefault();
@@ -83,39 +82,45 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 }
             };
 
-            var staffHealthInformation = ProviderDomainService.Repository.PA_StaffHealthInformations.Where(s => s.StaffID == ID).FirstOrDefault();
+            var staffHealthInformation = ProviderDomainService.Repository.PA_StaffHealthInformations
+                                            .Include(x=>x.Name).Include(x=>x.Phone).Include(x=>x.Address)
+                                            .Where(s => s.StaffID == ID).FirstOrDefault();
             if (staffHealthInformation != null)
             {
                 staffManagementViewModel.StaffHealthInformationID = staffHealthInformation.ID;
                 staffManagementViewModel.StaffHealthInformation = staffHealthInformation;
-                staffManagementViewModel.MainAddress1.Address1 = staffHealthInformation.Address1;
-                staffManagementViewModel.MainAddress1.Address2 = staffHealthInformation.Address2;
-                staffManagementViewModel.MainAddress1.City = staffHealthInformation.City;
-                staffManagementViewModel.MainAddress1.State = staffHealthInformation.State;
-                staffManagementViewModel.MainAddress1.Zip = staffHealthInformation.Zip;
-                staffManagementViewModel.MainAddress1.MagisterialDistrictID = staffHealthInformation.MagisterialDistrictID;
-                staffManagementViewModel.MainAddress1.WardID = staffHealthInformation.WardID;
+                staffManagementViewModel.HealthInformationAddress = staffHealthInformation.Address;
+                //staffManagementViewModel.MainAddress1.Address1 = staffHealthInformation.Address1;
+                //staffManagementViewModel.MainAddress1.Address2 = staffHealthInformation.Address2;
+                //staffManagementViewModel.MainAddress1.City = staffHealthInformation.City;
+                //staffManagementViewModel.MainAddress1.State = staffHealthInformation.State;
+                //staffManagementViewModel.MainAddress1.Zip = staffHealthInformation.Zip;
+                //staffManagementViewModel.MainAddress1.MagisterialDistrictID = staffHealthInformation.MagisterialDistrictID;
+                //staffManagementViewModel.MainAddress1.WardID = staffHealthInformation.WardID;
             };
 
-            var staffEmergencyContatctInformation = ProviderDomainService.Repository.PA_StaffEmergencyContactInformations.Where(s => s.StaffID == ID).FirstOrDefault();
+            var staffEmergencyContatctInformation = ProviderDomainService.Repository.PA_StaffEmergencyContactInformations
+                                                    .Include(x => x.Name).Include(x => x.Phone).Include(x => x.Address)
+                                                    .Where(s => s.StaffID == ID).FirstOrDefault();
             if (staffEmergencyContatctInformation != null)
             {
                 staffManagementViewModel.StaffEmenrgencyContactID = staffEmergencyContatctInformation.ID;
                 staffManagementViewModel.StaffEmergencyContactInformation = staffEmergencyContatctInformation;
-                staffManagementViewModel.EmergencyAddress.Address1 = staffEmergencyContatctInformation.Address1;
-                staffManagementViewModel.EmergencyAddress.Address2 = staffEmergencyContatctInformation.Address2;
-                staffManagementViewModel.EmergencyAddress.City = staffEmergencyContatctInformation.City;
-                staffManagementViewModel.EmergencyAddress.State = staffEmergencyContatctInformation.State;
-                staffManagementViewModel.EmergencyAddress.Zip = staffEmergencyContatctInformation.Zip;
-                staffManagementViewModel.EmergencyAddress.MagisterialDistrictID = staffEmergencyContatctInformation.MagisterialDistrictID;
-                staffManagementViewModel.EmergencyAddress.WardID = staffEmergencyContatctInformation.WardID;
+                staffManagementViewModel.EmergencyAddress = staffEmergencyContatctInformation.Address;
+                //staffManagementViewModel.EmergencyAddress.Address1 = staffEmergencyContatctInformation.Address1;
+                //staffManagementViewModel.EmergencyAddress.Address2 = staffEmergencyContatctInformation.Address2;
+                //staffManagementViewModel.EmergencyAddress.City = staffEmergencyContatctInformation.City;
+                //staffManagementViewModel.EmergencyAddress.State = staffEmergencyContatctInformation.State;
+                //staffManagementViewModel.EmergencyAddress.Zip = staffEmergencyContatctInformation.Zip;
+                //staffManagementViewModel.EmergencyAddress.MagisterialDistrictID = staffEmergencyContatctInformation.MagisterialDistrictID;
+                //staffManagementViewModel.EmergencyAddress.WardID = staffEmergencyContatctInformation.WardID;
             }
             return View(staffManagementViewModel);
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> EditAsync(StaffManagementViewModel staffManagementViewModel)
+        public async Task<IActionResult> Edit(StaffManagementViewModel staffManagementViewModel)
         {
             string fileName = "";
             byte[] fileData = null;
@@ -127,14 +132,21 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
 
             if (staffManagementViewModel.ID > 0)
             {
-                var objStaff = ProviderDomainService.Repository.PA_Staffs.Where(p => p.ID == staffManagementViewModel.ID).FirstOrDefault();
+                var objStaff = ProviderDomainService.Repository.PA_Staffs
+                                .Include(x=>x.Address).Include(x=>x.Person).Include(x=>x.Phone)
+                                .Where(p => p.ID == staffManagementViewModel.ID).FirstOrDefault();
 
-                if (await TryUpdateModelAsync<PA_Staff>(objStaff, nameof(staffManagementViewModel.MainAddress)))
+                if (await TryUpdateModelAsync (objStaff.Address, nameof(staffManagementViewModel.MainAddress)))
                 {
                     ProviderDomainService.Save();
                 }
 
-                if (await TryUpdateModelAsync<PA_Staff>(objStaff, nameof(staffManagementViewModel.PhoneConfig)))
+                if (await TryUpdateModelAsync(objStaff.Person, nameof(staffManagementViewModel.StaffPersonDetail)))
+                {
+                    ProviderDomainService.Save();
+                }
+
+                if (await TryUpdateModelAsync (objStaff.Phone, nameof(staffManagementViewModel.PhoneConfig)))
                 {
                     ProviderDomainService.Save();
                 }
@@ -150,22 +162,24 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 await TryUpdateModelAsync<PA_StaffCharacteristic>(objStaffCharacteristic, nameof(staffManagementViewModel.StaffCharacteristic));
                 ProviderDomainService.Save();
 
-                var objStaffHealthInformation = ProviderDomainService.Repository.PA_StaffHealthInformations.Where(p => p.ID == staffManagementViewModel.StaffHealthInformationID).FirstOrDefault();
+                var objStaffHealthInformation = ProviderDomainService.Repository.PA_StaffHealthInformations
+                                                .Include(x => x.Name).Include(x => x.Phone).Include(x => x.Address)
+                                                .Where(p => p.ID == staffManagementViewModel.StaffHealthInformationID).FirstOrDefault();
 
-                if (await TryUpdateModelAsync<PA_StaffHealthInformation>(objStaffHealthInformation, nameof(staffManagementViewModel.MainAddress1)))
+                if (await TryUpdateModelAsync(objStaffHealthInformation.Address, nameof(staffManagementViewModel.HealthInformationAddress)))
                 {
                     ProviderDomainService.Save();
                 }
 
-                await TryUpdateModelAsync<PA_StaffHealthInformation>(objStaffHealthInformation, nameof(staffManagementViewModel.StaffHealthInformation));
+                await TryUpdateModelAsync(objStaffHealthInformation, nameof(staffManagementViewModel.StaffHealthInformation));
                 ProviderDomainService.Save();
 
-                var objStaffEmergencyContactInformation = ProviderDomainService.Repository.PA_StaffEmergencyContactInformations.Where(p => p.ID == staffManagementViewModel.StaffEmenrgencyContactID).FirstOrDefault();
+                var objStaffEmergencyContactInformation = ProviderDomainService.Repository.PA_StaffEmergencyContactInformations
+                                                            .Include(x => x.Name).Include(x => x.Phone).Include(x => x.Address)
+                                                           .Where(p => p.ID == staffManagementViewModel.StaffEmenrgencyContactID).FirstOrDefault();
 
-                if (await TryUpdateModelAsync<PA_StaffEmergencyContactInformation>(objStaffEmergencyContactInformation, nameof(staffManagementViewModel.EmergencyAddress)))
-                {
+                if (await TryUpdateModelAsync(objStaffEmergencyContactInformation.Address, nameof(staffManagementViewModel.EmergencyAddress)))
                     ProviderDomainService.Save();
-                }
                 await TryUpdateModelAsync(objStaffEmergencyContactInformation, nameof(staffManagementViewModel.StaffEmergencyContactInformation));
 
                 ProviderDomainService.Save();
@@ -176,18 +190,28 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 var objStaff = new PA_Staff();
                 if (staffManagementViewModel.MainAddress != null)
                 {
-                    if (await TryUpdateModelAsync(objStaff, nameof(staffManagementViewModel.MainAddress)))
+                    objStaff.Address = new PA_Address();
+                    objStaff.Address.CreatedDate = System.DateTime.Now;
+                    objStaff.Address.AddressTypeID = Empower.Model.LookupIDs.AddressTypes.Main;
+
+                    if (await TryUpdateModelAsync(objStaff.Address, nameof(staffManagementViewModel.MainAddress)))
                     {
                         ProviderDomainService.Save();
                     }
                 }
                 if (staffManagementViewModel.PhoneConfig != null)
                 {
-                    if (await TryUpdateModelAsync(objStaff, nameof(staffManagementViewModel.PhoneConfig)))
+                    objStaff.Phone = new PA_Phone();
+                    if (await TryUpdateModelAsync(objStaff.Phone, nameof(staffManagementViewModel.PhoneConfig)))
                     {
                         ProviderDomainService.Save();
                     }
 
+                }
+                if(staffManagementViewModel.Staff.Person != null)
+                {
+                    objStaff.Person = new PA_Person();
+                    await TryUpdateModelAsync(objStaff.Person, nameof(staffManagementViewModel.Staff.Person));
                 }
 
                 if (await TryUpdateModelAsync(objStaff, nameof(staffManagementViewModel.Staff)))
@@ -214,12 +238,14 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 ProviderDomainService.Repository.Save();
 
                 var objStaffHealthInformation = new PA_StaffHealthInformation();
-                if (staffManagementViewModel.MainAddress1 != null)
+                if (staffManagementViewModel.HealthInformationAddress != null)
                 {
-                    if (await TryUpdateModelAsync(objStaffHealthInformation, nameof(staffManagementViewModel.MainAddress1)))
-                    {
-                        ProviderDomainService.Save();
-                    }
+                    objStaffHealthInformation.Address = new PA_Address();
+                    objStaffHealthInformation.Address.CreatedDate = System.DateTime.Now;
+                    objStaffHealthInformation.Address.AddressTypeID = Empower.Model.LookupIDs.AddressTypes.Main;
+                    await TryUpdateModelAsync(objStaffHealthInformation.Address, nameof(staffManagementViewModel.HealthInformationAddress));
+                    ProviderDomainService.Save();
+
                 }
 
                 if (await TryUpdateModelAsync(objStaffHealthInformation, nameof(staffManagementViewModel.StaffHealthInformation)))
@@ -234,11 +260,13 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 var objStaffEmergencyContactInformation = new PA_StaffEmergencyContactInformation();
                 if (staffManagementViewModel.EmergencyAddress != null)
                 {
-                    if (await TryUpdateModelAsync(objStaffEmergencyContactInformation, nameof(staffManagementViewModel.EmergencyAddress)))
-                    {
-                        ProviderDomainService.Save();
-                    }
+                    objStaffEmergencyContactInformation.Address = new PA_Address();
+                    objStaffEmergencyContactInformation.Address.CreatedDate = System.DateTime.Now;
+                    objStaffEmergencyContactInformation.Address.AddressTypeID = Empower.Model.LookupIDs.AddressTypes.Main;
+                    await TryUpdateModelAsync(objStaffEmergencyContactInformation.Address, nameof(staffManagementViewModel.EmergencyAddress));
+                    ProviderDomainService.Save();
                 }
+               
                 if (await TryUpdateModelAsync(objStaffEmergencyContactInformation, nameof(staffManagementViewModel.StaffEmergencyContactInformation)))
                 {
                     ProviderDomainService.Save();
@@ -266,13 +294,13 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                                     FacilityName = pt.Name,
                                     DateOfHireGridDateFormat = sc.DateHired,
                                     SeprationGridDateFormat = sc.SeparationDate,
-                                    Phone = s.HomePhone,
+                                    Phone = s.Phone.HomePhone,
                                     IsDeleted = s.IsDeleted,
-                                }).Where(s => s.IsDeleted != true).ToList();
+                                }).Where(s => s.IsDeleted != true);
 
             if (facilityTypeID > 0)
             {
-                objStaffData = objStaffData.Where(s => s.FacilityTypeID == facilityTypeID).ToList();
+                objStaffData = objStaffData.Where(s => s.FacilityTypeID == facilityTypeID);
             }
 
             return Json(objStaffData.ToDataSourceResult(request));
