@@ -31,12 +31,7 @@
 </head>
 <body>
     @{
-        var containerNavbarClasses = "container";
-
-        if (ViewBag.ShowLeftNav == true)
-        {
-            containerNavbarClasses = "container-fluid";
-        }
+        var containerNavbarClasses = "container-fluid";
     }
     <div id="divNavbarWrapper" class="navbar navbar-default navbar-fixed-top">
         <div class="@containerNavbarClasses">
@@ -49,7 +44,7 @@
     </div>
     @Html.Partial("_PublicAccessFooter")
     @{
-        var containerClasses = "container-fluid";
+        var containerClasses = "container-fluid public-access-container";
         var leftNavClass = String.Empty;
 
         if (ViewBag.ShowLeftNav == true)
@@ -61,7 +56,7 @@
     }
     @if (ViewBag.ShowLeftNav == true)
     {
-        <div class="@containerClasses" style="background-color: white; padding-top: 62px; padding-bottom: 40px;">
+        <div class="@containerClasses" style="">
             <div class="row">
                 <div class="col-xs-12">
                     <div style="display: flex;">
@@ -325,7 +320,7 @@
     <script src="~/js/validation/ValidationFutureOrTodayDate.js"></script>
     <script src="~/js/validation/ValidationMinInclusiveValueCompare.js"></script>
     <script src="~/js/validation/ValidationGridRequests.js"></script>
-
+    <script src="~/js/validation/ValidationEnforceTrue.js"></script>
     <script src="~/js/DocumentUploadViewComponent.js"></script>
     <script src="~/js/DialogViewComponent.js"></script>
 
