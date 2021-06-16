@@ -151,7 +151,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                     ProviderDomainService.Save();
                 }
 
-                if (await TryUpdateModelAsync<PA_Staff>(objStaff, nameof(staffManagementViewModel.Staff)))
+                if (await TryUpdateModelAsync<PA_StaffMember>(objStaff, nameof(staffManagementViewModel.Staff)))
                 {
                     ProviderDomainService.Save();
                 }
@@ -187,7 +187,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
 
             else
             {
-                var objStaff = new PA_Staff();
+                var objStaff = new PA_StaffMember();
                 if (staffManagementViewModel.MainAddress != null)
                 {
                     objStaff.Address = new PA_Address();
@@ -221,7 +221,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
 
                 ProviderDomainService.Repository.Add(objStaff);
                 ProviderDomainService.Repository.Save();
-                objStaff.StaffKey = PA_Staff.GetFormattedKey(objStaff.ID);
+                objStaff.StaffKey = PA_StaffMember.GetFormattedKey(objStaff.ID);
                 ProviderDomainService.Repository.Save();
 
                 PA_StaffCharacteristic ObjpA_StaffCharacteristic = new PA_StaffCharacteristic();
