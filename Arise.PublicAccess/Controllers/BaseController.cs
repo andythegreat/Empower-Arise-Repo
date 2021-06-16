@@ -99,7 +99,7 @@ namespace Arise.PublicAccess.Controllers
 
             var reportingItems= new List<Models.Old_TreeViewItemModel>();
             reportingItems.Add(new Models.Old_TreeViewItemModel { Text = "Waivers", Action = "", Controller = "", ClientID = "" });
-            reportingItems.Add(new Models.Old_TreeViewItemModel { Text = "Incident Reports", Action = "", Controller = "", ClientID = "" });
+            reportingItems.Add(new Models.Old_TreeViewItemModel { Text = "Incident Reports", Action = "Index", Controller = "AccountIncidentReport", ClientID = "lnkAccountIncedentReport" });
             
             var attendanceItems = new List<Models.Old_TreeViewItemModel>();
             attendanceItems.Add(new Models.Old_TreeViewItemModel { Text = "Attendance", Action = "Index", Controller = "Attendance", ClientID = "lnkAttendance" });
