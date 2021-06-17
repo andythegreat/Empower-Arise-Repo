@@ -21,14 +21,14 @@ namespace Arise.Shared.ViewComponents.Address
             _domainService = domainService;
         }
 
-        public IViewComponentResult Invoke(Empower.Model.Address address, string htmlFieldPrefix)
+        public IViewComponentResult Invoke(Empower.Model.Address address, string htmlFieldPrefix, bool IsReadOnly = false)
         {
             var vmAddress = new AddressViewModel(address);
 
             vmAddress.StateCodes = new SelectList(_domainService.Repository.States.AsNoTracking().OrderBy(s => s.Code).ToList(), nameof(State.Code), nameof(State.Code));
             //vmAddress.MagisterialDistricts = new SelectList(_domainService.Repository.MagisterialDistricts.AsNoTracking().OrderBy(md => md.Name).ToList(), nameof(MagisterialDistrict.ID), nameof(MagisterialDistrict.Name));
             vmAddress.Wards = new SelectList(_domainService.Repository.Wards.AsNoTracking().OrderBy(md => md.Name).ToList(), nameof(Ward.ID), nameof(Ward.Name));
-
+            vmAddress.IsReadOnly = IsReadOnly;
             ViewData.TemplateInfo.HtmlFieldPrefix = htmlFieldPrefix;
 
             return View(vmAddress);

@@ -25,5 +25,6 @@ namespace Arise.Shared.ViewComponents.Address
         public SelectList MagisterialDistricts { get; set; }
 
         public SelectList Wards { get; set; }
+        public bool? IsReadOnly { get; set; }
     }
 }
