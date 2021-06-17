@@ -15,18 +15,18 @@
     var btnConfirmVerify = htmlFieldPrefix + "_btnConfirmVerify";
     var verifyAddressWindow = htmlFieldPrefix + "_VerifyAddressWindow";
 
-    var labelWidth = "col-md-3";
-    var offset = "col-md-offset-3";
-    var labelClasses = "control-label " + labelWidth;
-    var controlWidth = "col-md-9";
+    var labelWidth = "col-xs-3";
+    var offset = "col-xs-offset-3";
+    var labelClasses = "control-label";
+    var controlWidth = "col-xs-9";
 
     //if (ViewBag.LabelWidth != null)
     //{
     //    var labelWidthValue = (int)ViewBag.LabelWidth;
-    //    labelWidth = "col-md-" + labelWidthValue;
-    //    offset = "col-md-offset-" + labelWidthValue;
+    //    labelWidth = "col-xs-" + labelWidthValue;
+    //    offset = "col-xs-offset-" + labelWidthValue;
     //    labelClasses = "control-label " + labelWidth;
-    //    controlWidth = "col-md-" + (12 - labelWidthValue);
+    //    controlWidth = "col-xs-" + (12 - labelWidthValue);
     //}
 }
 
@@ -43,74 +43,137 @@
 }
 else
 {
-    <div id="@fhAddress" class="form-horizontal">
+
+<div id="@fhAddress" class="panel panel-default">
+    <div class="panel-heading">
+        Address
+    </div>
+    <div class="panel-body" style="padding-bottom: 0px;">
         <div class="form-group form-group-tight">
-            @Html.LabelFor(model => model.Address1, new { @class = labelClasses })
-            <div class="@controlWidth">
-                <div class="input-group">
-                    <div class="form-horizontal">
-                        <div class="form-group form-group-marginless">
-                            <div class="col-md-12">
-                                @Html.EditorFor(model => model.Address1, new { @class = "form-control" })
-                            </div>
-                        </div>
-                    </div>
-                    <span class="input-group-btn" title="Verify Address">
-                        <button type="button" class="btn btn-warning" onclick="@(htmlFieldPrefix)_VerifyAddress(this);">
-                            <span class="glyphicon glyphicon-search" />
-                        </button>
-                    </span>
-                </div>
-                @Html.ValidationMessageFor(model => model.Address1)
+            <div class="input-group">
+                @Html.EditorFor(model => model.Address1, new { @class = "form-control address-search" })
+                <span class="input-group-btn">
+                    <button type="button" title="Verify Address" class="btn btn-warning" onclick="@(htmlFieldPrefix)_VerifyAddress(this);">
+                        <span class="glyphicon glyphicon-search" />
+                    </button>
+                </span>
             </div>
+            @Html.ValidationMessageFor(model => model.Address1)
         </div>
         <div id="@fgAddress2" class="form-group form-group-tight">
-            <div class="@offset @controlWidth">
-                @Html.EditorFor(model => model.Address2, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Address2)
-            </div>
+            @Html.LabelFor(model => model.Address2, new { @class = labelClasses + " sr-only" })
+            @Html.EditorFor(model => model.Address2, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Address2)
         </div>
-        <div id="@fgCityStateZip" class="form-group">
-            <div class="@offset @controlWidth">
-                <div class="row">
-                    <div class="col-md-6 inline-padding-right">
-                        @Html.LabelFor(model => model.City, new { @class = "sr-only" })
-                        @Html.EditorFor(model => model.City, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.City)
-                    </div>
-                    <div class="col-md-3 inline-padding-middle">
-                        @Html.LabelFor(model => model.State, new { @class = "sr-only" })
-                        @(Html.Kendo().DropDownListFor(model => model.State)
+        <div id="@fgCityStateZip" class="row">
+            <div class="col-xs-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.City, new { @class = labelClasses + " sr-only" })
+                    @Html.EditorFor(model => model.City, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.City)
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.State, new { @class = labelClasses + " sr-only" })
+                    @(Html.Kendo().DropDownListFor(model => model.State)
                             .OptionLabel(Empower.Common.Constant.UI.SelectList.DefaultOptionText)
                             .BindTo(Model.StateCodes)
                             .Value(Model == null ? "VA" : Model.State == null ? "VA" : Model.State)
                         )
-                        @Html.ValidationMessageFor(model => model.State)
-                    </div>
-                    <div class="col-md-3 inline-padding-left">
-                        @Html.LabelFor(model => model.Zip, new { @class = "sr-only" })
-                        @Html.EditorFor(model => model.Zip, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.Zip)
-                    </div>
+                    @Html.ValidationMessageFor(model => model.State)
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Zip, new { @class = labelClasses + " sr-only" })
+                    @Html.EditorFor(model => model.Zip, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Zip)
+                </div>
+            </div>
+            <div id="@fgWard" class="col-xs-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.WardID, new { @class = labelClasses + " sr-only" })
+                    @(Html.Kendo().DropDownListFor(model => model.WardID)
+                        .OptionLabel(Empower.Common.Constant.UI.SelectList.DefaultOptionText)
+                        .BindTo(Model.Wards)
+                    )
+                    @Html.ValidationMessageFor(model => model.WardID)
                 </div>
             </div>
         </div>
+        <div id="@fgMARAddressResults" class="row top-buffer-small" style="display: none;">
+            <div id="@divMARAddressResults" class="col-xs-12">
+                @* Populated by jQuery VerifyAddress *@
+            </div>
+        </div>
+    </div>
+</div>
+}
 
-        @*<div id="@fgMagisterialDistrict" class="form-group form-group-tight" style="@(Model.AddressTypeID == Empower.Model.LookupIDs.AddressTypes.Mailing ? "display: none;" : "")">
-                @Html.LabelFor(model => model.MagisterialDistrictID, new { @class = labelClasses })
-                <div class="col-md-5">
-                    @(Html.Kendo().DropDownListFor(model => model.MagisterialDistrictID)
-                        .OptionLabel(Empower.Common.Constant.UI.SelectList.DefaultOptionText)
-                        .BindTo(Model.MagisterialDistricts)
-                    )
-                    @Html.ValidationMessageFor(model => model.MagisterialDistrictID)
+
+
+
+
+
+
+<!--<div id="@fhAddress" class="form-horizontal">
+    <div class="form-group form-group-tight">
+        @Html.LabelFor(model => model.Address1, new { @class = labelClasses })
+        <div class="@controlWidth">
+            <div class="input-group">
+                <div class="form-horizontal">
+                    <div class="form-group form-group-marginless">
+                        <div class="col-xs-12">
+                            @Html.EditorFor(model => model.Address1, new { @class = "form-control" })
+                        </div>
+                    </div>
                 </div>
-            </div>*@
+                <span class="input-group-btn" title="Verify Address">
+                    <button type="button" class="btn btn-warning" onclick="@(htmlFieldPrefix)_VerifyAddress(this);">
+                        <span class="glyphicon glyphicon-search" />
+                    </button>
+                </span>
+            </div>
+            @Html.ValidationMessageFor(model => model.Address1)
+        </div>
+    </div>
+    <div id="@fgAddress2" class="form-group form-group-tight">
+        <div class="@offset @controlWidth">
+            @Html.EditorFor(model => model.Address2, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Address2)
+        </div>
+    </div>
+    <div id="@fgCityStateZip" class="form-group">
+        <div class="@offset @controlWidth">
+            <div class="row">
+                <div class="col-xs-6 inline-padding-right">
+                    @Html.LabelFor(model => model.City, new { @class = "sr-only" })
+                    @Html.EditorFor(model => model.City, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.City)
+                </div>
+                <div class="col-xs-3 inline-padding-middle">
+                    @Html.LabelFor(model => model.State, new { @class = "sr-only" })
+                    @(Html.Kendo().DropDownListFor(model => model.State)
+                            .OptionLabel(Empower.Common.Constant.UI.SelectList.DefaultOptionText)
+                            .BindTo(Model.StateCodes)
+                            .Value(Model == null ? "VA" : Model.State == null ? "VA" : Model.State)
+                        )
+                    @Html.ValidationMessageFor(model => model.State)
+                </div>
+                <div class="col-xs-3 inline-padding-left">
+                    @Html.LabelFor(model => model.Zip, new { @class = "sr-only" })
+                    @Html.EditorFor(model => model.Zip, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Zip)
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <div id="@fgWard" class="form-group form-group-tight" style="@(Model.AddressTypeID == Empower.Model.LookupIDs.AddressTypes.Mailing ? "display: none;" : "")">
-            @Html.LabelFor(model => model.WardID, new { @class = labelClasses })
-            <div class="col-md-5">
-                @(Html.Kendo().DropDownListFor(model => model.WardID)
+    <div id="@fgWard" class="form-group form-group-tight" style="@(Model.AddressTypeID == Empower.Model.LookupIDs.AddressTypes.Mailing ? "display: none;" : "")">
+        @Html.LabelFor(model => model.WardID, new { @class = labelClasses })
+        <div class="col-xs-5">
+            @(Html.Kendo().DropDownListFor(model => model.WardID)
                 .OptionLabel(Empower.Common.Constant.UI.SelectList.DefaultOptionText)
                 .BindTo(Model.Wards)
             )
@@ -118,12 +181,12 @@ else
             </div>
         </div>
 
-        <div id="@fgMARAddressResults" class="form-group form-group-marginless top-buffer-small" style="display: none;">
-            <div id="@divMARAddressResults" class="col-md-12">
-                @* Populated by jQuery VerifyAddress *@
-            </div>
-        </div>
+    <div id="@fgMARAddressResults" class="form-group form-group-marginless top-buffer-small" style="display: none;">
+        <div id="@divMARAddressResults" class="col-xs-12">-->
+            @* Populated by jQuery VerifyAddress *@
+        <!--</div>
     </div>
+</div>-->
 
 }
 
@@ -140,24 +203,14 @@ else
     .Content(@<text>
         <div class="panel panel-default panel-marginless">
             <div class="panel-body">
-                <div class="form-horizontal">
-                    <div class="form-group form-group-marginless">
-                        <div class="col-md-12">
-                            <p>Verifying this address will update all associated address fields.</p>
-                        </div>
+                <p>Verifying this address will update all associated address fields.</p>
+                <p class="text-center">Continue?</p>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button id="@btnConfirmVerify" class="btn btn-primary">Verify</button>
                     </div>
-                    <div class="form-group form-group-marginless">
-                        <div class="col-md-12 text-center">
-                            <p>Continue?</p>
-                        </div>
-                    </div>
-                    <div class="form-group form-group-marginless">
-                        <div class="col-md-6">
-                            <button id="@btnConfirmVerify" class="btn btn-primary">Verify</button>
-                        </div>
-                        <div class="col-md-6 text-right">
-                            <button class="btn btn-default" onclick="@(htmlFieldPrefix)_CloseConfirmVerify();">Cancel</button>
-                        </div>
+                    <div class="col-xs-6 text-right">
+                        <button class="btn btn-default" onclick="@(htmlFieldPrefix)_CloseConfirmVerify();">Cancel</button>
                     </div>
                 </div>
             </div>
@@ -270,7 +323,6 @@ else
             $('#@Html.IdFor(model => model.City)').val(addressObj.City);
             $('#@Html.IdFor(model => model.State)').data('kendoDropDownList').value(addressObj.State);
             $('#@Html.IdFor(model => model.Zip)').val(addressObj.Zip);
-            //$('#@Html.IdFor(model => model.MagisterialDistrictID)').data('kendoDropDownList').value(addressObj.MagisterialDistrictID);
 
             var bgColor = '#f2dede';
             var bgOriginal = $('#@Html.IdFor(model => model.Address1)').css('background-color');
@@ -306,10 +358,5 @@ else
     function @(htmlFieldPrefix)_ShowRemainingAddressFields() {
         $('#@fgAddress2').slideDown();
         $('#@fgCityStateZip').slideDown();
-
-        @*@if (Model.AddressTypeID != Empower.Model.LookupIDs.AddressTypes.Mailing)
-        {<text>
-        $('#@fgMagisterialDistrict').slideDown();
-        </text>}*@
     }
 </script>
