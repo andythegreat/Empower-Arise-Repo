@@ -90,13 +90,6 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 staffManagementViewModel.StaffHealthInformationID = staffHealthInformation.ID;
                 staffManagementViewModel.StaffHealthInformation = staffHealthInformation;
                 staffManagementViewModel.HealthInformationAddress = staffHealthInformation.Address;
-                //staffManagementViewModel.MainAddress1.Address1 = staffHealthInformation.Address1;
-                //staffManagementViewModel.MainAddress1.Address2 = staffHealthInformation.Address2;
-                //staffManagementViewModel.MainAddress1.City = staffHealthInformation.City;
-                //staffManagementViewModel.MainAddress1.State = staffHealthInformation.State;
-                //staffManagementViewModel.MainAddress1.Zip = staffHealthInformation.Zip;
-                //staffManagementViewModel.MainAddress1.MagisterialDistrictID = staffHealthInformation.MagisterialDistrictID;
-                //staffManagementViewModel.MainAddress1.WardID = staffHealthInformation.WardID;
             };
 
             var staffEmergencyContatctInformation = ProviderDomainService.Repository.PA_StaffEmergencyContactInformations
@@ -107,13 +100,6 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 staffManagementViewModel.StaffEmenrgencyContactID = staffEmergencyContatctInformation.ID;
                 staffManagementViewModel.StaffEmergencyContactInformation = staffEmergencyContatctInformation;
                 staffManagementViewModel.EmergencyAddress = staffEmergencyContatctInformation.Address;
-                //staffManagementViewModel.EmergencyAddress.Address1 = staffEmergencyContatctInformation.Address1;
-                //staffManagementViewModel.EmergencyAddress.Address2 = staffEmergencyContatctInformation.Address2;
-                //staffManagementViewModel.EmergencyAddress.City = staffEmergencyContatctInformation.City;
-                //staffManagementViewModel.EmergencyAddress.State = staffEmergencyContatctInformation.State;
-                //staffManagementViewModel.EmergencyAddress.Zip = staffEmergencyContatctInformation.Zip;
-                //staffManagementViewModel.EmergencyAddress.MagisterialDistrictID = staffEmergencyContatctInformation.MagisterialDistrictID;
-                //staffManagementViewModel.EmergencyAddress.WardID = staffEmergencyContatctInformation.WardID;
             }
             return View(staffManagementViewModel);
         }
