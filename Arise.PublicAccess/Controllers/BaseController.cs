@@ -118,7 +118,8 @@ namespace Arise.PublicAccess.Controllers
             var fmItems = new List<Models.Old_TreeViewItemModel>();
             fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Facilities", Action = "", Controller = "", ClientID = "#" });
             fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Staff Management", Action = "Index", Controller = "StaffManagement", ClientID = "lnkStaffManagemet" });
-           
+            fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Food Service Managment", Action = "Index", Controller = "FoodServiceManagment", ClientID = "lnkFoodServiceManagment" });
+
             if (ProviderRegulatoryAgency != null && ProviderRegulatoryAgency.ProviderRegulatoryAgencyID == Empower.Model.LookupIDs.ProviderRegulatoryAgencies.FairfaxCountyPermit)
             {
                 fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Training Summary", Action = "Index", Controller = "ProviderTrainings", ClientID = "lnkTrainingSummary" });
