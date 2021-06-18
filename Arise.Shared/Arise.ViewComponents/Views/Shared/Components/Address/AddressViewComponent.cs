@@ -21,11 +21,7 @@ namespace Arise.Shared.ViewComponents.Address
             _domainService = domainService;
         }
 
-<<<<<<< HEAD
-        public IViewComponentResult Invoke(Empower.Model.Address address, string htmlFieldPrefix, bool IsReadOnly = false)
-=======
         public IViewComponentResult Invoke(Empower.Model.AbstractAddress address, string htmlFieldPrefix)
->>>>>>> main
         {
             AddressViewModel vmAddress;
             if (address == null)
