@@ -2,14 +2,24 @@
 
 namespace Arise.Shared.ViewComponents.Address
 {
-    public class AddressViewModel : Empower.Model.Address
+    public class AddressViewModel : Empower.Model.AbstractAddress
     {
         public AddressViewModel()
         {
 
         }
 
-        public AddressViewModel(Empower.Model.Address address)
+        //public AddressViewModel(Empower.Model.Address address)
+        //{
+        //    Address1 = address.Address1;
+        //    Address2 = address.Address2;
+        //    City = address.City;
+        //    State = address.State;
+        //    Zip = address.Zip;
+        //    MagisterialDistrictID = address.MagisterialDistrictID;
+        //    WardID = address.WardID;
+        //}
+        public AddressViewModel(Empower.Model.AbstractAddress address)
         {
             Address1 = address.Address1;
             Address2 = address.Address2;
