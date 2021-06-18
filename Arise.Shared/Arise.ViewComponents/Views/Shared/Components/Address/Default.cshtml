@@ -46,7 +46,7 @@ else
 
 <div id="@fhAddress" class="panel panel-default">
     <div class="panel-heading">
-        Address
+        @Html.DisplayNameFor(m => m.Address1)
     </div>
     <div class="panel-body" style="padding-bottom: 0px;">
         <div class="form-group form-group-tight">
@@ -183,12 +183,10 @@ else
 
     <div id="@fgMARAddressResults" class="form-group form-group-marginless top-buffer-small" style="display: none;">
         <div id="@divMARAddressResults" class="col-xs-12">-->
-            @* Populated by jQuery VerifyAddress *@
-        <!--</div>
+@* Populated by jQuery VerifyAddress *@
+<!--</div>
     </div>
 </div>-->
-
-
 @(Html.Kendo().Window()
     .Name(verifyAddressWindow)
     .Title("Verify Address")
@@ -217,7 +215,7 @@ else
     </text>)
 )
 
-<script>
+@Html.PartialSectionScripts(@<script>
     $(document).ready(function () {
         if (@Model.IsReadOnly.ToString().ToLower() == "false") {
                var tbAddress1 = $('#@Html.IdFor(model => model.Address1)');
@@ -358,4 +356,4 @@ else
         $('#@fgAddress2').slideDown();
         $('#@fgCityStateZip').slideDown();
     }
-</script>
+</script>)
