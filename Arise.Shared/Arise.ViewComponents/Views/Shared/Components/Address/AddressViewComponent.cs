@@ -21,20 +21,24 @@ namespace Arise.Shared.ViewComponents.Address
             _domainService = domainService;
         }
 
-        public IViewComponentResult Invoke(Empower.Model.AbstractAddress address, string htmlFieldPrefix)
+        public IViewComponentResult Invoke(Empower.Model.AbstractAddress address, string htmlFieldPrefix, bool isReadOnly = false)
         {
             AddressViewModel vmAddress;
+
             if (address == null)
             {
                 vmAddress = new AddressViewModel();
             }
             else
-                vmAddress = new AddressViewModel(address);
+            {
+                vmAddress = new AddressViewModel(address); 
+            }
 
             vmAddress.StateCodes = new SelectList(_domainService.Repository.States.AsNoTracking().OrderBy(s => s.Code).ToList(), nameof(State.Code), nameof(State.Code));
-            //vmAddress.MagisterialDistricts = new SelectList(_domainService.Repository.MagisterialDistricts.AsNoTracking().OrderBy(md => md.Name).ToList(), nameof(MagisterialDistrict.ID), nameof(MagisterialDistrict.Name));
             vmAddress.Wards = new SelectList(_domainService.Repository.Wards.AsNoTracking().OrderBy(md => md.Name).ToList(), nameof(Ward.ID), nameof(Ward.Name));
-            vmAddress.IsReadOnly = IsReadOnly;
+
+            vmAddress.IsReadOnly = isReadOnly;
+
             ViewData.TemplateInfo.HtmlFieldPrefix = htmlFieldPrefix;
 
             return View(vmAddress);
