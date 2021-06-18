@@ -21,9 +21,19 @@ namespace Arise.Shared.ViewComponents.Address
             _domainService = domainService;
         }
 
+<<<<<<< HEAD
         public IViewComponentResult Invoke(Empower.Model.Address address, string htmlFieldPrefix, bool IsReadOnly = false)
+=======
+        public IViewComponentResult Invoke(Empower.Model.AbstractAddress address, string htmlFieldPrefix)
+>>>>>>> main
         {
-            var vmAddress = new AddressViewModel(address);
+            AddressViewModel vmAddress;
+            if (address == null)
+            {
+                vmAddress = new AddressViewModel();
+            }
+            else
+                vmAddress = new AddressViewModel(address);
 
             vmAddress.StateCodes = new SelectList(_domainService.Repository.States.AsNoTracking().OrderBy(s => s.Code).ToList(), nameof(State.Code), nameof(State.Code));
             //vmAddress.MagisterialDistricts = new SelectList(_domainService.Repository.MagisterialDistricts.AsNoTracking().OrderBy(md => md.Name).ToList(), nameof(MagisterialDistrict.ID), nameof(MagisterialDistrict.Name));
