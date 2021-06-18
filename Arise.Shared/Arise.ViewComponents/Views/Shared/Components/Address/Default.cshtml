@@ -174,11 +174,10 @@
 
     <div id="@fgMARAddressResults" class="form-group form-group-marginless top-buffer-small" style="display: none;">
         <div id="@divMARAddressResults" class="col-xs-12">-->
-            @* Populated by jQuery VerifyAddress *@
-        <!--</div>
+@* Populated by jQuery VerifyAddress *@
+<!--</div>
     </div>
 </div>-->
-
 @(Html.Kendo().Window()
     .Name(verifyAddressWindow)
     .Title("Verify Address")
@@ -207,7 +206,7 @@
     </text>)
 )
 
-<script>
+@Html.PartialSectionScripts(@<script>
     $(document).ready(function () {
         var tbAddress1 = $('#@Html.IdFor(model => model.Address1)');
 
@@ -347,4 +346,4 @@
         $('#@fgAddress2').slideDown();
         $('#@fgCityStateZip').slideDown();
     }
-</script>
+</script>)
