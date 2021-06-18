@@ -64,77 +64,9 @@
                             @Html.Partial("_LeftNavPartial")
                         </div>
                         <div style="flex-grow: 2; padding-left: 15px;">
-                            @if (!string.IsNullOrWhiteSpace(ViewBag.PageTile))
+                            @if (!string.IsNullOrWhiteSpace(ViewBag.PageTitle))
                             {
-                                <h2>@ViewBag.PageTitle</h2>
-                            }
-                            <div id="divValidationSummary" class="form-horizontal" style="display: none;">
-                                <div class="form-group">
-                                    <div class="col-md-12">
-                                        <div class="form-horizontal custom-validation-summary col-md-11">
-                                            <div class="form-group form-group-tight">
-                                                <div class="col-md-12">
-                                                    <h4 class="text-danger" style="padding-left: 11px;">
-                                                        <span class="k-icon k-i-warning"></span>
-                                                        <span style="padding: 0 0 0 4px;">Please correct the following Errors</span>
-                                                    </h4>
-                                                </div>
-
-                                            </div>
-                                            <div class="form-group form-group-tight">
-                                                <div class="col-md-12 " style="padding-left:25px; padding-bottom:10px">
-                                                    <ul id="listValidationErrors">
-                                                        @* Populated by ValidationSummary.js and the validationSummaryTemplate script (See scrips section below) *@
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="k-callout k-callout-n custom-callout"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <script type="text/x-kendo-template" id="validationSummaryTemplate">
-                                # if (messages.length) { #
-                                # for (var i = 0; i < messages.length; ++i) { #
-                                <li>#= messages[i] #</li>
-                                # } #
-                                # } #
-                            </script>
-                            @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Any(e => e.Exception != null)))
-                            {
-                                <div class="form-horizontal">
-                                    <div class="form-group">
-                                        <div class="col-md-12">
-                                            <div class="form-horizontal custom-validation-summary col-md-11">
-                                                <div class="form-group form-group-tight">
-                                                    <div class="col-md-12">
-                                                        <h4 class="text-danger" style="padding-left: 11px;">
-                                                            <span class="k-icon k-i-warning"></span>
-                                                            <span style="padding: 0 0 0 4px;">Please correct the following Errors</span>
-                                                        </h4>
-                                                    </div>
-                                                </div>
-                                                @foreach (var item in ViewData.ModelState.Values)
-                                                {
-                                                    foreach (var error in item.Errors)
-                                                    {
-                                                        if (error.Exception != null)
-                                                        {
-                                                            <div class="form-group form-group-tight">
-                                                                <div class="col-md-12" style="padding-left:25px; padding-bottom:10px">
-                                                                    <ul>
-                                                                        <li>@error.Exception.Message</li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                        }
-                                                    }
-                                                }
-                                            </div>
-                                            <div class="k-callout k-callout-n custom-callout"></div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <h3 style="margin-top: 0px;">@ViewBag.PageTitle</h3>
                             }
                             <div id="contentBody" style="opacity: 0;">
                                 @RenderBody()
@@ -142,15 +74,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
-
-
-                @*<div class="col-lg-3 col-md-3 col-xs-4" style="max-width: 250px;">
-                    </div>
-                    <div class="col-lg-9 col-md-9 col-xs-8">
-                    </div>*@
             </div>
         </div>
     }
@@ -165,14 +88,83 @@
         </div>
     }
 
+
+    @* Old Validation Code that needs to go away *@
+    @*<div id="divValidationSummary" class="form-horizontal" style="display: none;">
+            <div class="form-group">
+                <div class="col-md-12">
+                    <div class="form-horizontal custom-validation-summary col-md-11">
+                        <div class="form-group form-group-tight">
+                            <div class="col-md-12">
+                                <h4 class="text-danger" style="padding-left: 11px;">
+                                    <span class="k-icon k-i-warning"></span>
+                                    <span style="padding: 0 0 0 4px;">Please correct the following Errors</span>
+                                </h4>
+                            </div>
+
+                        </div>
+                        <div class="form-group form-group-tight">
+                            <div class="col-md-12 " style="padding-left:25px; padding-bottom:10px">
+                                <ul id="listValidationErrors">
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="k-callout k-callout-n custom-callout"></div>
+                </div>
+            </div>
+        </div>
+        <script type="text/x-kendo-template" id="validationSummaryTemplate">
+            # if (messages.length) { #
+            # for (var i = 0; i < messages.length; ++i) { #
+            <li>#= messages[i] #</li>
+            # } #
+            # } #
+        </script>
+        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Any(e => e.Exception != null)))
+        {
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <div class="form-horizontal custom-validation-summary col-md-11">
+                            <div class="form-group form-group-tight">
+                                <div class="col-md-12">
+                                    <h4 class="text-danger" style="padding-left: 11px;">
+                                        <span class="k-icon k-i-warning"></span>
+                                        <span style="padding: 0 0 0 4px;">Please correct the following Errors</span>
+                                    </h4>
+                                </div>
+                            </div>
+                            @foreach (var item in ViewData.ModelState.Values)
+                            {
+                                foreach (var error in item.Errors)
+                                {
+                                    if (error.Exception != null)
+                                    {
+                                        <div class="form-group form-group-tight">
+                                            <div class="col-md-12" style="padding-left:25px; padding-bottom:10px">
+                                                <ul>
+                                                    <li>@error.Exception.Message</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            }
+                        </div>
+                        <div class="k-callout k-callout-n custom-callout"></div>
+                    </div>
+                </div>
+            </div>*@
+
     @*<div id="divPasswordWrapper">
             <div id="divPassword">
                 @Html.Partial("_ChangePasswordPartial", new Arise.PublicAccess.Models.ManageUserViewModel { })
             </div>
         </div>*@
 
-    <div>
-        @(Html.Kendo().Window()
+<div>
+    @(Html.Kendo().Window()
         .Name("ConfirmationBox")
         .Title("Delete Record")
         .Actions(a => a.Close())
@@ -184,34 +176,24 @@
         .Visible(false)
         .Width(300)
         .Content(@<text>
-                    <div class="panel panel-default panel-marginless">
-                        <div class="panel-body">
-                            <div class="form-horizontal">
-                                <div class="form-group form-group-marginless">
-                                    <div class="col-md-12">
-                                        <p>Are you sure you want to delete this record?</p>
-                                    </div>
-                                </div>
-                                <div class="form-group form-group-marginless">
-                                    <div class="col-md-12 text-center">
-                                        <p>Continue?</p>
-                                    </div>
-                                </div>
-                                <div class="form-group form-group-marginless">
-                                    <div class="col-md-6">
-                                        <input type="button" class="btn btn-primary" value="Delete" id="btnConfirmDelete" />
-                                    </div>
-                                    <div class="col-md-6 text-right">
-                                        <input type="button" class="btn btn-default" value="Cancel" id="btnCancel" />
-                                    </div>
-                                </div>
-                            </div>
+            <div class="panel panel-default panel-marginless">
+                <div class="panel-body">
+                    <p>Are you sure you want to delete this record?</p>
+                    <p class="text-center">Continue?</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="button" class="btn btn-primary" value="Delete" id="btnConfirmDelete" />
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <input type="button" class="btn btn-default" value="Cancel" id="btnCancel" />
                         </div>
                     </div>
+                </div>
+            </div>
         </text>)
         )
 
-    </div>
+</div>
     <div>
         @(Html.Kendo().Notification()
             .Name("CenteredPopup")
