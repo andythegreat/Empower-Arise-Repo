@@ -43,7 +43,7 @@ namespace Arise.PublicAccess.Controllers
         }
         public IActionResult GetEquipmentInspectionLogs([DataSourceRequest] DataSourceRequest request, int facilityID)
         {
-            var objStaffData = ProviderDomainService.Repository.PA_EquipmentInspectionLog.Where(s => s.IsDeleted != true).ToList();
+            var objStaffData = ProviderDomainService.Repository.PA_EquipmentInspectionLogs.Where(s => s.IsDeleted != true).ToList();
 
             if (facilityID > 0)
             {
@@ -70,7 +70,7 @@ namespace Arise.PublicAccess.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> UpdateEquipmentInspectionLog([DataSourceRequest] DataSourceRequest request, PA_EquipmentInspectionLog pA_EquipmentInspectionLog)
         {
-            var objEquipmentInspectionLog = ProviderDomainService.Repository.PA_EquipmentInspectionLog.Where(p => p.ID == pA_EquipmentInspectionLog.ID).FirstOrDefault();
+            var objEquipmentInspectionLog = ProviderDomainService.Repository.PA_EquipmentInspectionLogs.Where(p => p.ID == pA_EquipmentInspectionLog.ID).FirstOrDefault();
             PA_EquipmentInspectionLog EquipmentMaintenanceLog = new PA_EquipmentInspectionLog();
             _ = TryUpdateModelAsync<PA_EquipmentInspectionLog>(objEquipmentInspectionLog);
             ProviderDomainService.Repository.Update(objEquipmentInspectionLog, objEquipmentInspectionLog.ID);
@@ -82,7 +82,7 @@ namespace Arise.PublicAccess.Controllers
         [AllowAnonymous]
         public IActionResult DeleteEquipmentInspectionLog([DataSourceRequest] DataSourceRequest request, PA_EquipmentInspectionLog pA_EquipmentInspectionLog)
         {
-            var objEquipmentMaintenanceLog = ProviderDomainService.Repository.PA_EquipmentInspectionLog
+            var objEquipmentMaintenanceLog = ProviderDomainService.Repository.PA_EquipmentInspectionLogs
                             .Where(c => c.ID == pA_EquipmentInspectionLog.ID).FirstOrDefault();
             objEquipmentMaintenanceLog.IsDeleted = true;
             ProviderDomainService.Save();
