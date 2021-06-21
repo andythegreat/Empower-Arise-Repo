@@ -709,7 +709,7 @@ namespace Empower.DomainService
                               x.ApplicationTypeID == Model.LookupIDs.ApplicationTypes.Initial && x.FeeTypeID == FeeTypes.Capacity && (x.ThresholdMin <= capacity && x.ThresholdMax >= capacity)).Select(x => x.Amount).FirstOrDefault();
                 if (applicationFee == null)
                 {
-                    Repository.Add(new PA_ApplicationFeeHistory { Amount = fee, ApplicationID = applicationId, FeeStatusID = FeeStatuses.Due, FeeTypeID = FeeTypes.ApplicationFee });
+                    Repository.Add(new PA_ApplicationFeeHistory { Amount = fee, ApplicationID = applicationId, FeeStatusID = FeeStatuses.Due, FeeTypeID = FeeTypes.Capacity });
                     Repository.Save();
                 }
                 else
