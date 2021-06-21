@@ -163,8 +163,8 @@
             </div>
         </div>*@
 
-<div>
-    @(Html.Kendo().Window()
+    <div>
+        @(Html.Kendo().Window()
         .Name("ConfirmationBox")
         .Title("Delete Record")
         .Actions(a => a.Close())
@@ -193,7 +193,7 @@
         </text>)
         )
 
-</div>
+    </div>
     <div>
         @(Html.Kendo().Notification()
             .Name("CenteredPopup")
@@ -285,12 +285,13 @@
         <script src="~/js/arise-public-access-site.js"></script>
     </environment>
 
-    <script src="~/js/Permissions.js"></script>
-    <script src="~/js/CustomNotifications.js"></script>
+    <script src="~/js/common.js"></script>
     <script src="~/js/ConfirmationPopup.js"></script>
-    <script src="~/js/TextAreaCharacterCounter.js"></script>
-    <script src="~/js/panel-collapsible.js"></script>
+    <script src="~/js/CustomNotifications.js"></script>
     <script src="~/js/old_typescript.js"></script>
+    <script src="~/js/panel-collapsible.js"></script>
+    <script src="~/js/Permissions.js"></script>
+    <script src="~/js/TextAreaCharacterCounter.js"></script>
 
     <script src="~/js/validation/ValidationMaxInclusiveValueCompare.js"></script>
     <script src="~/js/validation/ValidationStyling.js"></script>
