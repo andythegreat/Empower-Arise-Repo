@@ -15,7 +15,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 namespace Arise.PublicAccess.Controllers
 {
     public class EquipmentMaintenanceLogController : BaseController
@@ -31,26 +30,22 @@ namespace Arise.PublicAccess.Controllers
         {
             EquipmentMaintenanceLogViewModel equipmentMaintenanceLogViewModel = new EquipmentMaintenanceLogViewModel();
             equipmentMaintenanceLogViewModel.FacilityIDs = (from AP in ProviderDomainService.Repository.PA_Applications
-                                                            join FA in ProviderDomainService.Repository.PA_FacilityInformations on AP.PA_FacilityID equals FA.FacilityID
-                                                            join N in ProviderDomainService.Repository.PA_Names on FA.NameID equals N.ID
-                                                            where AP.CreatedBy == UserID
+                                                            join FA in ProviderDomainService.Repository.PA_FacilityInformations on AP.FacilityID equals FA.FacilityID
                                                             select new SelectListItem
                                                             {
                                                                 Value = FA.FacilityID.ToString(),
-                                                                Text = N.FirstName,
+                                                                Text = FA.FacilityName.ToString()
                                                             }).ToList();
             return View(equipmentMaintenanceLogViewModel);
         }
         public IActionResult GetEquipmentMaintenanceLogs([DataSourceRequest] DataSourceRequest request, int facilityID)
         {
             var objStaffData =ProviderDomainService.Repository.PA_EquipmentMaintenanceLogs.Where(s => s.IsDeleted != true).ToList();
-
             if (facilityID > 0)
             {
                 FacilityID = facilityID;
                 objStaffData = objStaffData.Where(s => s.FacilityID == facilityID).ToList();
             }
-
             return Json(objStaffData.ToDataSourceResult(request));
         }
         [HttpPost]
@@ -75,7 +70,6 @@ namespace Arise.PublicAccess.Controllers
             _ = TryUpdateModelAsync<PA_EquipmentMaintenanceLog>(objEquipmentMaintenanceLog);
             ProviderDomainService.Repository.Update(objEquipmentMaintenanceLog, objEquipmentMaintenanceLog.ID);
             ProviderDomainService.Save();
-
             return Json(new[] { pA_EquipmentMaintenanceLog }.ToDataSourceResult(request));
            }
 
