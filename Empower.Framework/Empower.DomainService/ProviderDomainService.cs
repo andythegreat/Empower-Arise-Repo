@@ -7,6 +7,7 @@ using Empower.Logging;
 using Empower.Messaging;
 using Empower.Model;
 using Empower.Model.LookupIDs;
+using System.Data.Entity;
 
 namespace Empower.DomainService
 {
@@ -680,7 +681,45 @@ namespace Empower.DomainService
             };
             return save;
         }
+        public void CalculatePublicAccessApplicationFees(int applicationId)
+        {
+            if (Repository.PA_Applications.Where(pa => pa.ID == applicationId).Select(pa => pa.ApplicationTypeID).SingleOrDefault() == Model.LookupIDs.ApplicationTypes.Initial)
+            {
+                var application = Repository.PA_Applications.Include(x => x.Facility).Where(a => a.ID == applicationId).FirstOrDefault();
+                var fee = Repository.FeeConfigurations.Where(x => x.FacilityTypeID == application.Facility.FacilityTypeID &&
+                              x.ApplicationTypeID == Model.LookupIDs.ApplicationTypes.Initial && x.FeeTypeID == FeeTypes.ApplicationFee).Select(x => x.Amount).FirstOrDefault();
+                if (fee > 0)
+                {
+                    Repository.Add(new PA_ApplicationFeeHistory { Amount = fee, ApplicationID = applicationId, FeeStatusID = FeeStatuses.Due, FeeTypeID = FeeTypes.ApplicationFee });
+                    Repository.Save();
+                }
+            }
+        }
 
+        public void CalculateCapacityApplicationFees(int applicationId)
+        {
+            if (Repository.PA_Applications.Where(pa => pa.ID == applicationId).Select(pa => pa.ApplicationTypeID).SingleOrDefault() == Model.LookupIDs.ApplicationTypes.Initial)
+            {
+                var capacity = Repository.PA_CertificateOccupancys
+                                    .Where(x => x.ApplicationID == applicationId && x.IsDeleted != true)
+                                    .Sum(x => x.CertificateOfOccupancyNumber);
+                var application = Repository.PA_Applications.Include(x => x.Facility).Where(a => a.ID == applicationId).FirstOrDefault();
+                var applicationFee = Repository.PA_ApplicationFeeHistories.Where(x => x.ApplicationID == applicationId && x.FeeTypeID == FeeTypes.Capacity).FirstOrDefault();
+                var fee = Repository.FeeConfigurations.Where(x => x.FacilityTypeID == application.Facility.FacilityTypeID &&
+                              x.ApplicationTypeID == Model.LookupIDs.ApplicationTypes.Initial && x.FeeTypeID == FeeTypes.Capacity && (x.ThresholdMin <= capacity && x.ThresholdMax >= capacity)).Select(x => x.Amount).FirstOrDefault();
+                if (applicationFee == null)
+                {
+                    Repository.Add(new PA_ApplicationFeeHistory { Amount = fee, ApplicationID = applicationId, FeeStatusID = FeeStatuses.Due, FeeTypeID = FeeTypes.ApplicationFee });
+                    Repository.Save();
+                }
+                else
+                {
+                    applicationFee.Amount = fee;
+                    Repository.Update(applicationFee, applicationFee.ID);
+                    Repository.Save();
+                }
+            }
+        }
         protected override int EntityID
         {
             get
