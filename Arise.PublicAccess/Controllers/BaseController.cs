@@ -135,9 +135,9 @@ namespace Arise.PublicAccess.Controllers
             }
 
             fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Private Market Rates", Action = "PrivateMarketRates", Controller = "ResourceAndReferral", ClientID = "lnkPrivateMarketRates" });
-            fmItems.Add(new Models.Old_TreeViewItemModel { Text = " First Aid, CPR", Action = "Index", Controller = "FirstAidCPR", ClientID = "lnkFirstAidCPRController" });
-            fmItems.Add(new Models.Old_TreeViewItemModel { Text = " Equipment Maintenance Log", Action = "Index", Controller = "EquipmentMaintenanceLog", ClientID = "lnkEquipmentMaintenanceLog" });
-            fmItems.Add(new Models.Old_TreeViewItemModel { Text = " Equipment Inspection Log", Action = "Index", Controller = "EquipmentInspectionLog", ClientID = "lnkEquipmentInspectionLog" });
+            fmItems.Add(new Models.Old_TreeViewItemModel { Text = "First Aid, CPR", Action = "Index", Controller = "FirstAidCPR", ClientID = "lnkFirstAidCPRController" });
+            fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Equipment Maintenance Log", Action = "Index", Controller = "EquipmentMaintenanceLog", ClientID = "lnkEquipmentMaintenanceLog" });
+            fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Equipment Inspection Log", Action = "Index", Controller = "EquipmentInspectionLog", ClientID = "lnkEquipmentInspectionLog" });
             var qualityRatingItems = new List<Models.Old_TreeViewItemModel>();
             qualityRatingItems.Add(new Models.Old_TreeViewItemModel { Text = "QRIS Pages", Action = "Index", Controller = "QRISApplication", ClientID = "lnkQRISApplication" });
 

@@ -20,7 +20,6 @@ namespace Arise.PublicAccess.Controllers
 {
     public class EquipmentInspectionLogController :BaseController
     {
-        public static int FacilityID;
         public EquipmentInspectionLogController(MessagingService messagingService, ProviderDomainService domainService,
             Empower.Logging.ILogger logger, AccessControlManager accessControlManager, ICacheProvider cacheProvider)
             : base(domainService, logger, accessControlManager, cacheProvider)
@@ -44,17 +43,17 @@ namespace Arise.PublicAccess.Controllers
             var objStaffData = ProviderDomainService.Repository.PA_EquipmentInspectionLogs.Where(s => s.IsDeleted != true).ToList();
             if (facilityID > 0)
             {
-                FacilityID = facilityID;
+               
                 objStaffData = objStaffData.Where(s => s.FacilityID == facilityID).ToList();
             }
             return Json(objStaffData.ToDataSourceResult(request));
         }
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult AddEquipmentInspectionLog([DataSourceRequest] DataSourceRequest request, PA_EquipmentInspectionLog pA_EquipmentInspectionLog)
+        public IActionResult AddEquipmentInspectionLog([DataSourceRequest] DataSourceRequest request, PA_EquipmentInspectionLog pA_EquipmentInspectionLog, int facilityID)
         {
             pA_EquipmentInspectionLog.IsDeleted = false;
-            pA_EquipmentInspectionLog.FacilityID = FacilityID;
+            pA_EquipmentInspectionLog.FacilityID = facilityID;
             pA_EquipmentInspectionLog.CreatedDate = Convert.ToDateTime(System.DateTime.Now);
             pA_EquipmentInspectionLog.CreatedBy = UserID;
             ProviderDomainService.Repository.Add(pA_EquipmentInspectionLog);
