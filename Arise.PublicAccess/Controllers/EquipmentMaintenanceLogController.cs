@@ -19,7 +19,6 @@ namespace Arise.PublicAccess.Controllers
 {
     public class EquipmentMaintenanceLogController : BaseController
     {
-       
         public EquipmentMaintenanceLogController(MessagingService messagingService, ProviderDomainService domainService,
             Empower.Logging.ILogger logger, AccessControlManager accessControlManager, ICacheProvider cacheProvider)
             : base(domainService, logger, accessControlManager, cacheProvider)
