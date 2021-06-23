@@ -60,31 +60,28 @@ namespace Arise.PublicAccess.Controllers
         public IActionResult Edit(int facilityID)
         {
             var vmEnvironment = new EnvironmentManagmentViewModel();
-
-            vmEnvironment.FacilityID = facilityID;  //remove this
-         //   vmEnvironment.FacilityEnvironment.FacilityID = facilityID;
-
+            vmEnvironment.FacilityID = facilityID;
             vmEnvironment.EquipmentTypeList = ProviderDomainService.Repository.GetBindToItems<EquipmentType>().ToList();
             return View(vmEnvironment);
-        }     
-        public IActionResult Get_Material([DataSourceRequest] DataSourceRequest request, int FacilityID)
+        }
+        public IActionResult Get_Material([DataSourceRequest] DataSourceRequest request, int facilityID)
         {
             var vmEnvironment = (from fe in ProviderDomainService.Repository.PA_FacilityEnvironments
-                                  where fe.FacilityID == FacilityID && !fe.IsDeleted
-                                  select new
-                                  {
-                                      ID = fe.ID,
-                                      FacilityID = fe.FacilityID,                                    
-                                      EquipmentTypeID = fe.EquipmentTypeID,
-                                      EquipmentDescription = fe.EquipmentDescription,
-                                      EquipmentCount = fe.EquipmentCount,
-                                  });
+                                 where fe.FacilityID == facilityID && !fe.IsDeleted
+                                 select new
+                                 {
+                                     ID = fe.ID,
+                                     FacilityID = fe.FacilityID,
+                                     EquipmentTypeID = fe.EquipmentTypeID,
+                                     EquipmentDescription = fe.EquipmentDescription,
+                                     EquipmentCount = fe.EquipmentCount,
+                                 });
             return Json(vmEnvironment.ToDataSourceResult(request));
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult Create_Material([DataSourceRequest] DataSourceRequest request, PA_FacilityEnvironment objVM)   
+        public ActionResult Create_Material([DataSourceRequest] DataSourceRequest request, PA_FacilityEnvironment objVM)
         {
             ProviderDomainService.Repository.Add(objVM);
             ProviderDomainService.Save();
@@ -93,7 +90,7 @@ namespace Arise.PublicAccess.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult Update_Material([DataSourceRequest] DataSourceRequest request, PA_FacilityEnvironment objVM, int FacilityID)
+        public ActionResult Update_Material([DataSourceRequest] DataSourceRequest request, PA_FacilityEnvironment objVM)
         {
             var obj_Environment = new PA_FacilityEnvironment();
             TryUpdateModelAsync<PA_FacilityEnvironment>(obj_Environment);
@@ -102,7 +99,7 @@ namespace Arise.PublicAccess.Controllers
             return Json(new[] { objVM }.ToDataSourceResult(request, ModelState));
         }
 
-        public IActionResult Delete_Material([DataSourceRequest] DataSourceRequest request, EnvironmentManagmentViewModel objVM, int FacilityID)
+        public IActionResult Delete_Material([DataSourceRequest] DataSourceRequest request, EnvironmentManagmentViewModel objVM)
         {
             var obj = ProviderDomainService.Repository.PA_FacilityEnvironments
                                      .Where(c => c.ID == objVM.ID).FirstOrDefault();
