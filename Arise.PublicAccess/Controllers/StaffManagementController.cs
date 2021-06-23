@@ -7,7 +7,6 @@ using Empower.Common.Extensions;
 using Empower.DomainService;
 using Empower.Messaging;
 using Empower.Model;
-using Empower.Model.Entities;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Authorization;
