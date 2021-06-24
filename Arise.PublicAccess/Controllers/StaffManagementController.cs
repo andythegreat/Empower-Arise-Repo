@@ -12,6 +12,7 @@ using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -35,7 +36,12 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
         public IActionResult Index()
         {
             StaffManagementViewModel staffManagementViewModel = new StaffManagementViewModel();
-            staffManagementViewModel.ProviderTypeIDs = ProviderDomainService.Repository.GetBindToItems<ProviderType>().ToList();
+            staffManagementViewModel.FacilityIDs = (from f in ProviderDomainService.Repository.PA_FacilityInformations
+                                                    select new SelectListItem
+                                                    {
+                                                        Value = f.FacilityID.ToString(),
+                                                        Text = f.FacilityName.ToString()
+                                                    }).ToList();
             return View(staffManagementViewModel);
         }
 
@@ -45,6 +51,13 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
         {
             StaffManagementViewModel staffManagementViewModel = new StaffManagementViewModel();
             staffManagementViewModel.ProviderTypeIDs = ProviderDomainService.Repository.GetBindToItems<ProviderType>().ToList();
+
+            staffManagementViewModel.FacilityIDs = (from f in ProviderDomainService.Repository.PA_FacilityInformations
+                                                    select new SelectListItem
+                                                    {
+                                                        Value = f.FacilityID.ToString(),
+                                                        Text = f.FacilityName.ToString()
+                                                    }).ToList();
             staffManagementViewModel.InformationSourceIDs = ProviderDomainService.Repository.GetBindToItems<InformationSource>().ToList();
             staffManagementViewModel.PreFixIDs = ProviderDomainService.Repository.GetBindToItems<Prefix>().ToList();
             staffManagementViewModel.SuffixIDs = ProviderDomainService.Repository.GetBindToItems<Suffix>().ToList();
@@ -58,13 +71,13 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
             staffManagementViewModel.DocumentUploadApplicableTypeIDs = ProviderDomainService.Repository.GetBindToItems<DocumentUploadApplicableType>().ToList();
             staffManagementViewModel.GenderSelect = ProviderDomainService.Repository.GetBindToItems<Gender>(true);
             var staff = ProviderDomainService.Repository.PA_Staffs
-                            .Include(x=>x.Address).Include(x=>x.Person).Include(x=>x.Phone)
+                            .Include(x => x.Address).Include(x => x.Person).Include(x => x.Phone)
                             .Where(s => s.ID == ID).FirstOrDefault();
-            
+
             if (staff != null)
             {
                 StaffID = Convert.ToInt32(ID);
-                staffManagementViewModel.Staff= staff;
+                staffManagementViewModel.Staff = staff;
                 staffManagementViewModel.Staff.Person = staff.Person;
                 staffManagementViewModel.MainAddress = staff.Address;
                 staffManagementViewModel.PhoneConfig = staff.Phone;
@@ -83,7 +96,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
             };
 
             var staffHealthInformation = ProviderDomainService.Repository.PA_StaffHealthInformations
-                                            .Include(x=>x.Name).Include(x=>x.Phone).Include(x=>x.Address)
+                                            .Include(x => x.Name).Include(x => x.Phone).Include(x => x.Address)
                                             .Where(s => s.StaffID == ID).FirstOrDefault();
             if (staffHealthInformation != null)
             {
@@ -119,10 +132,10 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
             if (staffManagementViewModel.ID > 0)
             {
                 var objStaff = ProviderDomainService.Repository.PA_Staffs
-                                .Include(x=>x.Address).Include(x=>x.Person).Include(x=>x.Phone)
+                                .Include(x => x.Address).Include(x => x.Person).Include(x => x.Phone)
                                 .Where(p => p.ID == staffManagementViewModel.ID).FirstOrDefault();
 
-                if (await TryUpdateModelAsync (objStaff.Address, nameof(staffManagementViewModel.MainAddress)))
+                if (await TryUpdateModelAsync(objStaff.Address, nameof(staffManagementViewModel.MainAddress)))
                 {
                     ProviderDomainService.Save();
                 }
@@ -132,7 +145,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                     ProviderDomainService.Save();
                 }
 
-                if (await TryUpdateModelAsync (objStaff.Phone, nameof(staffManagementViewModel.PhoneConfig)))
+                if (await TryUpdateModelAsync(objStaff.Phone, nameof(staffManagementViewModel.PhoneConfig)))
                 {
                     ProviderDomainService.Save();
                 }
@@ -194,7 +207,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                     }
 
                 }
-                if(staffManagementViewModel.Staff.Person != null)
+                if (staffManagementViewModel.Staff.Person != null)
                 {
                     objStaff.Person = new PA_Person();
                     await TryUpdateModelAsync(objStaff.Person, nameof(staffManagementViewModel.Staff.Person));
@@ -211,7 +224,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 ProviderDomainService.Repository.Save();
 
                 PA_StaffCharacteristic ObjpA_StaffCharacteristic = new PA_StaffCharacteristic();
-               
+
                 ObjpA_StaffCharacteristic.StaffID = objStaff.ID;
                 ObjpA_StaffCharacteristic.FileName = fileName;
                 ObjpA_StaffCharacteristic.ProfileImage = fileData;
@@ -252,7 +265,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                     await TryUpdateModelAsync(objStaffEmergencyContactInformation.Address, nameof(staffManagementViewModel.EmergencyAddress));
                     ProviderDomainService.Save();
                 }
-               
+
                 if (await TryUpdateModelAsync(objStaffEmergencyContactInformation, nameof(staffManagementViewModel.StaffEmergencyContactInformation)))
                 {
                     ProviderDomainService.Save();
@@ -265,28 +278,28 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
             return RedirectToAction("Index", "StaffManagement");
         }
 
-        public IActionResult GetStaffs([DataSourceRequest] DataSourceRequest request, int facilityTypeID)
+        public IActionResult GetStaffs([DataSourceRequest] DataSourceRequest request, int facilityID)
         {
             var objStaffData = (from s in ProviderDomainService.Repository.PA_Staffs
                                 join sc in ProviderDomainService.Repository.PA_StaffCharacteristics on s.ID equals sc.StaffID
                                 join st in ProviderDomainService.Repository.StaffTypes on sc.TitleOfPosition equals st.ID
-                                join pt in ProviderDomainService.Repository.ProviderTypes on s.FacilityTypeID equals pt.ID
+                                join f in ProviderDomainService.Repository.PA_FacilityInformations on s.FacilityID equals f.FacilityID
                                 select new StaffManagementViewModel
                                 {
                                     ID = s.ID,
-                                    FacilityTypeID = s.FacilityTypeID,
-                                    StaffKey = s.StaffKey ,
+                                    FacilityID = s.FacilityID,
+                                    StaffKey = s.StaffKey,
                                     StaffType = st.Name,
-                                    FacilityName = pt.Name,
+                                    FacilityName = f.FacilityName,
                                     DateOfHireGridDateFormat = sc.DateHired,
                                     SeprationGridDateFormat = sc.SeparationDate,
                                     Phone = s.Phone.HomePhone,
                                     IsDeleted = s.IsDeleted,
                                 }).Where(s => s.IsDeleted != true);
 
-            if (facilityTypeID > 0)
+            if (facilityID > 0)
             {
-                objStaffData = objStaffData.Where(s => s.FacilityTypeID == facilityTypeID);
+                objStaffData = objStaffData.Where(s => s.FacilityID == facilityID);
             }
 
             return Json(objStaffData.ToDataSourceResult(request));
@@ -462,5 +475,12 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
             return File(doc.Document, "application/msword", doc.DocumentName);
         }
 
+        public JsonResult GetStaffType(int facilityID)
+        {
+            var facilityTypeID = ProviderDomainService.Repository.PA_Facilities.Where(x=>x.ID == facilityID).Select(x => x.FacilityTypeID).FirstOrDefault();
+            var staffType = ProviderDomainService.Repository.StaffTypes.Where(x => x.ProviderTypeID == facilityTypeID).ToList();
+            return Json(staffType.Select(p => new { Value = p.ID, Text = p.Name }));
+
+        }
     }
 }
