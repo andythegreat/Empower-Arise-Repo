@@ -50,14 +50,15 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
         public IActionResult Edit(int? ID)
         {
             StaffManagementViewModel staffManagementViewModel = new StaffManagementViewModel();
-            staffManagementViewModel.ProviderTypeIDs = ProviderDomainService.Repository.GetBindToItems<ProviderType>().ToList();
 
+            // we cant used GetBindToItems here becouse we need to facility name and facility id not ID and Name
             staffManagementViewModel.FacilityIDs = (from f in ProviderDomainService.Repository.PA_FacilityInformations
                                                     select new SelectListItem
                                                     {
                                                         Value = f.FacilityID.ToString(),
                                                         Text = f.FacilityName.ToString()
                                                     }).ToList();
+
             staffManagementViewModel.InformationSourceIDs = ProviderDomainService.Repository.GetBindToItems<InformationSource>().ToList();
             staffManagementViewModel.PreFixIDs = ProviderDomainService.Repository.GetBindToItems<Prefix>().ToList();
             staffManagementViewModel.SuffixIDs = ProviderDomainService.Repository.GetBindToItems<Suffix>().ToList();
