@@ -15,11 +15,12 @@ using Microsoft.AspNetCore.Authorization;
 using Arise.Shared.CoreUI.Helpers;
 using Microsoft.Linq.Translations;
 
+
 namespace Arise.PublicAccess.Controllers
 {
-    public class EnvironmentManagmentController : BaseController
+    public class EnvironmentManagementController : BaseController
     {
-        public EnvironmentManagmentController(ProviderDomainService providerDomainService,
+        public EnvironmentManagementController(ProviderDomainService providerDomainService,
            Empower.Logging.ILogger logger, AccessControlManager accessControlManager, ICacheProvider cacheProvider)
            : base(providerDomainService, logger, accessControlManager, cacheProvider)
         {
@@ -27,7 +28,7 @@ namespace Arise.PublicAccess.Controllers
 
         public IActionResult Index()
         {
-            var viewModel = new EnvironmentManagmentViewModel();
+            var viewModel = new EnvironmentManagementViewModel();
             viewModel.FacilityList = (from ap in ProviderDomainService.Repository.PA_Applications
                                       join fa in ProviderDomainService.Repository.PA_FacilityInformations on ap.FacilityID equals fa.FacilityID
                                       select new SelectListItem
@@ -39,27 +40,41 @@ namespace Arise.PublicAccess.Controllers
         }
         public IActionResult Get_FacilityList([DataSourceRequest] DataSourceRequest request, int facilityID)
         {
-            var resultdate = (from f in ProviderDomainService.Repository.PA_FacilityInformations
-                              join s in ProviderDomainService.Repository.PA_Staffs on f.FacilityID equals s.FacilityID
-                              join p in ProviderDomainService.Repository.PA_People on s.PersonID equals p.ID
+            var resultdate = (from f in ProviderDomainService.Repository.PA_Facilities
+                              join fi in ProviderDomainService.Repository.PA_FacilityInformations on f.ID equals fi.FacilityID
+                              join sty in ProviderDomainService.Repository.FacilityTypes on f.FacilityTypeID equals sty.ID
+                              join stt in ProviderDomainService.Repository.StaffTypes on sty.ID equals stt.ProviderTypeID
+                              where stt.Name == "Director"
                               select new
                               {
-                                  FacilityID = f.FacilityID,
-                                  FacilityName = f.FacilityName,
-                                  DirectorName = p.FullName
-                              }).WithTranslations();
+                                  fi,
+                                  stt
+                              }).ToList();
+
+            var gridValues = (from recd in resultdate.ToList()
+                              select new
+                              {
+                                  FacilityID = recd.fi.FacilityID,
+                                  FacilityName = recd.fi.FacilityName,
+                                  DirectorName = string.Join(", ", (from sft in ProviderDomainService.Repository.PA_Staffs
+                                                                    join stc in ProviderDomainService.Repository.PA_StaffCharacteristics on sft.ID equals stc.StaffID
+                                                                    join p in ProviderDomainService.Repository.PA_People on sft.PersonID equals p.ID
+                                                                    where stc.TitleOfPosition == recd.stt.ID && sft.FacilityID == recd.fi.FacilityID
+                                                                    select (p.FullName.ToString())).WithTranslations())
+                              }
+                                );
 
             if (facilityID > 0)
             {
-                resultdate = resultdate.Where(s => s.FacilityID == facilityID);
+                gridValues = gridValues.Where(s => s.FacilityID == facilityID);
             }
-            return Json(resultdate.ToDataSourceResult(request));
+            return Json(gridValues.ToDataSourceResult(request));
         }
 
         [HttpGet]
         public IActionResult Edit(int facilityID)
         {
-            var vmEnvironment = new EnvironmentManagmentViewModel();
+            var vmEnvironment = new EnvironmentManagementViewModel();
             vmEnvironment.FacilityID = facilityID;
             vmEnvironment.EquipmentTypeList = ProviderDomainService.Repository.GetBindToItems<EquipmentType>().ToList();
             return View(vmEnvironment);
@@ -80,32 +95,30 @@ namespace Arise.PublicAccess.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
-        public ActionResult Create_Material([DataSourceRequest] DataSourceRequest request, PA_FacilityEnvironment objVM)
+        public ActionResult Create_Material([DataSourceRequest] DataSourceRequest request, PA_FacilityEnvironment objFacilityEnvironment)
         {
-            ProviderDomainService.Repository.Add(objVM);
+            ProviderDomainService.Repository.Add(objFacilityEnvironment);
             ProviderDomainService.Save();
-            return Json(new[] { objVM }.ToDataSourceResult(request, ModelState));
+            return Json(new[] { objFacilityEnvironment }.ToDataSourceResult(request, ModelState));
         }
 
         [HttpPost]
-        [AllowAnonymous]
-        public ActionResult Update_Material([DataSourceRequest] DataSourceRequest request, PA_FacilityEnvironment objVM)
+        public ActionResult Update_Material([DataSourceRequest] DataSourceRequest request, PA_FacilityEnvironment objFacilityEnvironment)
         {
             var obj_Environment = new PA_FacilityEnvironment();
             TryUpdateModelAsync<PA_FacilityEnvironment>(obj_Environment);
-            ProviderDomainService.Repository.Update(obj_Environment, objVM.ID);
+            ProviderDomainService.Repository.Update(obj_Environment, objFacilityEnvironment.ID);
             ProviderDomainService.Save();
-            return Json(new[] { objVM }.ToDataSourceResult(request, ModelState));
+            return Json(new[] { objFacilityEnvironment }.ToDataSourceResult(request, ModelState));
         }
 
-        public IActionResult Delete_Material([DataSourceRequest] DataSourceRequest request, EnvironmentManagmentViewModel objVM)
+        public IActionResult Delete_Material([DataSourceRequest] DataSourceRequest request, EnvironmentManagementViewModel objFacilityEnvironment)
         {
             var obj = ProviderDomainService.Repository.PA_FacilityEnvironments
-                                     .Where(c => c.ID == objVM.ID).FirstOrDefault();
+                                     .Where(c => c.ID == objFacilityEnvironment.ID).FirstOrDefault();
             obj.IsDeleted = true;
             ProviderDomainService.Save();
-            return Json(data: new[] { objVM }.ToDataSourceResult(request));
+            return Json(data: new[] { objFacilityEnvironment }.ToDataSourceResult(request));
         }
     }
 }

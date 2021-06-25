@@ -127,9 +127,8 @@ namespace Arise.PublicAccess.Controllers
             fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Certification and Accreditations", Action = "Accreditation", Controller = "ResourceAndReferral", ClientID = "lnkAccreditation" });
             fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Services", Action = "ChildCareServices", Controller = "ResourceAndReferral", ClientID = "lnkChildCareServices" });
 
-            fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Environment", Action = "Index", Controller = "EnvironmentManagment", ClientID = "lnkEnvironmentManagment" });
-            //fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Environment", Action = "Environment", Controller = "ResourceAndReferral", ClientID = "lnkEnvironment" });
-
+            fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Environment", Action = "Index", Controller = "EnvironmentManagement", ClientID = "lnkEnvironmentManagment" });
+           
             fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Children's record", Action = "", Controller = "", ClientID = "#" });
             
             if (ProviderDomainService.IsCEPS)
