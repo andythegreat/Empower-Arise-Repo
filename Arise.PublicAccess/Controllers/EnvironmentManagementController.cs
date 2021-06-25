@@ -29,8 +29,7 @@ namespace Arise.PublicAccess.Controllers
         public IActionResult Index()
         {
             var viewModel = new EnvironmentManagementViewModel();
-            viewModel.FacilityList = (from ap in ProviderDomainService.Repository.PA_Applications
-                                      join fa in ProviderDomainService.Repository.PA_FacilityInformations on ap.FacilityID equals fa.FacilityID
+            viewModel.FacilityList = (from fa in ProviderDomainService.Repository.PA_FacilityInformations
                                       select new SelectListItem
                                       {
                                           Value = fa.FacilityID.ToString(),
