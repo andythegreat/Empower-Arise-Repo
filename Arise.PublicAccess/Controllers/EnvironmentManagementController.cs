@@ -39,7 +39,7 @@ namespace Arise.PublicAccess.Controllers
         }
         public IActionResult Get_FacilityList([DataSourceRequest] DataSourceRequest request, int facilityID)
         {
-            var resultdate = (from f in ProviderDomainService.Repository.PA_Facilities
+            var resultdata = (from f in ProviderDomainService.Repository.PA_Facilities
                               join fi in ProviderDomainService.Repository.PA_FacilityInformations on f.ID equals fi.FacilityID
                               join sty in ProviderDomainService.Repository.FacilityTypes on f.FacilityTypeID equals sty.ID
                               join stt in ProviderDomainService.Repository.StaffTypes on sty.ID equals stt.ProviderTypeID
@@ -50,7 +50,7 @@ namespace Arise.PublicAccess.Controllers
                                   stt
                               }).ToList();
 
-            var gridValues = (from recd in resultdate.ToList()
+            var gridValues = (from recd in resultdata.ToList()
                               select new
                               {
                                   FacilityID = recd.fi.FacilityID,
