@@ -127,7 +127,9 @@ namespace Arise.PublicAccess.Controllers
 
             fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Certification and Accreditations", Action = "Accreditation", Controller = "ResourceAndReferral", ClientID = "lnkAccreditation" });
             fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Services", Action = "ChildCareServices", Controller = "ResourceAndReferral", ClientID = "lnkChildCareServices" });
-            fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Environment", Action = "Environment", Controller = "ResourceAndReferral", ClientID = "lnkEnvironment" });
+
+            fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Environment", Action = "Index", Controller = "EnvironmentManagement", ClientID = "lnkEnvironmentManagment" });
+           
             fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Children's record", Action = "", Controller = "", ClientID = "#" });
             
             if (ProviderDomainService.IsCEPS)
@@ -136,7 +138,9 @@ namespace Arise.PublicAccess.Controllers
             }
 
             fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Private Market Rates", Action = "PrivateMarketRates", Controller = "ResourceAndReferral", ClientID = "lnkPrivateMarketRates" });
-
+            fmItems.Add(new Models.Old_TreeViewItemModel { Text = "First Aid, CPR", Action = "Index", Controller = "FirstAidCPR", ClientID = "lnkFirstAidCPRController" });
+            fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Equipment Maintenance Log", Action = "Index", Controller = "EquipmentMaintenanceLog", ClientID = "lnkEquipmentMaintenanceLog" });
+            fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Equipment Inspection Log", Action = "Index", Controller = "EquipmentInspectionLog", ClientID = "lnkEquipmentInspectionLog" });
             var qualityRatingItems = new List<Models.Old_TreeViewItemModel>();
             qualityRatingItems.Add(new Models.Old_TreeViewItemModel { Text = "QRIS Pages", Action = "Index", Controller = "QRISApplication", ClientID = "lnkQRISApplication" });
 
