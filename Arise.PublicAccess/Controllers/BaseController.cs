@@ -129,6 +129,7 @@ namespace Arise.PublicAccess.Controllers
             fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Environment", Action = "Environment", Controller = "ResourceAndReferral", ClientID = "lnkEnvironment" });
             fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Children's record", Action = "", Controller = "", ClientID = "#" });
             fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Add Class Room", Action = "Index", Controller = "AddClassRoom", ClientID = "lnkAddClassRoom" });
+            fmItems.Add(new Models.Old_TreeViewItemModel { Text = "Staff Change Log History", Action = "Index", Controller = "StaffChangeHistory", ClientID = "lnkAddClassRoom" });
 
             if (ProviderDomainService.IsCEPS)
             {
