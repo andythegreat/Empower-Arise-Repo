@@ -82,6 +82,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                 staffManagementViewModel.Staff.Person = staff.Person;
                 staffManagementViewModel.MainAddress = staff.Address;
                 staffManagementViewModel.PhoneConfig = staff.Phone;
+                staffManagementViewModel.DateOfBirth = staff.Person.DateOfBirth;
                 staffManagementViewModel.GenderSelect = ProviderDomainService.Repository.GetBindToItems<Gender>(true, false, staffManagementViewModel.Gender);
             }
 
@@ -141,6 +142,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                     ProviderDomainService.Save();
                 }
 
+                objStaff.Person.DateOfBirth = staffManagementViewModel.DateOfBirth;
                 if (await TryUpdateModelAsync(objStaff.Person, nameof(staffManagementViewModel.StaffPersonDetail)))
                 {
                     ProviderDomainService.Save();
@@ -209,8 +211,9 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
 
                 }
                 if (staffManagementViewModel.Staff.Person != null)
-                {
+                {                    
                     objStaff.Person = new PA_Person();
+                    objStaff.Person.DateOfBirth = staffManagementViewModel.DateOfBirth;
                     await TryUpdateModelAsync(objStaff.Person, nameof(staffManagementViewModel.Staff.Person));
                 }
 
