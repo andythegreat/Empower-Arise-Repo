@@ -250,10 +250,12 @@ namespace Arise.PublicAccess.Controllers
             {
                 ProviderDomainService.FacilityApplicationID = int.Parse((string)RouteData.Values["appId"]);
                 var appStatusID = ProviderDomainService.Repository.PA_Applications.Where(pa => pa.ID == ProviderDomainService.FacilityApplicationID).Single().ApplicationStatusID;
-                    if(appStatusID != Empower.Model.LookupIDs.ApplicationStatuses.Pending)
-                    {
-                     RedirectToAction("Index", "Summary");
-                    }
+                
+                if(appStatusID != Empower.Model.LookupIDs.ApplicationStatuses.Pending)
+                {
+                     RedirectToAction("Index", nameof(SummaryController).RemoveControllerFromName(), new { area = Empower.Common.Constant.PublicAccessApp.Modules.ProviderApplication});
+                }
+
                 ViewBag.FacilityApplicationID = ProviderDomainService.FacilityApplicationID;
             }
 
