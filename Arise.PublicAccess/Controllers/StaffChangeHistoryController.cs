@@ -23,7 +23,7 @@ namespace Arise.PublicAccess.Controllers
         public IActionResult Index()
         {
             StaffChangeLogHistoryViewModel staffChangeLogHistoryViewModel = new StaffChangeLogHistoryViewModel();
-            staffChangeLogHistoryViewModel.ClassIDs = (from f in ProviderDomainService.Repository.PA_AddClassRoom
+            staffChangeLogHistoryViewModel.ClassIDs = (from f in ProviderDomainService.Repository.PA_ClassRoom
                                                        select new SelectListItem
                                                        {
                                                            Value = f.ID.ToString(),
@@ -41,12 +41,14 @@ namespace Arise.PublicAccess.Controllers
                                                            Value = p.ID.ToString(),
                                                            Text = p.FullName
                                                        }).WithTranslations().ToList();
+
             return View(staffChangeLogHistoryViewModel);
         }
+
         public IActionResult StaffTransfer()
         {
             StaffChangeLogHistoryViewModel staffChangeLogHistoryViewModel = new StaffChangeLogHistoryViewModel();
-            staffChangeLogHistoryViewModel.ClassIDs= (from f in ProviderDomainService.Repository.PA_AddClassRoom
+            staffChangeLogHistoryViewModel.ClassIDs= (from f in ProviderDomainService.Repository.PA_ClassRoom
                                                       select new SelectListItem
                                                       {
                                                           Value = f.ID.ToString(),
@@ -64,11 +66,12 @@ namespace Arise.PublicAccess.Controllers
                                                           Value = p.ID.ToString(),
                                                           Text = p.FullName
                                                       }).WithTranslations().ToList();
+
                         return View(staffChangeLogHistoryViewModel);
         }
         public IActionResult GetStaffData([DataSourceRequest] DataSourceRequest request)
         {
-            var objStaffData = (from sc in ProviderDomainService.Repository.PA_AddClassRoom
+            var objStaffData = (from sc in ProviderDomainService.Repository.PA_ClassRoom
                                      join st in ProviderDomainService.Repository.PA_StaffClassRoom
                                      on sc.ID equals st.ClassRoomID
                                      where sc.IsDeleted !=true
@@ -76,6 +79,7 @@ namespace Arise.PublicAccess.Controllers
                                       StaffID =st.StaffID,
                                       ClassRoomID = sc.ID
                                      }).ToList();
+
             return Json(objStaffData.ToDataSourceResult(request));
         }
         public IActionResult CreateStaffChangeLog([DataSourceRequest] DataSourceRequest request, PA_StaffChangeLogHistory pA_StaffChangeLogHistory)
