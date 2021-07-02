@@ -29,12 +29,23 @@ namespace Arise.PublicAccess.Controllers
         public IActionResult Index()
         {
             var viewModel = new EnvironmentManagementViewModel();
-            viewModel.FacilityList = (from fa in ProviderDomainService.Repository.PA_FacilityInformations
+            viewModel.FacilityList = (from app in ProviderDomainService.Repository.PA_Applications
+                                      join fac in ProviderDomainService.Repository.PA_Facilities
+                                      on app.FacilityID equals fac.ID
+                                      join fi in ProviderDomainService.Repository.PA_FacilityInformations
+                                      on fac.ID equals fi.FacilityID
+                                      where app.ApplicationStatusID != Empower.Model.LookupIDs.ApplicationStatuses.Pending
                                       select new SelectListItem
                                       {
-                                          Value = fa.FacilityID.ToString(),
-                                          Text = fa.FacilityName
-                                      }).ToList();
+                                          Value = fi.FacilityID.ToString(),
+                                          Text = fi.FacilityName.ToString()
+                                      }).Union(
+                                                      ProviderDomainService.Repository.FacilityInformations
+                                                      .Select(fi => new SelectListItem
+                                                      {
+                                                          Value = fi.FacilityID.ToString(),
+                                                          Text = fi.FacilityName.ToString()
+                                                      })).ToList();
             return View(viewModel);
         }
         public IActionResult Get_FacilityList([DataSourceRequest] DataSourceRequest request, int facilityID)

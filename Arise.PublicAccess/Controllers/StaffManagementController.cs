@@ -36,6 +36,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
         public IActionResult Index()
         {
             StaffManagementViewModel staffManagementViewModel = new StaffManagementViewModel();
+
             staffManagementViewModel.FacilityIDs = (from app in ProviderDomainService.Repository.PA_Applications
                                                     join fac in ProviderDomainService.Repository.PA_Facilities
                                                     on app.FacilityID equals fac.ID
