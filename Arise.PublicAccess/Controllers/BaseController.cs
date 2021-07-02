@@ -253,7 +253,7 @@ namespace Arise.PublicAccess.Controllers
                 
                 if(appStatusID != Empower.Model.LookupIDs.ApplicationStatuses.Pending)
                 {
-                     RedirectToAction("Index", nameof(SummaryController).RemoveControllerFromName(), new { area = Empower.Common.Constant.PublicAccessApp.Modules.ProviderApplication});
+                     RedirectToAction(nameof(SummaryController.Index), nameof(SummaryController).RemoveControllerFromName(), new { area = Empower.Common.Constant.PublicAccessApp.Modules.ProviderApplication});
                 }
 
                 ViewBag.FacilityApplicationID = ProviderDomainService.FacilityApplicationID;
