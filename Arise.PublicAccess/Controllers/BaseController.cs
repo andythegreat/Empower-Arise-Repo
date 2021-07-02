@@ -1,4 +1,5 @@
-﻿using Empower.AccessControl;
+﻿using Arise.PublicAccess.Areas.ProviderApplication.Controllers;
+using Empower.AccessControl;
 using Empower.AccessControl.Helpers;
 using Empower.Common.CacheProviders;
 using Empower.Common.Extensions;
@@ -62,6 +63,12 @@ namespace Arise.PublicAccess.Controllers
             {
                 ProviderDomainService.FacilityApplicationID = int.Parse((string)RouteData.Values["appId"]);
                 var appStatusID = ProviderDomainService.Repository.PA_Applications.Where(pa => pa.ID == ProviderDomainService.FacilityApplicationID).Single().ApplicationStatusID;
+                
+                if(appStatusID != Empower.Model.LookupIDs.ApplicationStatuses.Pending)
+                {
+                     RedirectToAction(nameof(SummaryController.Index), nameof(SummaryController).RemoveControllerFromName(), new { area = Empower.Common.Constant.PublicAccessApp.Modules.ProviderApplication});
+                }
+
                 ViewBag.FacilityApplicationID = ProviderDomainService.FacilityApplicationID;
             }
 
