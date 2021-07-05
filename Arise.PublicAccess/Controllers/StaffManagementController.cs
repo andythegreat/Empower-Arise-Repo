@@ -13,6 +13,7 @@ using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Linq.Translations;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -291,6 +292,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                                 select new StaffManagementViewModel
                                 {
                                     ID = s.ID,
+                                    StaffName=s.Person.FullName,
                                     FacilityID = s.FacilityID,
                                     StaffKey = s.StaffKey,
                                     StaffType = st.Name,
@@ -299,7 +301,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                                     SeprationGridDateFormat = sc.SeparationDate,
                                     Phone = s.Phone.HomePhone,
                                     IsDeleted = s.IsDeleted,
-                                }).Where(s => s.IsDeleted != true);
+                                }).Where(s => !s.IsDeleted != true).WithTranslations();
 
             if (facilityID > 0)
             {
