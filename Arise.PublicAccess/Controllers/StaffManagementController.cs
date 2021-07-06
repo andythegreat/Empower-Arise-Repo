@@ -20,7 +20,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
+namespace Arise.PublicAccess.Controllers
 {
     public class StaffManagementController : BaseController
     {
@@ -301,7 +301,7 @@ namespace Arise.PublicAccess.Areas.ProviderApplication.Controllers
                                     SeprationGridDateFormat = sc.SeparationDate,
                                     Phone = s.Phone.HomePhone,
                                     IsDeleted = s.IsDeleted,
-                                }).Where(s => !s.IsDeleted != true).WithTranslations();
+                                }).Where(s => !s.IsDeleted).WithTranslations();
 
             if (facilityID > 0)
             {
