@@ -43,7 +43,7 @@ namespace Arise.PublicAccess.Controllers
                               join fi in ProviderDomainService.Repository.PA_FacilityInformations on f.ID equals fi.FacilityID
                               join sty in ProviderDomainService.Repository.FacilityTypes on f.FacilityTypeID equals sty.ID
                               join stt in ProviderDomainService.Repository.StaffTypes on sty.ID equals stt.ProviderTypeID
-                              where stt.Name == "Director"
+                              where stt.Name == nameof(Director)
                               select new
                               {
                                   fi,
