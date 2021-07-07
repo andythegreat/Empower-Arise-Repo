@@ -29,13 +29,23 @@ namespace Arise.PublicAccess.Controllers
         public IActionResult Index()
         {
             EquipmentMaintenanceLogViewModel equipmentMaintenanceLogViewModel = new EquipmentMaintenanceLogViewModel();
-            equipmentMaintenanceLogViewModel.FacilityIDs = (from AP in ProviderDomainService.Repository.PA_Applications
-                                                            join FA in ProviderDomainService.Repository.PA_FacilityInformations on AP.FacilityID equals FA.FacilityID
+            equipmentMaintenanceLogViewModel.FacilityIDs = (from app in ProviderDomainService.Repository.PA_Applications
+                                                            join fac in ProviderDomainService.Repository.PA_Facilities
+                                                            on app.FacilityID equals fac.ID
+                                                            join fi in ProviderDomainService.Repository.PA_FacilityInformations
+                                                            on fac.ID equals fi.FacilityID
+                                                            where app.ApplicationStatusID != Empower.Model.LookupIDs.ApplicationStatuses.Pending
                                                             select new SelectListItem
                                                             {
-                                                                Value = FA.FacilityID.ToString(),
-                                                                Text = FA.FacilityName.ToString()
-                                                            }).ToList();
+                                                                Value = fi.FacilityID.ToString(),
+                                                                Text = fi.FacilityName.ToString()
+                                                            }).Union(
+                                                            ProviderDomainService.Repository.FacilityInformations
+                                                            .Select(fi => new SelectListItem
+                                                            {
+                                                                Value = fi.FacilityID.ToString(),
+                                                                Text = fi.FacilityName.ToString()
+                                                            })).ToList();
             return View(equipmentMaintenanceLogViewModel);
         }
         public IActionResult GetEquipmentInspectionLogs([DataSourceRequest] DataSourceRequest request, int facilityID)

@@ -37,12 +37,24 @@ namespace Arise.PublicAccess.Controllers
         public IActionResult Index()
         {
             StaffManagementViewModel staffManagementViewModel = new StaffManagementViewModel();
-            staffManagementViewModel.FacilityIDs = (from f in ProviderDomainService.Repository.PA_FacilityInformations
+
+            staffManagementViewModel.FacilityIDs = (from app in ProviderDomainService.Repository.PA_Applications
+                                                    join fac in ProviderDomainService.Repository.PA_Facilities
+                                                    on app.FacilityID equals fac.ID
+                                                    join fi in ProviderDomainService.Repository.PA_FacilityInformations
+                                                    on fac.ID equals fi.FacilityID
+                                                    where app.ApplicationStatusID != Empower.Model.LookupIDs.ApplicationStatuses.Pending
                                                     select new SelectListItem
                                                     {
-                                                        Value = f.FacilityID.ToString(),
-                                                        Text = f.FacilityName.ToString()
-                                                    }).ToList();
+                                                        Value = fi.FacilityID.ToString(),
+                                                        Text = fi.FacilityName.ToString()
+                                                    }).Union(
+                                                      ProviderDomainService.Repository.FacilityInformations
+                                                      .Select(fi => new SelectListItem
+                                                      {
+                                                          Value = fi.FacilityID.ToString(),
+                                                          Text = fi.FacilityName.ToString()
+                                                      })).ToList();
             return View(staffManagementViewModel);
         }
 
@@ -53,12 +65,23 @@ namespace Arise.PublicAccess.Controllers
             StaffManagementViewModel staffManagementViewModel = new StaffManagementViewModel();
 
             // we cant used GetBindToItems here becouse we need to facility name and facility id not ID and Name
-            staffManagementViewModel.FacilityIDs = (from f in ProviderDomainService.Repository.PA_FacilityInformations
+            staffManagementViewModel.FacilityIDs = (from app in ProviderDomainService.Repository.PA_Applications
+                                                    join fac in ProviderDomainService.Repository.PA_Facilities
+                                                    on app.FacilityID equals fac.ID
+                                                    join fi in ProviderDomainService.Repository.PA_FacilityInformations
+                                                    on fac.ID equals fi.FacilityID
+                                                    where app.ApplicationStatusID != Empower.Model.LookupIDs.ApplicationStatuses.Pending
                                                     select new SelectListItem
                                                     {
-                                                        Value = f.FacilityID.ToString(),
-                                                        Text = f.FacilityName.ToString()
-                                                    }).ToList();
+                                                        Value = fi.FacilityID.ToString(),
+                                                        Text = fi.FacilityName.ToString()
+                                                    }).Union(
+                                                      ProviderDomainService.Repository.FacilityInformations
+                                                      .Select(fi => new SelectListItem
+                                                      {
+                                                          Value = fi.FacilityID.ToString(),
+                                                          Text = fi.FacilityName.ToString()
+                                                      })).ToList();
 
             staffManagementViewModel.InformationSourceIDs = ProviderDomainService.Repository.GetBindToItems<InformationSource>().ToList();
             staffManagementViewModel.PreFixIDs = ProviderDomainService.Repository.GetBindToItems<Prefix>().ToList();
