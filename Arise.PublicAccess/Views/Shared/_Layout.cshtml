@@ -61,7 +61,7 @@
                 <div class="col-xs-12">
                     <div style="display: flex;">
                         <div style="min-width: 250px;">
-                            @Html.Partial("_LeftNavPartial")
+                            @await Component.InvokeAsync(typeof(Arise.PublicAccess.Views.Shared.Components.PrimaryNavigation.PrimaryNavigationViewComponent))
                         </div>
                         <div style="flex-grow: 2; padding-left: 15px;">
                             @if (!string.IsNullOrWhiteSpace(ViewBag.PageTitle))
@@ -285,7 +285,6 @@
         <script src="~/js/arise-public-access-site.js"></script>
     </environment>
 
-    <script src="~/js/common.js"></script>
     <script src="~/js/ConfirmationPopup.js"></script>
     <script src="~/js/CustomNotifications.js"></script>
     <script src="~/js/old_typescript.js"></script>
