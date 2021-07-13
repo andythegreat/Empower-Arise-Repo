@@ -307,28 +307,39 @@ namespace Arise.PublicAccess.Controllers
 
         public IActionResult GetStaffs([DataSourceRequest] DataSourceRequest request, int facilityID)
         {
-            var objStaffData = (from s in ProviderDomainService.Repository.PA_Staffs
-                                join sc in ProviderDomainService.Repository.PA_StaffCharacteristics on s.ID equals sc.StaffID
-                                join st in ProviderDomainService.Repository.StaffTypes on sc.TitleOfPosition equals st.ID
-                                join f in ProviderDomainService.Repository.PA_FacilityInformations on s.FacilityID equals f.FacilityID
-                                select new StaffManagementViewModel
-                                {
-                                    ID = s.ID,
-                                    StaffName=s.Person.FullName,
-                                    FacilityID = s.FacilityID,
-                                    StaffKey = s.StaffKey,
-                                    StaffType = st.Name,
-                                    FacilityName = f.FacilityName,
-                                    DateOfHireGridDateFormat = sc.DateHired,
-                                    SeprationGridDateFormat = sc.SeparationDate,
-                                    Phone = s.Phone.HomePhone,
-                                    IsDeleted = s.IsDeleted,
-                                }).Where(s => !s.IsDeleted).WithTranslations();
+                                var objStaffData = (from s in ProviderDomainService.Repository.PA_Staffs
+                                                    join sc in ProviderDomainService.Repository.PA_StaffCharacteristics on s.ID equals sc.StaffID
+                                                    join st in ProviderDomainService.Repository.StaffTypes on sc.TitleOfPosition equals st.ID
+                                                    join f in ProviderDomainService.Repository.PA_FacilityInformations on s.FacilityID equals f.FacilityID
+                                                    join certification in ProviderDomainService.Repository.PA_CertifiedStaffInFirstAidCPRs
+                                                    on s.ID equals certification.SfattID into certified
+                                                    join criminal in ProviderDomainService.Repository.PA_CriminalHistories
+                                                    on s.ID equals criminal.StaffMemberID into criminalhistory
+                                                    join cph in ProviderDomainService.Repository.PA_ChildProtectionRegisterHistories
+                                                    on s.ID equals cph.StaffMemberID into childprotection
+                                                    from certification in certified.DefaultIfEmpty()
+                                                     from criminal in criminalhistory.DefaultIfEmpty()
+                                                    from cph in childprotection.DefaultIfEmpty()
+                                                    select new StaffManagementViewModel
+                                                    {
+                                                        ID = s.ID,
+                                                        StaffName = s.Person.FullName,
+                                                        FacilityID = s.FacilityID,
+                                                        StaffKey = s.StaffKey,
+                                                        StaffType = st.Name,
+                                                        FacilityName = f.FacilityName,
+                                                        DateOfHireGridDateFormat = sc.DateHired,
+                                                        SeprationGridDateFormat = sc.SeparationDate,
+                                                        Phone = s.Phone.HomePhone,
+                                                        IsDeleted = s.IsDeleted,
+                                                        Certification = certification == null ? Empower.Common.Constant.UI.CertificateStatus.Fail: certification.ExpirationDate > DateTime.Now ? Empower.Common.Constant.UI.CertificateStatus.Pass : Empower.Common.Constant.UI.CertificateStatus.Fail,
+                                                        Clearance = criminal == null ? cph == null ? Empower.Common.Constant.UI.CertificateStatus.Fail : criminal.ExpirationDate > DateTime.Now ? Empower.Common.Constant.UI.CertificateStatus.Pass: Empower.Common.Constant.UI.CertificateStatus.Fail : criminal.ExpirationDate > DateTime.Now ? Empower.Common.Constant.UI.CertificateStatus.Pass : Empower.Common.Constant.UI.CertificateStatus.Fail,
+                                                    }).Where(s => !s.IsDeleted).WithTranslations().ToList();
 
-            if (facilityID > 0)
-            {
-                objStaffData = objStaffData.Where(s => s.FacilityID == facilityID);
-            }
+                                    if (facilityID > 0)
+                                    {
+                                        objStaffData = objStaffData.Where(s => s.FacilityID == facilityID).ToList();
+                                    }
 
             return Json(objStaffData.ToDataSourceResult(request));
         }
