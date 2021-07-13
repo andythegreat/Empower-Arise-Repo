@@ -234,7 +234,7 @@ namespace Arise.PublicAccess.Controllers
 
                 }
                 if (staffManagementViewModel.Staff.Person != null)
-                {                    
+                {
                     objStaff.Person = new PA_Person();
                     objStaff.Person.DateOfBirth = staffManagementViewModel.DateOfBirth;
                     await TryUpdateModelAsync(objStaff.Person, nameof(staffManagementViewModel.Staff.Person));
@@ -314,7 +314,7 @@ namespace Arise.PublicAccess.Controllers
                                 select new StaffManagementViewModel
                                 {
                                     ID = s.ID,
-                                    StaffName=s.Person.FullName,
+                                    StaffName = s.Person.FullName,
                                     FacilityID = s.FacilityID,
                                     StaffKey = s.StaffKey,
                                     StaffType = st.Name,
@@ -505,10 +505,72 @@ namespace Arise.PublicAccess.Controllers
 
         public JsonResult GetStaffType(int facilityID)
         {
-            var facilityTypeID = ProviderDomainService.Repository.PA_Facilities.Where(x=>x.ID == facilityID).Select(x => x.FacilityTypeID).FirstOrDefault();
+            var facilityTypeID = ProviderDomainService.Repository.PA_Facilities.Where(x => x.ID == facilityID).Select(x => x.FacilityTypeID).FirstOrDefault();
             var staffType = ProviderDomainService.Repository.StaffTypes.Where(x => x.ProviderTypeID == facilityTypeID).ToList();
             return Json(staffType.Select(p => new { Value = p.ID, Text = p.Name }));
 
         }
+
+        public ActionResult StaffCPRCheckList()
+        {
+            return View();
+        }
+
+        public ActionResult EditStaffCPRCheck(int id)
+        {
+            return View();
+        }
+
+        public JsonResult GetStaffCPRCheckList([DataSourceRequest] DataSourceRequest request)
+        {
+            var objCPRData = (from cph in ProviderDomainService.Repository.PA_ChildProtectionRegisterHistories
+                              join s in ProviderDomainService.Repository.PA_Staffs on cph.StaffMemberID equals s.ID
+                              join a in ProviderDomainService.Repository.PA_Address on s.AddressID equals a.ID
+                              join pe in ProviderDomainService.Repository.PA_People on s.PersonID equals pe.ID
+                              select new ChildProtectionRegisterHistoryViewModel
+                              {
+                                  ID = cph.ID,
+                                  StaffKey = s.StaffKey,
+                                  FullAddress = a.Address1 + ", " + a.Address2,
+                                  FullName = pe.FirstName + ", " + pe.LastName
+                              });
+            return Json(objCPRData.ToDataSourceResult(request));
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult EditStaffCPRCheck(int? ID)
+        {
+            ViewBag.ID = ID;
+            ChildProtectionRegisterHistoryViewModel model = new ChildProtectionRegisterHistoryViewModel();
+            var staff = ProviderDomainService.Repository.PA_Staffs
+                .Include(x => x.Address).Include(x => x.Person).Include(x => x.Phone)
+                .FirstOrDefault();
+            model.StaffMemberIds = (from f in ProviderDomainService.Repository.PA_Staffs
+                                    join p in ProviderDomainService.Repository.PA_People on f.PersonID equals p.ID
+                                    select new SelectListItem
+                                    {
+                                        Value = f.ID.ToString(),
+                                        Text = p.FirstName.ToString() + " " + p.LastName.ToString()
+                                    }).ToList();
+
+            model.StateIds = (from f in ProviderDomainService.Repository.States
+                              select new SelectListItem
+                              {
+                                  Value = f.ID.ToString(),
+                                  Text = f.Name.ToString()
+                              }).ToList();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditStaffCPRCheck(ChildProtectionRegisterHistoryViewModel model)
+        {
+            return View(model); 
+        }
+
+
     }
 }
