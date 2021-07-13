@@ -332,8 +332,8 @@ namespace Arise.PublicAccess.Controllers
                                                         SeprationGridDateFormat = sc.SeparationDate,
                                                         Phone = s.Phone.HomePhone,
                                                         IsDeleted = s.IsDeleted,
-                                                        Certification = certification == null ? "Fail" : certification.ExpirationDate > DateTime.Now ? "Pass" : "Fail",
-                                                        Clearance = criminal == null ? cph == null ? "Fail" : criminal.ExpirationDate > DateTime.Now ? "Pass": "Fail" :criminal.ExpirationDate > DateTime.Now ? "Pass" : "Fail",
+                                                        Certification = certification == null ? Empower.Common.Constant.UI.CertificateStatus.Fail: certification.ExpirationDate > DateTime.Now ? Empower.Common.Constant.UI.CertificateStatus.Pass : Empower.Common.Constant.UI.CertificateStatus.Fail,
+                                                        Clearance = criminal == null ? cph == null ? Empower.Common.Constant.UI.CertificateStatus.Fail : criminal.ExpirationDate > DateTime.Now ? Empower.Common.Constant.UI.CertificateStatus.Pass: Empower.Common.Constant.UI.CertificateStatus.Fail : criminal.ExpirationDate > DateTime.Now ? Empower.Common.Constant.UI.CertificateStatus.Pass : Empower.Common.Constant.UI.CertificateStatus.Fail,
                                                     }).Where(s => !s.IsDeleted).WithTranslations().ToList();
 
                                     if (facilityID > 0)
