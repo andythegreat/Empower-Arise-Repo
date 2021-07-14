@@ -10,9 +10,7 @@ using System.Text;
 
 namespace Arise.Shared.ViewComponents.Address
 {
-    public class AddressViewComponent/*<TDomainService, TDomainServiceEntity>*/ : ViewComponent
-    //where TDomainService : DomainServiceBase<TDomainServiceEntity>
-    //where TDomainServiceEntity : EntityBase
+    public class AddressViewComponent : ViewComponent
     {
         private readonly ProviderDomainService _domainService;
 
@@ -21,7 +19,7 @@ namespace Arise.Shared.ViewComponents.Address
             _domainService = domainService;
         }
 
-        public IViewComponentResult Invoke(Empower.Model.AbstractAddress address, string htmlFieldPrefix, bool isReadOnly = false)
+        public IViewComponentResult Invoke(AbstractAddress address, string propertyName, bool isReadOnly = false)
         {
             AddressViewModel vmAddress;
 
@@ -39,7 +37,7 @@ namespace Arise.Shared.ViewComponents.Address
 
             vmAddress.IsReadOnly = isReadOnly;
 
-            ViewData.TemplateInfo.HtmlFieldPrefix = htmlFieldPrefix;
+            ViewData.SetHtmlFieldPrefix(propertyName);
 
             return View(vmAddress);
         }
