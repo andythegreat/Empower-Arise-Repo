@@ -96,6 +96,7 @@ namespace Arise.PublicAccess.Controllers
             staffManagementViewModel.GenderSelect = ProviderDomainService.Repository.GetBindToItems<Gender>(true);
             var staff = ProviderDomainService.Repository.PA_Staffs
                             .Include(x => x.Address).Include(x => x.Person).Include(x => x.Phone)
+                            .Include(x=>x.SocialSecurityNumber)
                             .Where(s => s.ID == ID).FirstOrDefault();
 
             if (staff != null)
@@ -106,6 +107,13 @@ namespace Arise.PublicAccess.Controllers
                 staffManagementViewModel.MainAddress = staff.Address;
                 staffManagementViewModel.PhoneConfig = staff.Phone;
                 staffManagementViewModel.DateOfBirth = staff.Person.DateOfBirth;
+                if (staff.SocialSecurityNumber != null)
+                {
+                    staffManagementViewModel.SsnVM.SocialSecurityID = staff.SocialSecurityNumber.ID;
+                    staffManagementViewModel.SsnVM.SocialSecurityNumber = staff.SocialSecurityNumber.SSN;
+                }
+                //staffManagementViewModel.SsnVM.IsReadOnly = false;
+
                 staffManagementViewModel.GenderSelect = ProviderDomainService.Repository.GetBindToItems<Gender>(true, false, staffManagementViewModel.Gender);
             }
 
@@ -238,6 +246,11 @@ namespace Arise.PublicAccess.Controllers
                     objStaff.Person = new PA_Person();
                     objStaff.Person.DateOfBirth = staffManagementViewModel.DateOfBirth;
                     await TryUpdateModelAsync(objStaff.Person, nameof(staffManagementViewModel.Staff.Person));
+                }
+                if(staffManagementViewModel.SsnVM.SocialSecurityNumber != null)
+                {
+                    objStaff.SocialSecurityNumber = new SocialSecurityNumber();
+                    objStaff.SocialSecurityNumber.SSN = staffManagementViewModel.SsnVM.SocialSecurityNumber;
                 }
 
                 if (await TryUpdateModelAsync(objStaff, nameof(staffManagementViewModel.Staff)))
