@@ -32,7 +32,7 @@
 
 @if (Model != null)
 {
-    Html.HiddenFor(model => model.ID);
+    @Html.HiddenFor(model => model.ID)
 }
 @if (Model.IsReadOnly != null && Model.IsReadOnly.Value)
 {

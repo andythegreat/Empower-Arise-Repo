@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Arise.Shared.ViewComponents.Address
 {
@@ -14,11 +15,15 @@ namespace Arise.Shared.ViewComponents.Address
     //where TDomainService : DomainServiceBase<TDomainServiceEntity>
     //where TDomainServiceEntity : EntityBase
     {
+        private readonly AutoMapper.IMapper _mapper;
         private readonly ProviderDomainService _domainService;
 
-        public AddressViewComponent(ProviderDomainService domainService)
+        public AddressViewComponent(
+            AutoMapper.IMapper mapper,
+            ProviderDomainService domainService)
         {
             _domainService = domainService;
+            _mapper = mapper;
         }
 
         public IViewComponentResult Invoke(Empower.Model.AbstractAddress address, string htmlFieldPrefix, bool isReadOnly = false)
@@ -31,7 +36,7 @@ namespace Arise.Shared.ViewComponents.Address
             }
             else
             {
-                vmAddress = new AddressViewModel(address); 
+                vmAddress = _mapper.Map<AddressViewModel>(address);
             }
 
             vmAddress.StateCodes = new SelectList(_domainService.Repository.States.AsNoTracking().OrderBy(s => s.Code).ToList(), nameof(State.Code), nameof(State.Code));
@@ -47,9 +52,11 @@ namespace Arise.Shared.ViewComponents.Address
 
     public class AddressController : Controller
     {
+        private readonly AutoMapper.IMapper _mapper;
         protected GISDomainService GISDomainService { get; set; }
 
         public AddressController(
+            AutoMapper.IMapper mapper,
             GISDomainService gisDomainService)
         {
             GISDomainService = gisDomainService;
@@ -203,6 +210,53 @@ namespace Arise.Shared.ViewComponents.Address
         public IActionResult JavaScript(string script)
         {
             return Content(script, Empower.Common.Constant.Mvc.JavascriptHeader);
+        }
+
+        //[HttpPost]
+        public bool SaveAddress(
+            //Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary viewData,
+            //Microsoft.AspNetCore.Mvc.ModelBinding.IModelMetadataProvider metadataProvider, 
+            //Microsoft.AspNetCore.Mvc.ModelBinding.IModelBinderFactory modelBinderFactory,
+            //Microsoft.AspNetCore.Mvc.ModelBinding.Validation.IObjectModelValidator objectModelValidator,
+            Empower.Model.Address address)
+        {
+            //ViewData = viewData;
+            //MetadataProvider = metadataProvider;
+            //ModelBinderFactory = modelBinderFactory;
+            //ObjectValidator = objectModelValidator;
+
+            var result = false;
+
+            if (address.ID == 0)
+            {
+                GISDomainService.Repository.Add(address);
+
+                GISDomainService.Save();
+            }
+            else
+            {
+                var currentAddress = GISDomainService.Repository.Address.Where(a => a.ID == address.ID).SingleOrDefault();
+
+                //address.ProjectTo(currentAddress);
+
+                if (currentAddress != null)
+                {
+                    //result = await TryUpdateModelAsync(currentAddress);
+
+                    currentAddress = _mapper.Map<Empower.Model.Address>(address);
+
+                    if (result)
+                    {
+                        throw new System.Exception();
+                    }
+                    else
+                    {
+                        GISDomainService.Save();
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }
