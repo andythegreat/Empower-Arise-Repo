@@ -1,7 +1,8 @@
 ﻿@model Arise.Shared.ViewComponents.Address.AddressViewModel
 
 @{
-    var htmlFieldPrefix = string.IsNullOrEmpty(ViewData.TemplateInfo.HtmlFieldPrefix) ? "" : ViewData.TemplateInfo.HtmlFieldPrefix.Replace(".", "_");
+    var htmlFieldPrefix = ViewData.GetHtmlFieldPrefixWithUnderscore();
+
     var fhAddress = htmlFieldPrefix + "_fhAddress";
     var fgAddress2 = htmlFieldPrefix + "_fgAddressLine2";
     var fgCityStateZip = htmlFieldPrefix + "_fgCityStateZip";
@@ -10,24 +11,11 @@
     var divAddressVerified = htmlFieldPrefix + "_divAddressVerified";
     var fgMARAddressResults = htmlFieldPrefix + "_fgMARAddressResults";
     var divMARAddressResults = htmlFieldPrefix + "_divMARAddressResults";
-
     var gridMARAddresses = htmlFieldPrefix + "_gridMARAddresses";
     var btnConfirmVerify = htmlFieldPrefix + "_btnConfirmVerify";
     var verifyAddressWindow = htmlFieldPrefix + "_VerifyAddressWindow";
 
-    var labelWidth = "col-xs-3";
-    var offset = "col-xs-offset-3";
     var labelClasses = "control-label";
-    var controlWidth = "col-xs-9";
-
-    //if (ViewBag.LabelWidth != null)
-    //{
-    //    var labelWidthValue = (int)ViewBag.LabelWidth;
-    //    labelWidth = "col-xs-" + labelWidthValue;
-    //    offset = "col-xs-offset-" + labelWidthValue;
-    //    labelClasses = "control-label " + labelWidth;
-    //    controlWidth = "col-xs-" + (12 - labelWidthValue);
-    //}
 }
 
 @if (Model != null)
