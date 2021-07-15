@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Arise.Shared.ViewComponents.Address
 {
@@ -20,8 +19,8 @@ namespace Arise.Shared.ViewComponents.Address
             AutoMapper.IMapper mapper,
             ProviderDomainService domainService)
         {
-            _domainService = domainService;
             _mapper = mapper;
+            _domainService = domainService;
         }
 
         public IViewComponentResult Invoke(AbstractAddress address, string propertyName, bool isReadOnly = false)
