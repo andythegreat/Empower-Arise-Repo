@@ -573,6 +573,8 @@ namespace Arise.PublicAccess.Controllers
                                   Value = f.ID.ToString(),
                                   Text = f.Code.ToString()
                               }).ToList();
+
+            model.StatusList = ProviderDomainService.Repository.GetBindToItems<CriminalHistoryResultType>();
             if (ID > 0)
             {
                 var cprHistory = (from cp in ProviderDomainService.Repository.PA_ChildProtectionRegisterHistories
@@ -601,23 +603,41 @@ namespace Arise.PublicAccess.Controllers
         {
             try
             {
-                PA_BackgroundCheckDocument backgroundCheckDocument = new PA_BackgroundCheckDocument
+                var userId = ProviderDomainService.Repository.Users
+                  .Where(u => u.UserName == UserName).Select(u => u.ID).Single();
+                int providerID = ProviderDomainService.ProviderID;
+                PA_BackgroundCheckDocument paCheckDocument = new();
+                if (model.Documents != null)
                 {
-                    Data = model.Document.Data,
-                    Name = model.Document.Name,
-                    CreatedDate = DateTime.Now,
-                    DocumentTypeID = Empower.Model.LookupIDs.DocumentTypes.ChildProtectionRegisterCheck
-                };
-                ProviderDomainService.Repository.Add(backgroundCheckDocument);
+                    var backgroundDoc = new PA_BackgroundCheckDocument
+                    {
+                        Name = model.Documents.GetFileName(),
+                        Data = model.Documents.ToByteArray(),
+                        CreatedDate = DateTime.Now,
+                        CreatedByID = userId,
+                        DocumentTypeID = Empower.Model.LookupIDs.DocumentTypes.ChildProtectionRegisterCheck
+                    };
+                    paCheckDocument = backgroundDoc;
+                }
+                //PA_BackgroundCheckDocument backgroundCheckDocument = new PA_BackgroundCheckDocument
+                //{
+                //    Data = model.Document.Data,
+                //    Name = model.Document.Name,
+                //    CreatedDate = DateTime.Now,
+                //    DocumentTypeID = Empower.Model.LookupIDs.DocumentTypes.ChildProtectionRegisterCheck
+                //};
+                ProviderDomainService.Repository.Add(paCheckDocument);
                 ProviderDomainService.Save();
 
                 var childProtectionHistory = new PA_ChildProtectionRegisterHistory
                 {
-                    BackgroundCheckDocumentID = backgroundCheckDocument.ID,
+                    BackgroundCheckDocumentID = paCheckDocument.ID,
                     Comments = model.Comments,
                     ReceivedDate = model.ReceivedDate,
-                    SentDate = model.SentDate
-
+                    SentDate = model.SentDate,
+                    PersonID = userId,
+                    ProviderID = providerID,
+                    StaffMemberID = model.StaffMemberID
                 };
                 ProviderDomainService.Repository.Add(childProtectionHistory);
                 ProviderDomainService.Save();
