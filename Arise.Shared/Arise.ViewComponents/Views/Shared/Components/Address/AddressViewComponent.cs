@@ -4,6 +4,7 @@ using Empower.Model;
 using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
@@ -50,22 +51,23 @@ namespace Arise.Shared.ViewComponents.Address
     public class AddressController : Controller
     {
         private readonly AutoMapper.IMapper _mapper;
-        protected GISDomainService GISDomainService { get; set; }
+        protected GISDomainService _gisDomainService { get; set; }
 
         public AddressController(
             AutoMapper.IMapper mapper,
             GISDomainService gisDomainService)
         {
-            GISDomainService = gisDomainService;
+            _mapper = mapper;
+            _gisDomainService = gisDomainService;
         }
 
         public void SetupViewBag(bool isRequired)
         {
-            ViewBag.StateCodes = new SelectList(GISDomainService.Repository.States.AsNoTracking().OrderBy(s => s.Code).ToList(), nameof(State.Code), nameof(State.Code));
+            ViewBag.StateCodes = new SelectList(_gisDomainService.Repository.States.AsNoTracking().OrderBy(s => s.Code).ToList(), nameof(State.Code), nameof(State.Code));
 
             if (isRequired)
             {
-                ViewBag.MagisterialDistrictID = new SelectList(GISDomainService.Repository.MagisterialDistricts.AsNoTracking().OrderBy(md => md.Name).ToList(), nameof(MagisterialDistrict.ID), nameof(MagisterialDistrict.Name));
+                ViewBag.MagisterialDistrictID = new SelectList(_gisDomainService.Repository.MagisterialDistricts.AsNoTracking().OrderBy(md => md.Name).ToList(), nameof(MagisterialDistrict.ID), nameof(MagisterialDistrict.Name));
             }
         }
 
@@ -163,7 +165,7 @@ namespace Arise.Shared.ViewComponents.Address
 
             SetupViewBag(false);
 
-            var address = GISDomainService.Repository.PersonAddresses.Where(a => a.ID == addressID).SingleOrDefault();
+            var address = _gisDomainService.Repository.PersonAddresses.Where(a => a.ID == addressID).SingleOrDefault();
 
             return PartialView("_AddressMailing", address);
         }
@@ -226,13 +228,15 @@ namespace Arise.Shared.ViewComponents.Address
 
             if (address.ID == 0)
             {
-                GISDomainService.Repository.Add(address);
+                address.CreatedDate = DateTime.Now;
 
-                GISDomainService.Save();
+                _gisDomainService.Repository.Add(address);
+
+                _gisDomainService.Save();
             }
             else
             {
-                var currentAddress = GISDomainService.Repository.Address.Where(a => a.ID == address.ID).SingleOrDefault();
+                var currentAddress = _gisDomainService.Repository.Address.Where(a => a.ID == address.ID).SingleOrDefault();
 
                 //address.ProjectTo(currentAddress);
 
@@ -248,7 +252,7 @@ namespace Arise.Shared.ViewComponents.Address
                     }
                     else
                     {
-                        GISDomainService.Save();
+                        _gisDomainService.Save();
                     }
                 }
             }
