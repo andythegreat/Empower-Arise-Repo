@@ -546,21 +546,52 @@ namespace Arise.PublicAccess.Controllers
             var staff = ProviderDomainService.Repository.PA_Staffs
                 .Include(x => x.Address).Include(x => x.Person).Include(x => x.Phone)
                 .FirstOrDefault();
-            model.StaffMemberIds = (from f in ProviderDomainService.Repository.PA_Staffs
-                                    join p in ProviderDomainService.Repository.PA_People on f.PersonID equals p.ID
+
+
+            var staffNameList = (from ap in ProviderDomainService.Repository.PA_Applications
+                                 join sf in ProviderDomainService.Repository.PA_Staffs on ap.FacilityID equals sf.FacilityTypeID
+                                 join sfc in ProviderDomainService.Repository.PA_StaffCharacteristics on sf.ID equals sfc.StaffID
+                                 join pe in ProviderDomainService.Repository.PA_People on sf.PersonID equals pe.ID
+                                 where !sf.IsDeleted
+                                 select new
+                                 {
+                                     sf.ID,
+                                     FullName = pe.FullName,
+                                     StaffTypeID = sfc.TitleOfPosition
+                                 }).WithTranslations().ToList();
+
+            model.StaffMemberIds = (from snl in staffNameList
                                     select new SelectListItem
                                     {
-                                        Value = f.ID.ToString(),
-                                        Text = p.FirstName.ToString() + " " + p.LastName.ToString()
+                                        Value = snl.ID.ToString(),
+                                        Text = snl.FullName,
                                     }).ToList();
 
             model.StateIds = (from f in ProviderDomainService.Repository.States
                               select new SelectListItem
                               {
                                   Value = f.ID.ToString(),
-                                  Text = f.Name.ToString()
+                                  Text = f.Code.ToString()
                               }).ToList();
-
+            if (ID > 0)
+            {
+                var cprHistory = (from cp in ProviderDomainService.Repository.PA_ChildProtectionRegisterHistories
+                                  where cp.ID == ID
+                                  select new ChildProtectionRegisterHistoryViewModel
+                                  {
+                                      StaffMemberID = cp.StaffMemberID,
+                                      BackgroundCheckDocumentID = cp.BackgroundCheckDocumentID,
+                                      Comments = cp.Comments,
+                                      ReceivedDate = cp.ReceivedDate,
+                                      SentDate = cp.SentDate
+                                  }
+                                  ).FirstOrDefault();
+                model.StaffMemberID = cprHistory.StaffMemberID;
+                model.BackgroundCheckDocumentID = cprHistory.BackgroundCheckDocumentID;
+                model.Comments = cprHistory.Comments;
+                model.ReceivedDate = cprHistory.ReceivedDate;
+                model.SentDate = cprHistory.SentDate;
+            }
             return View(model);
         }
 
@@ -568,7 +599,36 @@ namespace Arise.PublicAccess.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult EditStaffCPRCheck(ChildProtectionRegisterHistoryViewModel model)
         {
-            return View(model); 
+            try
+            {
+                PA_BackgroundCheckDocument backgroundCheckDocument = new PA_BackgroundCheckDocument
+                {
+                    Data = model.Document.Data,
+                    Name = model.Document.Name,
+                    CreatedDate = DateTime.Now,
+                    DocumentTypeID = Empower.Model.LookupIDs.DocumentTypes.ChildProtectionRegisterCheck
+                };
+                ProviderDomainService.Repository.Add(backgroundCheckDocument);
+                ProviderDomainService.Save();
+
+                var childProtectionHistory = new PA_ChildProtectionRegisterHistory
+                {
+                    BackgroundCheckDocumentID = backgroundCheckDocument.ID,
+                    Comments = model.Comments,
+                    ReceivedDate = model.ReceivedDate,
+                    SentDate = model.SentDate
+
+                };
+                ProviderDomainService.Repository.Add(childProtectionHistory);
+                ProviderDomainService.Save();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Error occurred while registration");
+                return View("StaffCPRCheckList", model);
+            }
+
+            return View(model);
         }
 
 
