@@ -36,6 +36,7 @@ namespace Arise.PublicAccess.Controllers
         public ICacheProvider CacheProvider { get; }
         public ProviderDomainService ProviderDomainService { get; }
         public ILogger Logger { get; }
+        public QrisApplicationDomainService QrisApplicationDomainService { get; }
 
         public int UserID => int.Parse(User.FindFirstValue(Authentication.Claim.UserID) ?? "0");
 
