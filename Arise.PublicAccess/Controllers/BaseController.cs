@@ -1,12 +1,12 @@
 ﻿using Arise.PublicAccess.Areas.ProviderApplication.Controllers;
 using Empower.AccessControl;
 using Empower.AccessControl.Helpers;
+using Empower.Common;
 using Empower.Common.CacheProviders;
 using Empower.Common.Extensions;
 using Empower.DomainService;
 using Empower.Logging;
 using Empower.Model;
-using Empower.Navigation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -66,7 +66,7 @@ namespace Arise.PublicAccess.Controllers
                 
                 if(appStatusID != Empower.Model.LookupIDs.ApplicationStatuses.Pending)
                 {
-                     RedirectToAction(nameof(SummaryController.Index), nameof(SummaryController).RemoveControllerFromName(), new { area = Empower.Common.Constant.PublicAccessApp.Modules.ProviderApplication});
+                     RedirectToAction(nameof(SummaryController.Index), nameof(SummaryController).RemoveControllerFromName(), new { area = Constant.PublicAccessApp.Modules.ProviderApplication.Area });
                 }
 
                 ViewBag.FacilityApplicationID = ProviderDomainService.FacilityApplicationID;
