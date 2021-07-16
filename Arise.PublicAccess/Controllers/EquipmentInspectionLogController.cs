@@ -29,18 +29,16 @@ namespace Arise.PublicAccess.Controllers
             equipmentMaintenanceLogViewModel.FacilityIDs = (from app in ProviderDomainService.Repository.PA_Applications
                                                             join fac in ProviderDomainService.Repository.PA_Facilities
                                                             on app.FacilityID equals fac.ID
-                                                            join fi in ProviderDomainService.Repository.PA_FacilityInformations
-                                                            on fac.ID equals fi.FacilityID
                                                             where app.ApplicationStatusID != Empower.Model.LookupIDs.ApplicationStatuses.Pending
                                                             select new SelectListItem
                                                             {
-                                                                Value = fi.FacilityID.ToString(),
-                                                                Text = fi.FacilityName.ToString()
+                                                                Value = fac.ID.ToString(),
+                                                                Text = fac.FacilityName.ToString()
                                                             }).Union(
-                                                            ProviderDomainService.Repository.FacilityInformations
+                                                            ProviderDomainService.Repository.Facilities
                                                             .Select(fi => new SelectListItem
                                                             {
-                                                                Value = fi.FacilityID.ToString(),
+                                                                Value = fi.ID.ToString(),
                                                                 Text = fi.FacilityName.ToString()
                                                             })).ToList();
             return View(equipmentMaintenanceLogViewModel);

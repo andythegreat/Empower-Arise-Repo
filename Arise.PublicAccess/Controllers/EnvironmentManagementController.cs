@@ -4,14 +4,10 @@ using Empower.Common.CacheProviders;
 using Empower.DomainService;
 using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Kendo.Mvc.Extensions;
 using Empower.Model;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Arise.Shared.CoreUI.Helpers;
 using Microsoft.Linq.Translations;
 
@@ -32,18 +28,16 @@ namespace Arise.PublicAccess.Controllers
             viewModel.FacilityList = (from app in ProviderDomainService.Repository.PA_Applications
                                       join fac in ProviderDomainService.Repository.PA_Facilities
                                       on app.FacilityID equals fac.ID
-                                      join fi in ProviderDomainService.Repository.PA_FacilityInformations
-                                      on fac.ID equals fi.FacilityID
                                       where app.ApplicationStatusID != Empower.Model.LookupIDs.ApplicationStatuses.Pending
                                       select new SelectListItem
                                       {
-                                          Value = fi.FacilityID.ToString(),
-                                          Text = fi.FacilityName.ToString()
+                                          Value = fac.ID.ToString(),
+                                          Text = fac.FacilityName.ToString()
                                       }).Union(
-                                                      ProviderDomainService.Repository.FacilityInformations
+                                                      ProviderDomainService.Repository.Facilities
                                                       .Select(fi => new SelectListItem
                                                       {
-                                                          Value = fi.FacilityID.ToString(),
+                                                          Value = fi.ID.ToString(),
                                                           Text = fi.FacilityName.ToString()
                                                       })).ToList();
             return View(viewModel);
@@ -51,25 +45,24 @@ namespace Arise.PublicAccess.Controllers
         public IActionResult Get_FacilityList([DataSourceRequest] DataSourceRequest request, int facilityID)
         {
             var resultdata = (from f in ProviderDomainService.Repository.PA_Facilities
-                              join fi in ProviderDomainService.Repository.PA_FacilityInformations on f.ID equals fi.FacilityID
                               join sty in ProviderDomainService.Repository.FacilityTypes on f.FacilityTypeID equals sty.ID
                               join stt in ProviderDomainService.Repository.StaffTypes on sty.ID equals stt.ProviderTypeID
                               where stt.Name == nameof(Director)
                               select new
                               {
-                                  fi,
+                                  f,
                                   stt
                               }).ToList();
 
             var gridValues = (from recd in resultdata.ToList()
                               select new
                               {
-                                  FacilityID = recd.fi.FacilityID,
-                                  FacilityName = recd.fi.FacilityName,
+                                  FacilityID = recd.f.ID,
+                                  FacilityName = recd.f.FacilityName,
                                   DirectorName = string.Join(", ", (from sft in ProviderDomainService.Repository.PA_Staffs
                                                                     join stc in ProviderDomainService.Repository.PA_StaffCharacteristics on sft.ID equals stc.StaffID
                                                                     join p in ProviderDomainService.Repository.PA_People on sft.PersonID equals p.ID
-                                                                    where stc.TitleOfPosition == recd.stt.ID && sft.FacilityID == recd.fi.FacilityID
+                                                                    where stc.TitleOfPosition == recd.stt.ID && sft.FacilityID == recd.f.ID
                                                                     select (p.FullName.ToString())).WithTranslations())
                               }
                                 );
