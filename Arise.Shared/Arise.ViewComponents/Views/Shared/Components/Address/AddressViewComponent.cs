@@ -211,19 +211,9 @@ namespace Arise.Shared.ViewComponents.Address
             return Content(script, Empower.Common.Constant.Mvc.JavascriptHeader);
         }
 
-        //[HttpPost]
         public bool SaveAddress(
-            //Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary viewData,
-            //Microsoft.AspNetCore.Mvc.ModelBinding.IModelMetadataProvider metadataProvider, 
-            //Microsoft.AspNetCore.Mvc.ModelBinding.IModelBinderFactory modelBinderFactory,
-            //Microsoft.AspNetCore.Mvc.ModelBinding.Validation.IObjectModelValidator objectModelValidator,
             Empower.Model.Address address)
         {
-            //ViewData = viewData;
-            //MetadataProvider = metadataProvider;
-            //ModelBinderFactory = modelBinderFactory;
-            //ObjectValidator = objectModelValidator;
-
             var result = false;
 
             if (address.ID == 0)
@@ -238,12 +228,8 @@ namespace Arise.Shared.ViewComponents.Address
             {
                 var currentAddress = _gisDomainService.Repository.Address.Where(a => a.ID == address.ID).SingleOrDefault();
 
-                //address.ProjectTo(currentAddress);
-
                 if (currentAddress != null)
                 {
-                    //result = await TryUpdateModelAsync(currentAddress);
-
                     currentAddress = _mapper.Map<Empower.Model.Address>(address);
 
                     if (result)
