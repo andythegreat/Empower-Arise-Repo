@@ -687,10 +687,10 @@ namespace Empower.DomainService
             {
                 var application = Repository.PA_Applications.Include(x => x.Facility).Where(a => a.ID == applicationId).FirstOrDefault();
                 var fee = Repository.FeeConfigurations.Where(x => x.FacilityTypeID == application.Facility.FacilityTypeID &&
-                              x.ApplicationTypeID == Model.LookupIDs.ApplicationTypes.Initial && x.FeeTypeID == FeeTypes.ApplicationFee).Select(x => x.Amount).FirstOrDefault();
-                if (fee > 0)
+                              x.ApplicationTypeID == Model.LookupIDs.ApplicationTypes.Initial && x.FeeTypeID == FeeTypes.ApplicationFee).FirstOrDefault();
+                if (fee != null && fee.Amount > 0)
                 {
-                    Repository.Add(new PA_ApplicationFeeHistory { Amount = fee, ApplicationID = applicationId, FeeStatusID = FeeStatuses.Due, FeeTypeID = FeeTypes.ApplicationFee });
+                    Repository.Add(new PA_ApplicationFeeHistory { Amount = fee.Amount, ApplicationID = applicationId, FeeStatusID = FeeStatuses.Due, FeeTypeID = FeeTypes.ApplicationFee,FeeConfigurationID = fee.ID });
                     Repository.Save();
                 }
             }
@@ -706,15 +706,16 @@ namespace Empower.DomainService
                 var application = Repository.PA_Applications.Include(x => x.Facility).Where(a => a.ID == applicationId).FirstOrDefault();
                 var applicationFee = Repository.PA_ApplicationFeeHistories.Where(x => x.ApplicationID == applicationId && x.FeeTypeID == FeeTypes.Capacity).FirstOrDefault();
                 var fee = Repository.FeeConfigurations.Where(x => x.FacilityTypeID == application.Facility.FacilityTypeID &&
-                              x.ApplicationTypeID == Model.LookupIDs.ApplicationTypes.Initial && x.FeeTypeID == FeeTypes.Capacity && (x.ThresholdMin <= capacity && x.ThresholdMax >= capacity)).Select(x => x.Amount).FirstOrDefault();
+                              x.ApplicationTypeID == Model.LookupIDs.ApplicationTypes.Initial && x.FeeTypeID == FeeTypes.Capacity && (x.ThresholdMin <= capacity && x.ThresholdMax >= capacity)).FirstOrDefault();
                 if (applicationFee == null)
                 {
-                    Repository.Add(new PA_ApplicationFeeHistory { Amount = fee, ApplicationID = applicationId, FeeStatusID = FeeStatuses.Due, FeeTypeID = FeeTypes.Capacity });
+                    Repository.Add(new PA_ApplicationFeeHistory { Amount = fee.Amount, ApplicationID = applicationId, FeeStatusID = FeeStatuses.Due, FeeTypeID = FeeTypes.Capacity,FeeConfigurationID = fee.ID });
                     Repository.Save();
                 }
                 else
                 {
-                    applicationFee.Amount = fee;
+                    applicationFee.Amount = fee.Amount;
+                    applicationFee.FeeConfigurationID = fee.ID;
                     Repository.Update(applicationFee, applicationFee.ID);
                     Repository.Save();
                 }
