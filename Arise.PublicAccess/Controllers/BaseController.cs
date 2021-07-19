@@ -1,13 +1,14 @@
 ﻿using Arise.PublicAccess.Areas.ProviderApplication.Controllers;
 using Empower.AccessControl;
 using Empower.AccessControl.Helpers;
+using Empower.Common;
 using Empower.Common.CacheProviders;
 using Empower.Common.Extensions;
 using Empower.DomainService;
 using Empower.Logging;
 using Empower.Model;
-using Empower.Navigation;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -29,8 +30,6 @@ namespace Arise.PublicAccess.Controllers
     {
         public const string ApplicationTitle = "Arise - ";
         public const string ProgramIdClaim = "ProgramID";
-
-        public const string JavascriptHeader = "application/javascript";
 
         public AccessControlManager AccessControlManager { get; }
         public ICacheProvider CacheProvider { get; }
@@ -69,7 +68,7 @@ namespace Arise.PublicAccess.Controllers
                 
                 if(appStatusID != Empower.Model.LookupIDs.ApplicationStatuses.Pending)
                 {
-                     RedirectToAction(nameof(SummaryController.Index), nameof(SummaryController).RemoveControllerFromName(), new { area = Empower.Common.Constant.PublicAccessApp.Modules.ProviderApplication});
+                     RedirectToAction(nameof(SummaryController.Index), nameof(SummaryController).RemoveControllerFromName(), new { area = Constant.PublicAccessApp.Modules.ProviderApplication.Area });
                 }
 
                 ViewBag.FacilityApplicationID = ProviderDomainService.FacilityApplicationID;
@@ -178,13 +177,18 @@ namespace Arise.PublicAccess.Controllers
         // returns Javascript result
         public IActionResult JavaScript(string script)
         {
-            return Content(script, JavascriptHeader);
+            return Content(script, Constant.MimeType.Javascript);
         }
 
         // returns preserved Json result, eg. without changing casing convention of variable names
         public JsonResult PreservedJson(object data)
         {
             return Json(data, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.Objects });
+        }
+
+        public IActionResult InternalServerError()
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         #endregion
