@@ -96,6 +96,7 @@ namespace Arise.PublicAccess.Controllers
             staffManagementViewModel.GenderSelect = ProviderDomainService.Repository.GetBindToItems<Gender>(true);
             var staff = ProviderDomainService.Repository.PA_Staffs
                             .Include(x => x.Address).Include(x => x.Person).Include(x => x.Phone)
+                            .Include(x=>x.Person.SocialSecurityNumber)
                             .Where(s => s.ID == ID).FirstOrDefault();
 
             if (staff != null)
@@ -106,6 +107,13 @@ namespace Arise.PublicAccess.Controllers
                 staffManagementViewModel.MainAddress = staff.Address;
                 staffManagementViewModel.PhoneConfig = staff.Phone;
                 staffManagementViewModel.DateOfBirth = staff.Person.DateOfBirth;
+                if (staff.Person.SocialSecurityNumber != null)
+                {
+                    staffManagementViewModel.SsnVM.SocialSecurityID = staff.Person.SocialSecurityNumber.ID;
+                    staffManagementViewModel.SsnVM.SocialSecurityNumber = staff.Person.SocialSecurityNumber.SSN;
+                }
+                //staffManagementViewModel.SsnVM.IsReadOnly = false;
+
                 staffManagementViewModel.GenderSelect = ProviderDomainService.Repository.GetBindToItems<Gender>(true, false, staffManagementViewModel.Gender);
             }
 
@@ -158,6 +166,7 @@ namespace Arise.PublicAccess.Controllers
             {
                 var objStaff = ProviderDomainService.Repository.PA_Staffs
                                 .Include(x => x.Address).Include(x => x.Person).Include(x => x.Phone)
+                                .Include(x=>x.Person.SocialSecurityNumber)
                                 .Where(p => p.ID == staffManagementViewModel.ID).FirstOrDefault();
 
                 if (await TryUpdateModelAsync(objStaff.Address, nameof(staffManagementViewModel.MainAddress)))
@@ -178,6 +187,17 @@ namespace Arise.PublicAccess.Controllers
 
                 if (await TryUpdateModelAsync<PA_StaffMember>(objStaff, nameof(staffManagementViewModel.Staff)))
                 {
+                    ProviderDomainService.Save();
+                }
+                
+                if (staffManagementViewModel.SsnVM.SocialSecurityNumber != null && !staffManagementViewModel.SsnVM.SocialSecurityNumber.Contains('X'))
+                {
+                    if (objStaff.Person.SocialSecurityNumber == null)
+                    {
+                        objStaff.Person.SocialSecurityNumber = new SocialSecurityNumber();
+                    }
+                    objStaff.Person.SocialSecurityNumber.SSN = staffManagementViewModel.SsnVM.SocialSecurityNumber;
+                    await TryUpdateModelAsync(objStaff.Person.SocialSecurityNumber, nameof(staffManagementViewModel.SsnVM));
                     ProviderDomainService.Save();
                 }
 
@@ -238,6 +258,11 @@ namespace Arise.PublicAccess.Controllers
                     objStaff.Person = new PA_Person();
                     objStaff.Person.DateOfBirth = staffManagementViewModel.DateOfBirth;
                     await TryUpdateModelAsync(objStaff.Person, nameof(staffManagementViewModel.Staff.Person));
+                }
+                if(staffManagementViewModel.SsnVM.SocialSecurityNumber != null)
+                {
+                    objStaff.Person.SocialSecurityNumber = new SocialSecurityNumber();
+                    objStaff.Person.SocialSecurityNumber.SSN = staffManagementViewModel.SsnVM.SocialSecurityNumber;
                 }
 
                 if (await TryUpdateModelAsync(objStaff, nameof(staffManagementViewModel.Staff)))
