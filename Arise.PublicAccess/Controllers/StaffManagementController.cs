@@ -364,7 +364,7 @@ namespace Arise.PublicAccess.Controllers
                     DateAwarded = (DateTime)s.DateAwarded,
                     IsDeleted = s.IsDeleted,
                 }
-          ).Where(s => s.StaffID == staffID && s.IsDeleted != true).ToList();
+          ).Where(s => s.StaffID == staffID && !s.IsDeleted ).ToList();
 
             return Json(staffQualification.ToDataSourceResult(request));
         }
@@ -388,7 +388,7 @@ namespace Arise.PublicAccess.Controllers
         {
             var objStaffQualification = ProviderDomainService.Repository.PA_StaffEducations.Where(S => S.ID == staffManagementViewModel.ID).FirstOrDefault();
             PA_StaffEducation pA_StaffEducation = new PA_StaffEducation();
-            _ = TryUpdateModelAsync<PA_StaffEducation>(objStaffQualification);
+            TryUpdateModelAsync<PA_StaffEducation>(objStaffQualification);
             ProviderDomainService.Repository.Update(objStaffQualification, objStaffQualification.ID);
             ProviderDomainService.Save();
 
@@ -477,7 +477,7 @@ namespace Arise.PublicAccess.Controllers
                      IsDeleted = s.IsDeleted,
                      DocumentUploadApplicableTypeID = s.DocumentUploadApplicableTypeID,
                  }
-           ).Where(s => s.StaffID == staffID && s.IsDeleted != true).ToList();
+           ).Where(s => s.StaffID == staffID && !s.IsDeleted).ToList();
 
             return Json(staffDocument.ToDataSourceResult(request));
         }
