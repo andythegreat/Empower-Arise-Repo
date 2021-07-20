@@ -371,10 +371,10 @@ namespace Arise.PublicAccess.Controllers
 
 
         [HttpPost]
-        public IActionResult AddStaffEducation([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel, int staffID)
+        public async Task<IActionResult> AddStaffEducationAsync([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel, int staffID)
         {
             PA_StaffEducation pA_StaffEducation = new PA_StaffEducation();
-            TryUpdateModelAsync<PA_StaffEducation>(pA_StaffEducation);
+            await TryUpdateModelAsync<PA_StaffEducation>(pA_StaffEducation);
             pA_StaffEducation.StaffID = staffID;
             ProviderDomainService.Repository.Add(pA_StaffEducation);
             ProviderDomainService.Repository.Save();
@@ -388,7 +388,7 @@ namespace Arise.PublicAccess.Controllers
         {
             var objStaffQualification = ProviderDomainService.Repository.PA_StaffEducations.Where(S => S.ID == staffManagementViewModel.ID).FirstOrDefault();
             PA_StaffEducation pA_StaffEducation = new PA_StaffEducation();
-            TryUpdateModelAsync<PA_StaffEducation>(objStaffQualification);
+            await TryUpdateModelAsync<PA_StaffEducation>(objStaffQualification);
             ProviderDomainService.Repository.Update(objStaffQualification, objStaffQualification.ID);
             ProviderDomainService.Save();
 
