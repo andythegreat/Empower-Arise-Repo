@@ -34,6 +34,8 @@ namespace Arise.PublicAccess.Controllers
         public AccessControlManager AccessControlManager { get; }
         public ICacheProvider CacheProvider { get; }
         public ProviderDomainService ProviderDomainService { get; }
+        public QualityRatingDomainService QualityRatingDomainService { get; }
+        
         public ILogger Logger { get; }
         public QrisApplicationDomainService QrisApplicationDomainService { get; }
 
