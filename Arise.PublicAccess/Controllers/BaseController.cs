@@ -64,7 +64,7 @@ namespace Arise.PublicAccess.Controllers
             if (RouteData.Values["appId"] != null)
             {
                 ProviderDomainService.FacilityApplicationID = int.Parse((string)RouteData.Values["appId"]);
-                var appStatusID = ProviderDomainService.Repository.PA_Applications.Where(pa => pa.ID == ProviderDomainService.FacilityApplicationID).Single().ApplicationStatusID;
+                var appStatusID = ProviderDomainService.Repository.Applications.Where(pa => pa.ID == ProviderDomainService.FacilityApplicationID).Single().ApplicationStatusID;
                 
                 if(appStatusID != Empower.Model.LookupIDs.ApplicationStatuses.Pending)
                 {
