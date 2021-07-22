@@ -204,11 +204,11 @@ namespace Arise.PublicAccess.Controllers
             }
             else
             {
-                var objStaff = new PA_StaffMember();
+                var objStaff = new StaffMember();
 
                 if (staffManagementViewModel.MainAddress != null)
                 {
-                    objStaff.Address = new PA_Address();
+                    objStaff.Address = new Address();
                     objStaff.Address.CreatedDate = System.DateTime.Now;
                     objStaff.Address.AddressTypeID = Empower.Model.LookupIDs.AddressTypes.Main;
 
@@ -219,7 +219,7 @@ namespace Arise.PublicAccess.Controllers
                 }
                 if (staffManagementViewModel.PhoneConfig != null)
                 {
-                    objStaff.Phone = new PA_Phone();
+                    objStaff.Phone = new Phone();
                     if (await TryUpdateModelAsync(objStaff.Phone, nameof(staffManagementViewModel.PhoneConfig)))
                     {
                         ProviderDomainService.Save();
@@ -228,7 +228,7 @@ namespace Arise.PublicAccess.Controllers
                 }
                 if (staffManagementViewModel.Staff.Person != null)
                 {
-                    objStaff.Person = new PA_Person();
+                    objStaff.Person = new Person();
                     objStaff.Person.DateOfBirth = staffManagementViewModel.DateOfBirth;
                     await TryUpdateModelAsync(objStaff.Person, nameof(staffManagementViewModel.Staff.Person));
                 }
@@ -240,10 +240,10 @@ namespace Arise.PublicAccess.Controllers
 
                 ProviderDomainService.Repository.Add(objStaff);
                 ProviderDomainService.Repository.Save();
-                objStaff.StaffKey = PA_StaffMember.GetFormattedKey(objStaff.ID);
+                objStaff.StaffKey = StaffMember.GetFormattedKey(objStaff.ID);
                 ProviderDomainService.Repository.Save();
 
-                PA_StaffCharacteristic ObjpA_StaffCharacteristic = new PA_StaffCharacteristic();
+                StaffCharacteristic ObjpA_StaffCharacteristic = new StaffCharacteristic();
 
                 ObjpA_StaffCharacteristic.StaffID = objStaff.ID;
                 ObjpA_StaffCharacteristic.FileName = fileName;
@@ -256,10 +256,10 @@ namespace Arise.PublicAccess.Controllers
                 ProviderDomainService.Repository.Add(ObjpA_StaffCharacteristic);
                 ProviderDomainService.Repository.Save();
 
-                var objStaffHealthInformation = new PA_StaffHealthInformation();
+                var objStaffHealthInformation = new StaffHealthInformation();
                 if (staffManagementViewModel.HealthInformationAddress != null)
                 {
-                    objStaffHealthInformation.Address = new PA_Address();
+                    objStaffHealthInformation.Address = new Address();
                     objStaffHealthInformation.Address.CreatedDate = System.DateTime.Now;
                     objStaffHealthInformation.Address.AddressTypeID = Empower.Model.LookupIDs.AddressTypes.Main;
                     await TryUpdateModelAsync(objStaffHealthInformation.Address, nameof(staffManagementViewModel.HealthInformationAddress));
@@ -276,10 +276,10 @@ namespace Arise.PublicAccess.Controllers
                 ProviderDomainService.Repository.Add(objStaffHealthInformation);
                 ProviderDomainService.Repository.Save();
 
-                var objStaffEmergencyContactInformation = new PA_StaffEmergencyContactInformation();
+                var objStaffEmergencyContactInformation = new StaffEmergencyContactInformation();
                 if (staffManagementViewModel.EmergencyAddress != null)
                 {
-                    objStaffEmergencyContactInformation.Address = new PA_Address();
+                    objStaffEmergencyContactInformation.Address = new Address();
                     objStaffEmergencyContactInformation.Address.CreatedDate = System.DateTime.Now;
                     objStaffEmergencyContactInformation.Address.AddressTypeID = Empower.Model.LookupIDs.AddressTypes.Main;
                     await TryUpdateModelAsync(objStaffEmergencyContactInformation.Address, nameof(staffManagementViewModel.EmergencyAddress));
@@ -368,8 +368,8 @@ namespace Arise.PublicAccess.Controllers
         [HttpPost]
         public async Task<IActionResult> AddStaffEducationAsync([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel, int staffID)
         {
-            PA_StaffEducation pA_StaffEducation = new PA_StaffEducation();
-            await TryUpdateModelAsync<PA_StaffEducation>(pA_StaffEducation);
+            StaffEducation pA_StaffEducation = new StaffEducation();
+            await TryUpdateModelAsync<StaffEducation>(pA_StaffEducation);
             pA_StaffEducation.StaffID = staffID;
             ProviderDomainService.Repository.Add(pA_StaffEducation);
             ProviderDomainService.Repository.Save();
@@ -382,7 +382,7 @@ namespace Arise.PublicAccess.Controllers
         public async Task<ActionResult> UpdateStaffEducation([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel)
         {
             var objStaffQualification = ProviderDomainService.Repository.StaffEducations.Where(S => S.ID == staffManagementViewModel.ID).FirstOrDefault();
-            PA_StaffEducation pA_StaffEducation = new PA_StaffEducation();
+            StaffEducation pA_StaffEducation = new StaffEducation();
             await TryUpdateModelAsync<StaffEducation>(objStaffQualification);
             ProviderDomainService.Repository.Update(objStaffQualification, objStaffQualification.ID);
             ProviderDomainService.Save();
@@ -447,7 +447,7 @@ namespace Arise.PublicAccess.Controllers
                 fileName = staffManagementViewModel.Document.GetFileName();
                 fileData = staffManagementViewModel.Document.ToByteArray();
             }
-            PA_StaffDocument pA_StaffDocument = new PA_StaffDocument();
+            StaffDocument pA_StaffDocument = new StaffDocument();
             pA_StaffDocument.StaffID = staffManagementViewModel.ID;
             pA_StaffDocument.DocumentUploadApplicableTypeID = staffManagementViewModel.DocumentUploadApplicableTypeID;
             pA_StaffDocument.MetaData = staffManagementViewModel.MetaData;
