@@ -54,8 +54,6 @@ namespace Arise.PublicAccess.Controllers
             return View(staffManagementViewModel);
         }
 
-        [HttpGet]
-        [AllowAnonymous]
         public IActionResult Edit(int? ID)
         {
             StaffManagementViewModel staffManagementViewModel = new StaffManagementViewModel();
@@ -90,7 +88,9 @@ namespace Arise.PublicAccess.Controllers
             staffManagementViewModel.DocumentUploadApplicableTypeIDs = ProviderDomainService.Repository.GetBindToItems<DocumentUploadApplicableType>().ToList();
             staffManagementViewModel.GenderSelect = ProviderDomainService.Repository.GetBindToItems<Gender>(true);
             var staff = ProviderDomainService.Repository.PA_Staffs
-                            .Include(x => x.Address).Include(x => x.Person).Include(x => x.Phone)
+                            .Include(x => x.Address)
+                            .Include(x => x.Person)
+                            .Include(x => x.Phone)
                             .Where(s => s.ID == ID).FirstOrDefault();
 
             if (staff != null)
@@ -137,7 +137,6 @@ namespace Arise.PublicAccess.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Edit(StaffManagementViewModel staffManagementViewModel)
         {
             string fileName = "";
@@ -203,10 +202,10 @@ namespace Arise.PublicAccess.Controllers
 
                 ProviderDomainService.Save();
             }
-
             else
             {
                 var objStaff = new PA_StaffMember();
+
                 if (staffManagementViewModel.MainAddress != null)
                 {
                     objStaff.Address = new PA_Address();
