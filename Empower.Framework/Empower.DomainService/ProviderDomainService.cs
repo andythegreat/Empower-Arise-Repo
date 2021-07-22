@@ -690,7 +690,7 @@ namespace Empower.DomainService
                               x.ApplicationTypeID == Model.LookupIDs.ApplicationTypes.Initial && x.FeeTypeID == FeeTypes.ApplicationFee).FirstOrDefault();
                 if (fee != null && fee.Amount > 0)
                 {
-                    Repository.Add(new PA_ApplicationFeeHistory { Amount = fee.Amount, ApplicationID = applicationId, FeeStatusID = FeeStatuses.Due, FeeTypeID = FeeTypes.ApplicationFee,FeeConfigurationID = fee.ID });
+                    Repository.Add(new ApplicationFeeHistory { Amount = fee.Amount, ApplicationID = applicationId, FeeStatusID = FeeStatuses.Due, FeeTypeID = FeeTypes.ApplicationFee,FeeConfigurationID = fee.ID });
                     Repository.Save();
                 }
             }
@@ -709,7 +709,7 @@ namespace Empower.DomainService
                               x.ApplicationTypeID == Model.LookupIDs.ApplicationTypes.Initial && x.FeeTypeID == FeeTypes.Capacity && (x.ThresholdMin <= capacity && x.ThresholdMax >= capacity)).FirstOrDefault();
                 if (applicationFee == null)
                 {
-                    Repository.Add(new PA_ApplicationFeeHistory { Amount = fee.Amount, ApplicationID = applicationId, FeeStatusID = FeeStatuses.Due, FeeTypeID = FeeTypes.Capacity,FeeConfigurationID = fee.ID });
+                    Repository.Add(new ApplicationFeeHistory { Amount = fee.Amount, ApplicationID = applicationId, FeeStatusID = FeeStatuses.Due, FeeTypeID = FeeTypes.Capacity,FeeConfigurationID = fee.ID });
                     Repository.Save();
                 }
                 else
