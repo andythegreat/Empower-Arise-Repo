@@ -25,28 +25,26 @@ namespace Arise.PublicAccess.Controllers
         public IActionResult Index()
         {
             EquipmentMaintenanceLogViewModel equipmentMaintenanceLogViewModel = new EquipmentMaintenanceLogViewModel();
-            equipmentMaintenanceLogViewModel.FacilityIDs = (from app in ProviderDomainService.Repository.PA_Applications
-                                                            join fac in ProviderDomainService.Repository.PA_Facilities
+            equipmentMaintenanceLogViewModel.FacilityIDs = (from app in ProviderDomainService.Repository.Applications
+                                                            join fac in ProviderDomainService.Repository.Facilities
                                                             on app.FacilityID equals fac.ID
-                                                            join fi in ProviderDomainService.Repository.PA_FacilityInformations
-                                                            on fac.ID equals fi.FacilityID
                                                             where app.ApplicationStatusID != Empower.Model.LookupIDs.ApplicationStatuses.Pending
                                                             select new SelectListItem
                                                             {
-                                                                Value = fi.FacilityID.ToString(),
-                                                                Text = fi.FacilityName.ToString()
+                                                                Value = fac.ID.ToString(),
+                                                                Text = fac.FacilityName.ToString()
                                                             }).Union(
-                                                              ProviderDomainService.Repository.FacilityInformations
+                                                              ProviderDomainService.Repository.Facilities
                                                               .Select(fi => new SelectListItem
                                                               {
-                                                                  Value = fi.FacilityID.ToString(),
+                                                                  Value = fi.ID.ToString(),
                                                                   Text = fi.FacilityName.ToString()
                                                               })).ToList();
             return View(equipmentMaintenanceLogViewModel);
         }
         public IActionResult GetEquipmentMaintenanceLogs([DataSourceRequest] DataSourceRequest request, int facilityID)
         {
-            var objStaffData =ProviderDomainService.Repository.PA_EquipmentMaintenanceLogs.Where(s => s.IsDeleted != true).ToList();
+            var objStaffData =ProviderDomainService.Repository.EquipmentMaintenanceLogs.Where(s => s.IsDeleted != true).ToList();
             if (facilityID > 0)
             {
                 objStaffData = objStaffData.Where(s => s.FacilityID == facilityID).ToList();
@@ -70,9 +68,9 @@ namespace Arise.PublicAccess.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> UpdateEquipmentMaintenanceLog([DataSourceRequest] DataSourceRequest request, PA_EquipmentMaintenanceLog pA_EquipmentMaintenanceLog)
         {
-            var objEquipmentMaintenanceLog = ProviderDomainService.Repository.PA_EquipmentMaintenanceLogs.Where(p => p.ID == pA_EquipmentMaintenanceLog.ID).FirstOrDefault();
+            var objEquipmentMaintenanceLog = ProviderDomainService.Repository.EquipmentMaintenanceLogs.Where(p => p.ID == pA_EquipmentMaintenanceLog.ID).FirstOrDefault();
             PA_EquipmentMaintenanceLog EquipmentMaintenanceLog = new PA_EquipmentMaintenanceLog();
-            _ = TryUpdateModelAsync<PA_EquipmentMaintenanceLog>(objEquipmentMaintenanceLog);
+            _ = TryUpdateModelAsync<EquipmentMaintenanceLog>(objEquipmentMaintenanceLog);
             ProviderDomainService.Repository.Update(objEquipmentMaintenanceLog, objEquipmentMaintenanceLog.ID);
             ProviderDomainService.Save();
             return Json(new[] { pA_EquipmentMaintenanceLog }.ToDataSourceResult(request));
@@ -82,7 +80,7 @@ namespace Arise.PublicAccess.Controllers
         [AllowAnonymous]
         public IActionResult DeleteEquipmentMaintenanceLog([DataSourceRequest] DataSourceRequest request, PA_EquipmentMaintenanceLog pA_EquipmentMaintenanceLog)
         {
-            var objEquipmentMaintenanceLog = ProviderDomainService.Repository.PA_EquipmentMaintenanceLogs
+            var objEquipmentMaintenanceLog = ProviderDomainService.Repository.EquipmentMaintenanceLogs
                             .Where(c => c.ID == pA_EquipmentMaintenanceLog.ID).FirstOrDefault();
             objEquipmentMaintenanceLog.IsDeleted = true;
             ProviderDomainService.Save();
