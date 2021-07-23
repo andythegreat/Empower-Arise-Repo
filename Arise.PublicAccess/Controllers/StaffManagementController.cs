@@ -518,20 +518,20 @@ namespace Arise.PublicAccess.Controllers
         public JsonResult GetStaffCPRCheckList([DataSourceRequest] DataSourceRequest request)
         {
 
-            var objCPRData = (from cph in ProviderDomainService.Repository.PA_ChildProtectionRegisterHistories
+            var cprResult = (from cph in ProviderDomainService.Repository.PA_ChildProtectionRegisterHistories
                               join s in ProviderDomainService.Repository.PA_Staffs on cph.StaffMemberID equals s.ID
                               join pe in ProviderDomainService.Repository.PA_People on s.PersonID equals pe.ID
                               select new ChildProtectionRegisterHistoryViewModel
                               {
                                   ID = cph.ID,
-                                  Name = pe.FirstName + ", " + pe.LastName,
+                                  Name = pe.FirstName + " " + pe.LastName,
                                   SentDate = cph.SentDate,
                                   ReceivedDate = cph.ReceivedDate,
                                   Status = cph.Result == null ? null : cph.Result.Name,
                                   UploadDocument = cph.BackgroundCheckDocument == null ? null : cph.BackgroundCheckDocument.Name,
                                   Comments = cph.Comments,
                               });
-            return Json(objCPRData.ToDataSourceResult(request));
+            return Json(cprResult.ToDataSourceResult(request));
         }
 
         [HttpGet]
@@ -601,7 +601,7 @@ namespace Arise.PublicAccess.Controllers
             if (ModelState.IsValid)
             {
                 var userId = ProviderDomainService.Repository.Users
-                  .Where(u => u.UserName == UserName).Select(u => u.ID).Single();
+                  .Where(u => u.UserName == UserName).Select(u => u.ID).FirstOrDefault();
                 int providerID = ProviderDomainService.ProviderID;
                 if(cprVM.ID == 0)
                 {
