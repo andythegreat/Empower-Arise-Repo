@@ -8,4 +8,8 @@
     <PackageReference Include="Microsoft.CodeAnalysis" Version="3.10.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Empower.CodeGenerator.Model\Empower.CodeGenerator.Model.csproj" />
+  </ItemGroup>
+
 </Project>
