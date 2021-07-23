@@ -514,5 +514,161 @@ namespace Arise.PublicAccess.Controllers
             return Json(staffType.Select(p => new { Value = p.ID, Text = p.Name }));
 
         }
+
+        public ActionResult StaffCPRCheckList()
+        {
+            return View();
+        }
+        public JsonResult GetStaffCPRCheckList([DataSourceRequest] DataSourceRequest request)
+        {
+
+            var cprResult = (from cph in ProviderDomainService.Repository.ChildProtectionRegisterHistories
+                              join s in ProviderDomainService.Repository.StaffMembers on cph.StaffMemberID equals s.ID
+                              join pe in ProviderDomainService.Repository.Persons on s.PersonID equals pe.ID
+                              select new ChildProtectionRegisterHistoryViewModel
+                              {
+                                  ID = cph.ID,
+                                  Name = pe.FirstName + " " + pe.LastName,
+                                  SentDate = cph.SentDate,
+                                  ReceivedDate = cph.ReceivedDate,
+                                  Status = cph.Result == null ? null : cph.Result.Name,
+                                  UploadDocument = cph.BackgroundCheckDocument == null ? null : cph.BackgroundCheckDocument.Name,
+                                  Comments = cph.Comments,
+                              });
+            return Json(cprResult.ToDataSourceResult(request));
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult EditStaffCPRCheck(int? ID)
+        {
+            int providerID = ProviderDomainService.ProviderID;
+            ChildProtectionRegisterHistoryViewModel cprVM = new ChildProtectionRegisterHistoryViewModel();
+            var cprValue = ProviderDomainService.Repository.ChildProtectionRegisterHistories
+                            .Include(p => p.Person)
+                                .Include(p => p.BackgroundCheckDocument).Where(c => c.ID == ID).FirstOrDefault();
+
+            var staffNameList = (from ap in ProviderDomainService.Repository.Applications
+                                 join sf in ProviderDomainService.Repository.StaffMembers on ap.FacilityID equals sf.FacilityTypeID
+                                 join sfc in ProviderDomainService.Repository.StaffCharacteristics on sf.ID equals sfc.StaffID
+                                 join pe in ProviderDomainService.Repository.Persons on sf.PersonID equals pe.ID
+                                 where !sf.IsDeleted
+                                 select new
+                                 {
+                                     sf.ID,
+                                     FullName = pe.FullName,
+                                     StaffTypeID = sfc.TitleOfPosition
+                                 }).WithTranslations().ToList();
+
+            cprVM.NameLists = (from snl in staffNameList
+                               select new SelectListItem
+                               {
+                                   Value = snl.ID.ToString(),
+                                   Text = snl.FullName,
+                               }).ToList();
+
+            cprVM.StateIds = (from f in ProviderDomainService.Repository.States
+                              select new SelectListItem
+                              {
+                                  Value = f.ID.ToString(),
+                                  Text = f.Code.ToString()
+                              }).ToList();
+            cprVM.StatusList = ProviderDomainService.Repository.GetBindToItems<CriminalHistoryResultType>();
+
+            if (cprValue != null)
+            {
+                cprVM.ID = cprValue.ID;
+                var crimeType = ProviderDomainService.Repository.GetBindToItems<CriminalHistoryResultType>();
+                string resVal = (cprValue.ResultID ?? 0).ToString();
+                crimeType.Where(x => x.Value == resVal).ToList().ForEach(x => x.Selected = true);
+                cprVM.StatusList = crimeType;
+                cprVM.NameId = cprValue.PersonID ?? 0;
+                cprVM.ProviderID = ProviderDomainService.ProviderID;
+                cprVM.SentDate = cprValue.SentDate;
+                cprVM.ReceivedDate = cprValue.ReceivedDate;
+                cprVM.StatusID = cprValue.ResultID ?? 0;
+                cprVM.Comments = cprValue.Comments;
+                cprVM.StateID = cprValue.StateID;
+                if (cprValue.BackgroundCheckDocument != null)
+                {
+                    cprVM.UploadDocument = cprValue.BackgroundCheckDocument.Name;
+                }
+
+            }
+            return View(cprVM);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditStaffCPRCheck(ChildProtectionRegisterHistoryViewModel cprVM)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = ProviderDomainService.Repository.Users
+                  .Where(u => u.UserName == UserName).Select(u => u.ID).FirstOrDefault();
+                int providerID = ProviderDomainService.ProviderID;
+                if(cprVM.ID == 0)
+                {
+                    ChildProtectionRegisterHistory val = new();
+
+                    if (cprVM.Documents != null)
+                    {
+                        var backgroundDoc = new BackgroundCheckDocument();
+                        backgroundDoc.Name = cprVM.Documents.GetFileName();
+                        backgroundDoc.Data = cprVM.Documents.ToByteArray();
+                        backgroundDoc.CreatedDate = DateTime.Now;
+                        backgroundDoc.CreatedByID = userId;
+                        backgroundDoc.DocumentTypeID = Empower.Model.LookupIDs.DocumentTypes.ChildProtectionRegisterCheck;
+                        val.BackgroundCheckDocument = backgroundDoc;
+                    }
+
+                    val.PersonID = cprVM.NameId;
+                    val.StaffMember = ProviderDomainService.Repository.StaffMembers.Where(x => x.PersonID == cprVM.NameId).FirstOrDefault();
+                    val.SentDate = cprVM.SentDate;
+                    val.ReceivedDate = cprVM.ReceivedDate;
+                    val.ResultID = cprVM.StatusID;
+                    var x = ProviderDomainService.Repository.SystemConfigurations.Where(x => x.ConfigurationOption == ConfigurationOptions.CpsTimeSpan)
+                                    .Select(x => x.IntegerValue).FirstOrDefault();
+                    val.ExpirationYears = x ?? 0;
+                    val.Comments = cprVM.Comments;
+                    val.StateID = cprVM.StateID;
+                    ProviderDomainService.Repository.Add(val);
+                    ProviderDomainService.Save();
+                }
+                else
+                {
+                    var childProtVal = ProviderDomainService.Repository.ChildProtectionRegisterHistories.Where(x => x.ID == cprVM.ID).FirstOrDefault();
+                    if (childProtVal.ID > 0)
+                    {
+
+                        if (cprVM.Documents != null)
+                        {
+                            var backgroundDoc = new BackgroundCheckDocument
+                            {
+                                Name = cprVM.Documents.GetFileName(),
+                                Data = cprVM.Documents.ToByteArray(),
+                                CreatedDate = DateTime.Now,
+                                CreatedByID = userId,
+                                DocumentTypeID = Empower.Model.LookupIDs.DocumentTypes.ChildProtectionRegisterCheck
+                            };
+                            childProtVal.BackgroundCheckDocument = backgroundDoc;
+                        }
+
+                        childProtVal.SentDate = cprVM.SentDate;
+                        childProtVal.ReceivedDate = cprVM.ReceivedDate;
+                        childProtVal.ResultID = cprVM.StatusID;
+                        childProtVal.Comments = cprVM.Comments;
+                        childProtVal.PersonID = cprVM.NameId;
+                        ProviderDomainService.Repository.Update(childProtVal, cprVM.ID);
+                        ProviderDomainService.Save();
+                    }
+                }
+                return RedirectToAction("StaffCPRCheckList"); ;
+            }
+
+            return View(cprVM);
+        }
+
+
     }
 }
