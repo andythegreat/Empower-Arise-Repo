@@ -366,12 +366,12 @@ namespace Arise.PublicAccess.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddStaffEducationAsync([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel, int staffID)
+        public async Task<IActionResult> AddStaffEducation([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel, int staffID)
         {
-            StaffEducation pA_StaffEducation = new StaffEducation();
-            await TryUpdateModelAsync<StaffEducation>(pA_StaffEducation);
-            pA_StaffEducation.StaffID = staffID;
-            ProviderDomainService.Repository.Add(pA_StaffEducation);
+            StaffEducation StaffEducation = new StaffEducation();
+            await TryUpdateModelAsync<StaffEducation>(StaffEducation);
+            StaffEducation.StaffID = staffID;
+            ProviderDomainService.Repository.Add(StaffEducation);
             ProviderDomainService.Repository.Save();
             return Json(new[] { staffManagementViewModel }.ToDataSourceResult(request));
         }

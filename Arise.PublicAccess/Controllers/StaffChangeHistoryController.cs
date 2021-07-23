@@ -82,16 +82,16 @@ namespace Arise.PublicAccess.Controllers
 
             return Json(objStaffData.ToDataSourceResult(request));
         }
-        public IActionResult CreateStaffChangeLog([DataSourceRequest] DataSourceRequest request, PA_StaffChangeLogHistory pA_StaffChangeLogHistory)
+        public IActionResult CreateStaffChangeLog([DataSourceRequest] DataSourceRequest request, StaffChangeLogHistory staffChangeLogHistory)
         {
-            var staffClassRoomData = ProviderDomainService.Repository.StaffClassRoom.Where(x => x.StaffID == pA_StaffChangeLogHistory.StaffID && x.ClassRoomID == pA_StaffChangeLogHistory.ClassRoomID).FirstOrDefault();
-            staffClassRoomData.ClassRoomID = pA_StaffChangeLogHistory.NewClassRoomID;
-            staffClassRoomData.StaffID = pA_StaffChangeLogHistory.NewStaffID;
+            var staffClassRoomData = ProviderDomainService.Repository.StaffClassRoom.Where(x => x.StaffID == staffChangeLogHistory.StaffID && x.ClassRoomID == staffChangeLogHistory.ClassRoomID).FirstOrDefault();
+            staffClassRoomData.ClassRoomID = staffChangeLogHistory.NewClassRoomID;
+            staffClassRoomData.StaffID = staffChangeLogHistory.NewStaffID;
             ProviderDomainService.Save();
-            pA_StaffChangeLogHistory.CreatedDate = DateTime.Now;
-            ProviderDomainService.Repository.Add(pA_StaffChangeLogHistory);
+            staffChangeLogHistory.CreatedDate = DateTime.Now;
+            ProviderDomainService.Repository.Add(staffChangeLogHistory);
             ProviderDomainService.Save();
-            return Json(new[] { pA_StaffChangeLogHistory }.ToDataSourceResult(request));
+            return Json(new[] { staffChangeLogHistory }.ToDataSourceResult(request));
         }
         public IActionResult GetStaffChangeLogHistory([DataSourceRequest] DataSourceRequest request)
         {

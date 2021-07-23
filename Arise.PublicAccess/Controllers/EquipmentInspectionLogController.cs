@@ -55,38 +55,37 @@ namespace Arise.PublicAccess.Controllers
         }
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult AddEquipmentInspectionLog([DataSourceRequest] DataSourceRequest request, PA_EquipmentInspectionLog pA_EquipmentInspectionLog, int facilityID)
+        public IActionResult AddEquipmentInspectionLog([DataSourceRequest] DataSourceRequest request, EquipmentInspectionLog EquipmentInspectionLog, int facilityID)
         {
-            pA_EquipmentInspectionLog.IsDeleted = false;
-            pA_EquipmentInspectionLog.FacilityID = facilityID;
-            pA_EquipmentInspectionLog.CreatedDate = Convert.ToDateTime(System.DateTime.Now);
-            pA_EquipmentInspectionLog.CreatedBy = UserID;
-            ProviderDomainService.Repository.Add(pA_EquipmentInspectionLog);
+            EquipmentInspectionLog.IsDeleted = false;
+            EquipmentInspectionLog.FacilityID = facilityID;
+            EquipmentInspectionLog.CreatedDate = Convert.ToDateTime(System.DateTime.Now);
+            EquipmentInspectionLog.CreatedBy = UserID;
+            ProviderDomainService.Repository.Add(EquipmentInspectionLog);
             ProviderDomainService.Save();
-            return Json(new[] { pA_EquipmentInspectionLog }.ToDataSourceResult(request));
+            return Json(new[] { EquipmentInspectionLog }.ToDataSourceResult(request));
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult> UpdateEquipmentInspectionLog([DataSourceRequest] DataSourceRequest request, PA_EquipmentInspectionLog pA_EquipmentInspectionLog)
+        public async Task<ActionResult> UpdateEquipmentInspectionLog([DataSourceRequest] DataSourceRequest request, EquipmentInspectionLog EquipmentInspectionLog)
         {
-            var objEquipmentInspectionLog = ProviderDomainService.Repository.EquipmentInspectionLogs.Where(p => p.ID == pA_EquipmentInspectionLog.ID).FirstOrDefault();
-            PA_EquipmentInspectionLog EquipmentMaintenanceLog = new PA_EquipmentInspectionLog();
-            _ = TryUpdateModelAsync<EquipmentInspectionLog>(objEquipmentInspectionLog);
+            var objEquipmentInspectionLog = ProviderDomainService.Repository.EquipmentInspectionLogs.Where(p => p.ID == EquipmentInspectionLog.ID).FirstOrDefault();
+            TryUpdateModelAsync<EquipmentInspectionLog>(objEquipmentInspectionLog);
             ProviderDomainService.Repository.Update(objEquipmentInspectionLog, objEquipmentInspectionLog.ID);
             ProviderDomainService.Save();
-            return Json(new[] { pA_EquipmentInspectionLog }.ToDataSourceResult(request));
+            return Json(new[] { EquipmentInspectionLog }.ToDataSourceResult(request));
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult DeleteEquipmentInspectionLog([DataSourceRequest] DataSourceRequest request, PA_EquipmentInspectionLog pA_EquipmentInspectionLog)
+        public IActionResult DeleteEquipmentInspectionLog([DataSourceRequest] DataSourceRequest request, EquipmentInspectionLog EquipmentInspectionLog)
         {
             var objEquipmentMaintenanceLog = ProviderDomainService.Repository.EquipmentInspectionLogs
-                            .Where(c => c.ID == pA_EquipmentInspectionLog.ID).FirstOrDefault();
+                            .Where(c => c.ID == EquipmentInspectionLog.ID).FirstOrDefault();
             objEquipmentMaintenanceLog.IsDeleted = true;
             ProviderDomainService.Save();
-            return Json(data: new[] { pA_EquipmentInspectionLog }.ToDataSourceResult(request));
+            return Json(data: new[] { EquipmentInspectionLog }.ToDataSourceResult(request));
         }
     }
 }
