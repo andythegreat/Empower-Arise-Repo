@@ -98,7 +98,7 @@ namespace Arise.PublicAccess.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create_Material([DataSourceRequest] DataSourceRequest request, PA_FacilityEnvironment objFacilityEnvironment)
+        public ActionResult Create_Material([DataSourceRequest] DataSourceRequest request, FacilityEnvironment objFacilityEnvironment)
         {
             ProviderDomainService.Repository.Add(objFacilityEnvironment);
             ProviderDomainService.Save();
@@ -106,10 +106,10 @@ namespace Arise.PublicAccess.Controllers
         }
 
         [HttpPost]
-        public ActionResult Update_Material([DataSourceRequest] DataSourceRequest request, PA_FacilityEnvironment objFacilityEnvironment)
+        public ActionResult Update_Material([DataSourceRequest] DataSourceRequest request, FacilityEnvironment objFacilityEnvironment)
         {
-            var obj_Environment = new PA_FacilityEnvironment();
-            TryUpdateModelAsync<PA_FacilityEnvironment>(obj_Environment);
+            var obj_Environment = new FacilityEnvironment();
+            TryUpdateModelAsync<FacilityEnvironment>(obj_Environment);
             ProviderDomainService.Repository.Update(obj_Environment, objFacilityEnvironment.ID);
             ProviderDomainService.Save();
             return Json(new[] { objFacilityEnvironment }.ToDataSourceResult(request, ModelState));
