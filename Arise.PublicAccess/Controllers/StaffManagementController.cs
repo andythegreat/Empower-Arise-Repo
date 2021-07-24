@@ -36,48 +36,42 @@ namespace Arise.PublicAccess.Controllers
         {
             StaffManagementViewModel staffManagementViewModel = new StaffManagementViewModel();
 
-            staffManagementViewModel.FacilityIDs = (from app in ProviderDomainService.Repository.PA_Applications
-                                                    join fac in ProviderDomainService.Repository.PA_Facilities
+            staffManagementViewModel.FacilityIDs = (from app in ProviderDomainService.Repository.Applications
+                                                    join fac in ProviderDomainService.Repository.Facilities
                                                     on app.FacilityID equals fac.ID
-                                                    join fi in ProviderDomainService.Repository.PA_FacilityInformations
-                                                    on fac.ID equals fi.FacilityID
                                                     where app.ApplicationStatusID != Empower.Model.LookupIDs.ApplicationStatuses.Pending
                                                     select new SelectListItem
                                                     {
-                                                        Value = fi.FacilityID.ToString(),
-                                                        Text = fi.FacilityName.ToString()
+                                                        Value = fac.ID.ToString(),
+                                                        Text = fac.FacilityName.ToString()
                                                     }).Union(
-                                                      ProviderDomainService.Repository.FacilityInformations
+                                                      ProviderDomainService.Repository.Facilities
                                                       .Select(fi => new SelectListItem
                                                       {
-                                                          Value = fi.FacilityID.ToString(),
+                                                          Value = fi.ID.ToString(),
                                                           Text = fi.FacilityName.ToString()
                                                       })).ToList();
             return View(staffManagementViewModel);
         }
 
-        [HttpGet]
-        [AllowAnonymous]
         public IActionResult Edit(int? ID)
         {
             StaffManagementViewModel staffManagementViewModel = new StaffManagementViewModel();
 
             // we cant used GetBindToItems here becouse we need to facility name and facility id not ID and Name
-            staffManagementViewModel.FacilityIDs = (from app in ProviderDomainService.Repository.PA_Applications
-                                                    join fac in ProviderDomainService.Repository.PA_Facilities
+            staffManagementViewModel.FacilityIDs = (from app in ProviderDomainService.Repository.Applications
+                                                    join fac in ProviderDomainService.Repository.Facilities
                                                     on app.FacilityID equals fac.ID
-                                                    join fi in ProviderDomainService.Repository.PA_FacilityInformations
-                                                    on fac.ID equals fi.FacilityID
                                                     where app.ApplicationStatusID != Empower.Model.LookupIDs.ApplicationStatuses.Pending
                                                     select new SelectListItem
                                                     {
-                                                        Value = fi.FacilityID.ToString(),
-                                                        Text = fi.FacilityName.ToString()
+                                                        Value = fac.ID.ToString(),
+                                                        Text = fac.FacilityName.ToString()
                                                     }).Union(
-                                                      ProviderDomainService.Repository.FacilityInformations
+                                                      ProviderDomainService.Repository.Facilities
                                                       .Select(fi => new SelectListItem
                                                       {
-                                                          Value = fi.FacilityID.ToString(),
+                                                          Value = fi.ID.ToString(),
                                                           Text = fi.FacilityName.ToString()
                                                       })).ToList();
 
@@ -88,13 +82,15 @@ namespace Arise.PublicAccess.Controllers
             staffManagementViewModel.StaffIDs = ProviderDomainService.Repository.GetBindToItems<StaffType>().ToList();
             staffManagementViewModel.StaffQualificationIDs = ProviderDomainService.Repository.GetBindToItems<Empower.Model.StaffQualification>().ToList();
             staffManagementViewModel.RelationshipIDs = ProviderDomainService.Repository.GetBindToItems<Relationship>().ToList();
-            staffManagementViewModel.MainAddress = new PA_Address();
-            staffManagementViewModel.HealthInformationAddress = new PA_Address();
-            staffManagementViewModel.EmergencyAddress = new PA_Address();
+            staffManagementViewModel.MainAddress = new Address();
+            staffManagementViewModel.HealthInformationAddress = new Address();
+            staffManagementViewModel.EmergencyAddress = new Address();
             staffManagementViewModel.DocumentUploadApplicableTypeIDs = ProviderDomainService.Repository.GetBindToItems<DocumentUploadApplicableType>().ToList();
             staffManagementViewModel.GenderSelect = ProviderDomainService.Repository.GetBindToItems<Gender>(true);
-            var staff = ProviderDomainService.Repository.PA_Staffs
-                            .Include(x => x.Address).Include(x => x.Person).Include(x => x.Phone)
+            var staff = ProviderDomainService.Repository.StaffMembers
+                            .Include(x => x.Address)
+                            .Include(x => x.Person)
+                            .Include(x => x.Phone)
                             .Where(s => s.ID == ID).FirstOrDefault();
 
             if (staff != null)
@@ -107,7 +103,7 @@ namespace Arise.PublicAccess.Controllers
                 staffManagementViewModel.GenderSelect = ProviderDomainService.Repository.GetBindToItems<Gender>(true, false, staffManagementViewModel.Gender);
             }
 
-            var staffCharacteristic = ProviderDomainService.Repository.PA_StaffCharacteristics.Where(s => s.StaffID == ID).FirstOrDefault();
+            var staffCharacteristic = ProviderDomainService.Repository.StaffCharacteristics.Where(s => s.StaffID == ID).FirstOrDefault();
             if (staffCharacteristic != null)
             {
                 staffManagementViewModel.StaffCharacteristicID = staffCharacteristic.ID;
@@ -118,7 +114,7 @@ namespace Arise.PublicAccess.Controllers
                 }
             };
 
-            var staffHealthInformation = ProviderDomainService.Repository.PA_StaffHealthInformations
+            var staffHealthInformation = ProviderDomainService.Repository.StaffHealthInformations
                                             .Include(x => x.Name).Include(x => x.Phone).Include(x => x.Address)
                                             .Where(s => s.StaffID == ID).FirstOrDefault();
             if (staffHealthInformation != null)
@@ -128,7 +124,7 @@ namespace Arise.PublicAccess.Controllers
                 staffManagementViewModel.HealthInformationAddress = staffHealthInformation.Address;
             };
 
-            var staffEmergencyContatctInformation = ProviderDomainService.Repository.PA_StaffEmergencyContactInformations
+            var staffEmergencyContatctInformation = ProviderDomainService.Repository.StaffEmergencyContactInformations
                                                     .Include(x => x.Name).Include(x => x.Phone).Include(x => x.Address)
                                                     .Where(s => s.StaffID == ID).FirstOrDefault();
             if (staffEmergencyContatctInformation != null)
@@ -141,7 +137,6 @@ namespace Arise.PublicAccess.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Edit(StaffManagementViewModel staffManagementViewModel)
         {
             string fileName = "";
@@ -154,7 +149,7 @@ namespace Arise.PublicAccess.Controllers
 
             if (staffManagementViewModel.ID > 0)
             {
-                var objStaff = ProviderDomainService.Repository.PA_Staffs
+                var objStaff = ProviderDomainService.Repository.StaffMembers
                                 .Include(x => x.Address).Include(x => x.Person).Include(x => x.Phone)
                                 .Where(p => p.ID == staffManagementViewModel.ID).FirstOrDefault();
 
@@ -174,18 +169,18 @@ namespace Arise.PublicAccess.Controllers
                     ProviderDomainService.Save();
                 }
 
-                if (await TryUpdateModelAsync<PA_StaffMember>(objStaff, nameof(staffManagementViewModel.Staff)))
+                if (await TryUpdateModelAsync<StaffMember>(objStaff, nameof(staffManagementViewModel.Staff)))
                 {
                     ProviderDomainService.Save();
                 }
 
-                var objStaffCharacteristic = ProviderDomainService.Repository.PA_StaffCharacteristics.Where(p => p.ID == staffManagementViewModel.StaffCharacteristicID).FirstOrDefault();
+                var objStaffCharacteristic = ProviderDomainService.Repository.StaffCharacteristics.Where(p => p.ID == staffManagementViewModel.StaffCharacteristicID).FirstOrDefault();
                 objStaffCharacteristic.FileName = fileName;
                 objStaffCharacteristic.ProfileImage = fileData;
-                await TryUpdateModelAsync<PA_StaffCharacteristic>(objStaffCharacteristic, nameof(staffManagementViewModel.StaffCharacteristic));
+                await TryUpdateModelAsync<StaffCharacteristic>(objStaffCharacteristic, nameof(staffManagementViewModel.StaffCharacteristic));
                 ProviderDomainService.Save();
 
-                var objStaffHealthInformation = ProviderDomainService.Repository.PA_StaffHealthInformations
+                var objStaffHealthInformation = ProviderDomainService.Repository.StaffHealthInformations
                                                 .Include(x => x.Name).Include(x => x.Phone).Include(x => x.Address)
                                                 .Where(p => p.ID == staffManagementViewModel.StaffHealthInformationID).FirstOrDefault();
 
@@ -197,7 +192,7 @@ namespace Arise.PublicAccess.Controllers
                 await TryUpdateModelAsync(objStaffHealthInformation, nameof(staffManagementViewModel.StaffHealthInformation));
                 ProviderDomainService.Save();
 
-                var objStaffEmergencyContactInformation = ProviderDomainService.Repository.PA_StaffEmergencyContactInformations
+                var objStaffEmergencyContactInformation = ProviderDomainService.Repository.StaffEmergencyContactInformations
                                                             .Include(x => x.Name).Include(x => x.Phone).Include(x => x.Address)
                                                            .Where(p => p.ID == staffManagementViewModel.StaffEmenrgencyContactID).FirstOrDefault();
 
@@ -207,13 +202,13 @@ namespace Arise.PublicAccess.Controllers
 
                 ProviderDomainService.Save();
             }
-
             else
             {
-                var objStaff = new PA_StaffMember();
+                var objStaff = new StaffMember();
+
                 if (staffManagementViewModel.MainAddress != null)
                 {
-                    objStaff.Address = new PA_Address();
+                    objStaff.Address = new Address();
                     objStaff.Address.CreatedDate = System.DateTime.Now;
                     objStaff.Address.AddressTypeID = Empower.Model.LookupIDs.AddressTypes.Main;
 
@@ -224,7 +219,7 @@ namespace Arise.PublicAccess.Controllers
                 }
                 if (staffManagementViewModel.PhoneConfig != null)
                 {
-                    objStaff.Phone = new PA_Phone();
+                    objStaff.Phone = new Phone();
                     if (await TryUpdateModelAsync(objStaff.Phone, nameof(staffManagementViewModel.PhoneConfig)))
                     {
                         ProviderDomainService.Save();
@@ -233,7 +228,7 @@ namespace Arise.PublicAccess.Controllers
                 }
                 if (staffManagementViewModel.Staff.Person != null)
                 {
-                    objStaff.Person = new PA_Person();
+                    objStaff.Person = new Person();
                     objStaff.Person.DateOfBirth = staffManagementViewModel.DateOfBirth;
                     await TryUpdateModelAsync(objStaff.Person, nameof(staffManagementViewModel.Staff.Person));
                 }
@@ -245,10 +240,10 @@ namespace Arise.PublicAccess.Controllers
 
                 ProviderDomainService.Repository.Add(objStaff);
                 ProviderDomainService.Repository.Save();
-                objStaff.StaffKey = PA_StaffMember.GetFormattedKey(objStaff.ID);
+                objStaff.StaffKey = StaffMember.GetFormattedKey(objStaff.ID);
                 ProviderDomainService.Repository.Save();
 
-                PA_StaffCharacteristic ObjpA_StaffCharacteristic = new PA_StaffCharacteristic();
+                StaffCharacteristic ObjpA_StaffCharacteristic = new StaffCharacteristic();
 
                 ObjpA_StaffCharacteristic.StaffID = objStaff.ID;
                 ObjpA_StaffCharacteristic.FileName = fileName;
@@ -261,10 +256,10 @@ namespace Arise.PublicAccess.Controllers
                 ProviderDomainService.Repository.Add(ObjpA_StaffCharacteristic);
                 ProviderDomainService.Repository.Save();
 
-                var objStaffHealthInformation = new PA_StaffHealthInformation();
+                var objStaffHealthInformation = new StaffHealthInformation();
                 if (staffManagementViewModel.HealthInformationAddress != null)
                 {
-                    objStaffHealthInformation.Address = new PA_Address();
+                    objStaffHealthInformation.Address = new Address();
                     objStaffHealthInformation.Address.CreatedDate = System.DateTime.Now;
                     objStaffHealthInformation.Address.AddressTypeID = Empower.Model.LookupIDs.AddressTypes.Main;
                     await TryUpdateModelAsync(objStaffHealthInformation.Address, nameof(staffManagementViewModel.HealthInformationAddress));
@@ -281,10 +276,10 @@ namespace Arise.PublicAccess.Controllers
                 ProviderDomainService.Repository.Add(objStaffHealthInformation);
                 ProviderDomainService.Repository.Save();
 
-                var objStaffEmergencyContactInformation = new PA_StaffEmergencyContactInformation();
+                var objStaffEmergencyContactInformation = new StaffEmergencyContactInformation();
                 if (staffManagementViewModel.EmergencyAddress != null)
                 {
-                    objStaffEmergencyContactInformation.Address = new PA_Address();
+                    objStaffEmergencyContactInformation.Address = new Address();
                     objStaffEmergencyContactInformation.Address.CreatedDate = System.DateTime.Now;
                     objStaffEmergencyContactInformation.Address.AddressTypeID = Empower.Model.LookupIDs.AddressTypes.Main;
                     await TryUpdateModelAsync(objStaffEmergencyContactInformation.Address, nameof(staffManagementViewModel.EmergencyAddress));
@@ -306,34 +301,34 @@ namespace Arise.PublicAccess.Controllers
 
         public IActionResult GetStaffs([DataSourceRequest] DataSourceRequest request, int facilityID)
         {
-            var objStaffData = (from s in ProviderDomainService.Repository.PA_Staffs
-                                join sc in ProviderDomainService.Repository.PA_StaffCharacteristics on s.ID equals sc.StaffID
-                                join st in ProviderDomainService.Repository.StaffTypes on sc.TitleOfPosition equals st.ID
-                                join f in ProviderDomainService.Repository.PA_FacilityInformations on s.FacilityID equals f.FacilityID
-                                join certification in ProviderDomainService.Repository.PA_CertifiedStaffInFirstAidCPRs
-                                on s.ID equals certification.SfattID into certified
-                                join criminal in ProviderDomainService.Repository.PA_CriminalHistories
-                                on s.ID equals criminal.StaffMemberID into criminalhistory
-                                join cph in ProviderDomainService.Repository.PA_ChildProtectionRegisterHistories
-                                on s.ID equals cph.StaffMemberID into childprotection
-                                from certification in certified.DefaultIfEmpty()
-                                from criminal in criminalhistory.DefaultIfEmpty()
-                                from cph in childprotection.DefaultIfEmpty()
-                                select new StaffManagementViewModel
-                                {
-                                    ID = s.ID,
-                                    StaffName = s.Person.FullName,
-                                    FacilityID = s.FacilityID,
-                                    StaffKey = s.StaffKey,
-                                    StaffType = st.Name,
-                                    FacilityName = f.FacilityName,
-                                    DateOfHireGridDateFormat = sc.DateHired,
-                                    SeprationGridDateFormat = sc.SeparationDate,
-                                    Phone = s.Phone.HomePhone,
-                                    IsDeleted = s.IsDeleted,
-                                    Certification = certification == null ? Empower.Common.Constant.UI.CertificateStatus.Fail : certification.ExpirationDate > DateTime.Now ? Empower.Common.Constant.UI.CertificateStatus.Pass : Empower.Common.Constant.UI.CertificateStatus.Fail,
-                                    Clearance = criminal == null ? cph == null ? Empower.Common.Constant.UI.CertificateStatus.Fail : criminal.ExpirationDate > DateTime.Now ? Empower.Common.Constant.UI.CertificateStatus.Pass : Empower.Common.Constant.UI.CertificateStatus.Fail : criminal.ExpirationDate > DateTime.Now ? Empower.Common.Constant.UI.CertificateStatus.Pass : Empower.Common.Constant.UI.CertificateStatus.Fail,
-                                }).Where(s => !s.IsDeleted).WithTranslations().ToList();
+                                var objStaffData = (from s in ProviderDomainService.Repository.StaffMembers
+                                                    join sc in ProviderDomainService.Repository.StaffCharacteristics on s.ID equals sc.StaffID
+                                                    join st in ProviderDomainService.Repository.StaffTypes on sc.TitleOfPosition equals st.ID
+                                                    join f in ProviderDomainService.Repository.Facilities on s.FacilityID equals f.ID
+                                                    join certification in ProviderDomainService.Repository.CertifiedStaffInFirstAidCPRs
+                                                    on s.ID equals certification.SfattID into certified
+                                                    join criminal in ProviderDomainService.Repository.CriminalHistories
+                                                    on s.ID equals criminal.StaffMemberID into criminalhistory
+                                                    join cph in ProviderDomainService.Repository.ChildProtectionRegisterHistories
+                                                    on s.ID equals cph.StaffMemberID into childprotection
+                                                    from certification in certified.DefaultIfEmpty()
+                                                     from criminal in criminalhistory.DefaultIfEmpty()
+                                                    from cph in childprotection.DefaultIfEmpty()
+                                                    select new StaffManagementViewModel
+                                                    {
+                                                        ID = s.ID,
+                                                        StaffName = s.Person.FullName,
+                                                        FacilityID = s.FacilityID,
+                                                        StaffKey = s.StaffKey,
+                                                        StaffType = st.Name,
+                                                        FacilityName = f.FacilityName,
+                                                        DateOfHireGridDateFormat = sc.DateHired,
+                                                        SeprationGridDateFormat = sc.SeparationDate,
+                                                        Phone = s.Phone.HomePhone,
+                                                        IsDeleted = s.IsDeleted,
+                                                        Certification = certification == null ? Empower.Common.Constant.UI.CertificateStatus.Fail: certification.ExpirationDate > DateTime.Now ? Empower.Common.Constant.UI.CertificateStatus.Pass : Empower.Common.Constant.UI.CertificateStatus.Fail,
+                                                        Clearance = criminal == null ? cph == null ? Empower.Common.Constant.UI.CertificateStatus.Fail : criminal.ExpirationDate > DateTime.Now ? Empower.Common.Constant.UI.CertificateStatus.Pass: Empower.Common.Constant.UI.CertificateStatus.Fail : criminal.ExpirationDate > DateTime.Now ? Empower.Common.Constant.UI.CertificateStatus.Pass : Empower.Common.Constant.UI.CertificateStatus.Fail,
+                                                    }).Where(s => !s.IsDeleted).WithTranslations().ToList();
 
             if (facilityID > 0)
             {
@@ -345,7 +340,7 @@ namespace Arise.PublicAccess.Controllers
 
         public ActionResult DeleteStaff([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel)
         {
-            var objStaff = ProviderDomainService.Repository.PA_Staffs
+            var objStaff = ProviderDomainService.Repository.StaffMembers
                             .Where(c => c.ID == staffManagementViewModel.ID).FirstOrDefault();
             objStaff.IsDeleted = true;
             ProviderDomainService.Save();
@@ -354,7 +349,7 @@ namespace Arise.PublicAccess.Controllers
 
         public IActionResult GetStaffEducations([DataSourceRequest] DataSourceRequest request, int staffID)
         {
-            var staffQualification = ProviderDomainService.Repository.PA_StaffEducations
+            var staffQualification = ProviderDomainService.Repository.StaffEducations
                 .Select(s => new StaffManagementViewModel
                 {
                     ID = s.ID,
@@ -371,12 +366,12 @@ namespace Arise.PublicAccess.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddStaffEducationAsync([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel, int staffID)
+        public async Task<IActionResult> AddStaffEducation([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel, int staffID)
         {
-            PA_StaffEducation pA_StaffEducation = new PA_StaffEducation();
-            await TryUpdateModelAsync<PA_StaffEducation>(pA_StaffEducation);
-            pA_StaffEducation.StaffID = staffID;
-            ProviderDomainService.Repository.Add(pA_StaffEducation);
+            StaffEducation StaffEducation = new StaffEducation();
+            await TryUpdateModelAsync<StaffEducation>(StaffEducation);
+            StaffEducation.StaffID = staffID;
+            ProviderDomainService.Repository.Add(StaffEducation);
             ProviderDomainService.Repository.Save();
             return Json(new[] { staffManagementViewModel }.ToDataSourceResult(request));
         }
@@ -386,9 +381,9 @@ namespace Arise.PublicAccess.Controllers
         [HttpPost]
         public async Task<ActionResult> UpdateStaffEducation([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel)
         {
-            var objStaffQualification = ProviderDomainService.Repository.PA_StaffEducations.Where(S => S.ID == staffManagementViewModel.ID).FirstOrDefault();
-            PA_StaffEducation pA_StaffEducation = new PA_StaffEducation();
-            await TryUpdateModelAsync<PA_StaffEducation>(objStaffQualification);
+            var objStaffQualification = ProviderDomainService.Repository.StaffEducations.Where(S => S.ID == staffManagementViewModel.ID).FirstOrDefault();
+            StaffEducation pA_StaffEducation = new StaffEducation();
+            await TryUpdateModelAsync<StaffEducation>(objStaffQualification);
             ProviderDomainService.Repository.Update(objStaffQualification, objStaffQualification.ID);
             ProviderDomainService.Save();
 
@@ -398,7 +393,7 @@ namespace Arise.PublicAccess.Controllers
         [HttpPost]
         public ActionResult DeleteStaffEducation([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel)
         {
-            var objStaffQualification = ProviderDomainService.Repository.PA_StaffEducations
+            var objStaffQualification = ProviderDomainService.Repository.StaffEducations
                             .Where(c => c.ID == staffManagementViewModel.ID).FirstOrDefault();
             objStaffQualification.IsDeleted = true;
             ProviderDomainService.Save();
@@ -452,7 +447,7 @@ namespace Arise.PublicAccess.Controllers
                 fileName = staffManagementViewModel.Document.GetFileName();
                 fileData = staffManagementViewModel.Document.ToByteArray();
             }
-            PA_StaffDocument pA_StaffDocument = new PA_StaffDocument();
+            StaffDocument pA_StaffDocument = new StaffDocument();
             pA_StaffDocument.StaffID = staffManagementViewModel.ID;
             pA_StaffDocument.DocumentUploadApplicableTypeID = staffManagementViewModel.DocumentUploadApplicableTypeID;
             pA_StaffDocument.MetaData = staffManagementViewModel.MetaData;
@@ -467,7 +462,7 @@ namespace Arise.PublicAccess.Controllers
 
         public ActionResult GetDocumentList([DataSourceRequest] DataSourceRequest request, int staffID)
         {
-            var staffDocument = ProviderDomainService.Repository.PA_StaffDocuments
+            var staffDocument = ProviderDomainService.Repository.StaffDocuments
                  .Select(s => new StaffManagementViewModel
                  {
                      StaffDocumentId = s.ID,
@@ -486,7 +481,7 @@ namespace Arise.PublicAccess.Controllers
         public ActionResult DeleteStaffDocument([DataSourceRequest] DataSourceRequest request, StaffManagementViewModel staffManagementViewModel)
         {
 
-            var objStaffDocument = ProviderDomainService.Repository.PA_StaffDocuments
+            var objStaffDocument = ProviderDomainService.Repository.StaffDocuments
                                         .Where(c => c.ID == staffManagementViewModel.StaffDocumentId).FirstOrDefault();
             objStaffDocument.IsDeleted = true;
             ProviderDomainService.Save();
@@ -495,7 +490,7 @@ namespace Arise.PublicAccess.Controllers
 
         public IActionResult DownloadDocument(int id)
         {
-            var doc = ProviderDomainService.Repository.PA_StaffDocuments
+            var doc = ProviderDomainService.Repository.StaffDocuments
                 .Where(d => d.ID == id)
                 .FirstOrDefault();
 
@@ -514,10 +509,166 @@ namespace Arise.PublicAccess.Controllers
 
         public JsonResult GetStaffType(int facilityID)
         {
-            var facilityTypeID = ProviderDomainService.Repository.PA_Facilities.Where(x => x.ID == facilityID).Select(x => x.FacilityTypeID).FirstOrDefault();
+            var facilityTypeID = ProviderDomainService.Repository.Facilities.Where(x => x.ID == facilityID).Select(x => x.FacilityTypeID).FirstOrDefault();
             var staffType = ProviderDomainService.Repository.StaffTypes.Where(x => x.ProviderTypeID == facilityTypeID).ToList();
             return Json(staffType.Select(p => new { Value = p.ID, Text = p.Name }));
 
         }
+
+        public ActionResult StaffCPRCheckList()
+        {
+            return View();
+        }
+        public JsonResult GetStaffCPRCheckList([DataSourceRequest] DataSourceRequest request)
+        {
+
+            var cprResult = (from cph in ProviderDomainService.Repository.ChildProtectionRegisterHistories
+                              join s in ProviderDomainService.Repository.StaffMembers on cph.StaffMemberID equals s.ID
+                              join pe in ProviderDomainService.Repository.Persons on s.PersonID equals pe.ID
+                              select new ChildProtectionRegisterHistoryViewModel
+                              {
+                                  ID = cph.ID,
+                                  Name = pe.FirstName + " " + pe.LastName,
+                                  SentDate = cph.SentDate,
+                                  ReceivedDate = cph.ReceivedDate,
+                                  Status = cph.Result == null ? null : cph.Result.Name,
+                                  UploadDocument = cph.BackgroundCheckDocument == null ? null : cph.BackgroundCheckDocument.Name,
+                                  Comments = cph.Comments,
+                              });
+            return Json(cprResult.ToDataSourceResult(request));
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult EditStaffCPRCheck(int? ID)
+        {
+            int providerID = ProviderDomainService.ProviderID;
+            ChildProtectionRegisterHistoryViewModel cprVM = new ChildProtectionRegisterHistoryViewModel();
+            var cprValue = ProviderDomainService.Repository.ChildProtectionRegisterHistories
+                            .Include(p => p.Person)
+                                .Include(p => p.BackgroundCheckDocument).Where(c => c.ID == ID).FirstOrDefault();
+
+            var staffNameList = (from ap in ProviderDomainService.Repository.Applications
+                                 join sf in ProviderDomainService.Repository.StaffMembers on ap.FacilityID equals sf.FacilityTypeID
+                                 join sfc in ProviderDomainService.Repository.StaffCharacteristics on sf.ID equals sfc.StaffID
+                                 join pe in ProviderDomainService.Repository.Persons on sf.PersonID equals pe.ID
+                                 where !sf.IsDeleted
+                                 select new
+                                 {
+                                     sf.ID,
+                                     FullName = pe.FullName,
+                                     StaffTypeID = sfc.TitleOfPosition
+                                 }).WithTranslations().ToList();
+
+            cprVM.NameLists = (from snl in staffNameList
+                               select new SelectListItem
+                               {
+                                   Value = snl.ID.ToString(),
+                                   Text = snl.FullName,
+                               }).ToList();
+
+            cprVM.StateIds = (from f in ProviderDomainService.Repository.States
+                              select new SelectListItem
+                              {
+                                  Value = f.ID.ToString(),
+                                  Text = f.Code.ToString()
+                              }).ToList();
+            cprVM.StatusList = ProviderDomainService.Repository.GetBindToItems<CriminalHistoryResultType>();
+
+            if (cprValue != null)
+            {
+                cprVM.ID = cprValue.ID;
+                var crimeType = ProviderDomainService.Repository.GetBindToItems<CriminalHistoryResultType>();
+                string resVal = (cprValue.ResultID ?? 0).ToString();
+                crimeType.Where(x => x.Value == resVal).ToList().ForEach(x => x.Selected = true);
+                cprVM.StatusList = crimeType;
+                cprVM.NameId = cprValue.PersonID ?? 0;
+                cprVM.ProviderID = ProviderDomainService.ProviderID;
+                cprVM.SentDate = cprValue.SentDate;
+                cprVM.ReceivedDate = cprValue.ReceivedDate;
+                cprVM.StatusID = cprValue.ResultID ?? 0;
+                cprVM.Comments = cprValue.Comments;
+                cprVM.StateID = cprValue.StateID;
+                if (cprValue.BackgroundCheckDocument != null)
+                {
+                    cprVM.UploadDocument = cprValue.BackgroundCheckDocument.Name;
+                }
+
+            }
+            return View(cprVM);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditStaffCPRCheck(ChildProtectionRegisterHistoryViewModel cprVM)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = ProviderDomainService.Repository.Users
+                  .Where(u => u.UserName == UserName).Select(u => u.ID).FirstOrDefault();
+                int providerID = ProviderDomainService.ProviderID;
+                if(cprVM.ID == 0)
+                {
+                    ChildProtectionRegisterHistory val = new();
+
+                    if (cprVM.Documents != null)
+                    {
+                        var backgroundDoc = new BackgroundCheckDocument();
+                        backgroundDoc.Name = cprVM.Documents.GetFileName();
+                        backgroundDoc.Data = cprVM.Documents.ToByteArray();
+                        backgroundDoc.CreatedDate = DateTime.Now;
+                        backgroundDoc.CreatedByID = userId;
+                        backgroundDoc.DocumentTypeID = Empower.Model.LookupIDs.DocumentTypes.ChildProtectionRegisterCheck;
+                        val.BackgroundCheckDocument = backgroundDoc;
+                    }
+
+                    val.PersonID = cprVM.NameId;
+                    val.StaffMember = ProviderDomainService.Repository.StaffMembers.Where(x => x.PersonID == cprVM.NameId).FirstOrDefault();
+                    val.SentDate = cprVM.SentDate;
+                    val.ReceivedDate = cprVM.ReceivedDate;
+                    val.ResultID = cprVM.StatusID;
+                    var x = ProviderDomainService.Repository.SystemConfigurations.Where(x => x.ConfigurationOption == ConfigurationOptions.CpsTimeSpan)
+                                    .Select(x => x.IntegerValue).FirstOrDefault();
+                    val.ExpirationYears = x ?? 0;
+                    val.Comments = cprVM.Comments;
+                    val.StateID = cprVM.StateID;
+                    ProviderDomainService.Repository.Add(val);
+                    ProviderDomainService.Save();
+                }
+                else
+                {
+                    var childProtVal = ProviderDomainService.Repository.ChildProtectionRegisterHistories.Where(x => x.ID == cprVM.ID).FirstOrDefault();
+                    if (childProtVal.ID > 0)
+                    {
+
+                        if (cprVM.Documents != null)
+                        {
+                            var backgroundDoc = new BackgroundCheckDocument
+                            {
+                                Name = cprVM.Documents.GetFileName(),
+                                Data = cprVM.Documents.ToByteArray(),
+                                CreatedDate = DateTime.Now,
+                                CreatedByID = userId,
+                                DocumentTypeID = Empower.Model.LookupIDs.DocumentTypes.ChildProtectionRegisterCheck
+                            };
+                            childProtVal.BackgroundCheckDocument = backgroundDoc;
+                        }
+
+                        childProtVal.SentDate = cprVM.SentDate;
+                        childProtVal.ReceivedDate = cprVM.ReceivedDate;
+                        childProtVal.ResultID = cprVM.StatusID;
+                        childProtVal.Comments = cprVM.Comments;
+                        childProtVal.PersonID = cprVM.NameId;
+                        ProviderDomainService.Repository.Update(childProtVal, cprVM.ID);
+                        ProviderDomainService.Save();
+                    }
+                }
+                return RedirectToAction("StaffCPRCheckList"); ;
+            }
+
+            return View(cprVM);
+        }
+
+
     }
 }
