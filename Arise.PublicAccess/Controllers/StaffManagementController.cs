@@ -519,6 +519,7 @@ namespace Arise.PublicAccess.Controllers
         {
             return View();
         }
+
         public JsonResult GetStaffCPRCheckList([DataSourceRequest] DataSourceRequest request)
         {
 
@@ -538,15 +539,17 @@ namespace Arise.PublicAccess.Controllers
             return Json(cprResult.ToDataSourceResult(request));
         }
 
-        [HttpGet]
-        [AllowAnonymous]
         public IActionResult EditStaffCPRCheck(int? ID)
         {
             int providerID = ProviderDomainService.ProviderID;
-            ChildProtectionRegisterHistoryViewModel cprVM = new ChildProtectionRegisterHistoryViewModel();
+
+            var cprVM = new ChildProtectionRegisterHistoryViewModel();
+
             var cprValue = ProviderDomainService.Repository.ChildProtectionRegisterHistories
-                            .Include(p => p.Person)
-                                .Include(p => p.BackgroundCheckDocument).Where(c => c.ID == ID).FirstOrDefault();
+                                .Include(p => p.Person)
+                                .Include(p => p.BackgroundCheckDocument)
+                                .Where(c => c.ID == ID)
+                                .FirstOrDefault();
 
             var staffNameList = (from ap in ProviderDomainService.Repository.Applications
                                  join sf in ProviderDomainService.Repository.StaffMembers on ap.FacilityID equals sf.FacilityTypeID
@@ -567,12 +570,13 @@ namespace Arise.PublicAccess.Controllers
                                    Text = snl.FullName,
                                }).ToList();
 
-            cprVM.StateIds = (from f in ProviderDomainService.Repository.States
+            cprVM.States = (from f in ProviderDomainService.Repository.States
                               select new SelectListItem
                               {
                                   Value = f.ID.ToString(),
                                   Text = f.Code.ToString()
                               }).ToList();
+
             cprVM.StatusList = ProviderDomainService.Repository.GetBindToItems<CriminalHistoryResultType>();
 
             if (cprValue != null)
@@ -589,6 +593,7 @@ namespace Arise.PublicAccess.Controllers
                 cprVM.StatusID = cprValue.ResultID ?? 0;
                 cprVM.Comments = cprValue.Comments;
                 cprVM.StateID = cprValue.StateID;
+
                 if (cprValue.BackgroundCheckDocument != null)
                 {
                     cprVM.UploadDocument = cprValue.BackgroundCheckDocument.Name;
