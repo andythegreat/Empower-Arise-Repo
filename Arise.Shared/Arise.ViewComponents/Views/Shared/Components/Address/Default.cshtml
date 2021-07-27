@@ -72,7 +72,7 @@ else
                         @(Html.Kendo().DropDownListFor(model => model.State)
                                 .OptionLabel(Empower.Common.Constant.UI.SelectList.DefaultStateOptionText)
                                 .BindTo(Model.StateCodes)
-                                .Value(Model == null ? "DC" : Model.State == null ? "DC" : Model.State)
+                                .Value(Model?.State ?? Empower.Common.Constant.UI.Address.DefaultState)
                             )
                         @Html.ValidationMessageFor(model => model.State)
                     </div>
