@@ -61,14 +61,15 @@ namespace Arise.PublicAccess.Controllers
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            if (RouteData.Values["appId"] != null)
+            if (RouteData.Values[Empower.Common.Constant.PublicAccessApp.Modules.ProviderApplication.RouteID] != null)
             {
-                ProviderDomainService.FacilityApplicationID = int.Parse((string)RouteData.Values["appId"]);
+                ProviderDomainService.FacilityApplicationID = int.Parse((string)RouteData.Values[Empower.Common.Constant.PublicAccessApp.Modules.ProviderApplication.RouteID]);
+
                 var appStatusID = ProviderDomainService.Repository.Applications.Where(pa => pa.ID == ProviderDomainService.FacilityApplicationID).Single().ApplicationStatusID;
-                
-                if(appStatusID != Empower.Model.LookupIDs.ApplicationStatuses.Pending)
+
+                if (appStatusID != Empower.Model.LookupIDs.ApplicationStatuses.Pending)
                 {
-                     RedirectToAction(nameof(SummaryController.Index), nameof(SummaryController).RemoveControllerFromName(), new { area = Constant.PublicAccessApp.Modules.ProviderApplication.Area });
+                    RedirectToAction(nameof(SummaryController.Index), nameof(SummaryController).RemoveControllerFromName(), new { area = Constant.PublicAccessApp.Modules.ProviderApplication.Area });
                 }
 
                 ViewBag.FacilityApplicationID = ProviderDomainService.FacilityApplicationID;
@@ -126,7 +127,7 @@ namespace Arise.PublicAccess.Controllers
             var agent = Request.Headers["User-Agent"];
             var url = Request.Path;
 
-            var area = filterContext.RouteData.Values["area"]?.ToString().SplitCamelCase();
+            var area = filterContext.RouteData.Values[Empower.Common.Constant.Mvc.Area]?.ToString().SplitCamelCase();
 
             var controller = string.Empty;
             var controllerActionDescriptor = filterContext.ActionDescriptor as ControllerActionDescriptor;
@@ -145,7 +146,8 @@ namespace Arise.PublicAccess.Controllers
             if (Request.HasFormContentType && Request.Form.ContainsKey("navigate:Cancel"))
             {
                 var routeData = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(Request.Form["navigate:CancelRoute"]);
-                filterContext.Result = RedirectToAction((string)routeData["action"], (string)routeData["controller"], new RouteValueDictionary(routeData));
+
+                filterContext.Result = RedirectToAction((string)routeData[Empower.Common.Constant.Mvc.Action], (string)routeData[Empower.Common.Constant.Mvc.Controller], new RouteValueDictionary(routeData));
             }
 
             base.OnActionExecuting(filterContext);
