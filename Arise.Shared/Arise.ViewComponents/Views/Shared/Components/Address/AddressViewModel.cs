@@ -31,6 +31,8 @@ namespace Arise.Shared.ViewComponents.Address
 
         public SelectList Wards { get; set; }
 
+        public SelectList Quadrants { get; set; }
+
         public bool? IsReadOnly { get; set; }
     }
 }

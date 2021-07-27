@@ -36,12 +36,13 @@ namespace Arise.Shared.ViewComponents.Address
             {
                 vmAddress = _mapper.Map<AddressViewModel>(address);
             }
-
+            
             vmAddress.StateCodes = new SelectList(_domainService.Repository.States.AsNoTracking().OrderBy(s => s.Code).ToList(), nameof(State.Code), nameof(State.Code));
             vmAddress.Wards = new SelectList(_domainService.Repository.Wards.AsNoTracking().OrderBy(md => md.Name).ToList(), nameof(Ward.ID), nameof(Ward.Name));
-
+            vmAddress.Quadrants = new SelectList(_domainService.Repository.Quadrants.AsNoTracking().OrderBy(q => q.Name).ToList(), nameof(Quadrant.ID), nameof(Quadrant.Name));
             vmAddress.IsReadOnly = isReadOnly;
-
+            vmAddress.Ward = _domainService.Repository.Wards.Where(w => w.ID == vmAddress.WardID).SingleOrDefault();
+            vmAddress.Quadrant = _domainService.Repository.Quadrants.Where(w => w.ID == vmAddress.QuadrantID).SingleOrDefault();
             ViewData.SetHtmlFieldPrefix(propertyName);
 
             return View(vmAddress);

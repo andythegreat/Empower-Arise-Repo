@@ -8,6 +8,7 @@
     var fgCityStateZip = htmlFieldPrefix + "_fgCityStateZip";
     var fgMagisterialDistrict = htmlFieldPrefix + "_fgMagisterialDistrict";
     var fgWard = htmlFieldPrefix + "_fgWard";
+    var fgQuadrant = htmlFieldPrefix + "_fgQuadrant";
     var divAddressVerified = htmlFieldPrefix + "_divAddressVerified";
     var fgMARAddressResults = htmlFieldPrefix + "_fgMARAddressResults";
     var divMARAddressResults = htmlFieldPrefix + "_divMARAddressResults";
@@ -37,7 +38,7 @@ else
 {
     <div id="@fhAddress" class="panel panel-default">
         <div class="panel-heading">
-            @Html.DisplayNameFor(m => m.Address1)
+            @Html.DisplayName(Empower.Common.Constant.UI.Address.Address1)
         </div>
         <div class="panel-body" style="padding-bottom: 0px;">
             <div class="form-group form-group-tight">
@@ -83,7 +84,7 @@ else
                         @Html.ValidationMessageFor(model => model.Zip)
                     </div>
                 </div>
-                <div id="@fgWard" class="col-xs-4">
+                <div id="@fgWard" class="col-xs-2">
                     <div class="form-group">
                         @Html.LabelFor(model => model.WardID, new { @class = labelClasses + " sr-only" })
                         @(Html.Kendo().DropDownListFor(model => model.WardID)
@@ -91,6 +92,16 @@ else
                             .BindTo(Model.Wards)
                         )
                         @Html.ValidationMessageFor(model => model.WardID)
+                    </div>
+                </div>
+                <div id="@fgQuadrant" class="col-xs-2">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.QuadrantID, new { @class = labelClasses + " sr-only" })
+                        @(Html.Kendo().DropDownListFor(model => model.QuadrantID)
+                            .OptionLabel(Empower.Common.Constant.UI.SelectList.DefaultQuadrantOptionText)
+                            .BindTo(Model.Quadrants)
+                        )
+                        @Html.ValidationMessageFor(model => model.QuadrantID)
                     </div>
                 </div>
             </div>
