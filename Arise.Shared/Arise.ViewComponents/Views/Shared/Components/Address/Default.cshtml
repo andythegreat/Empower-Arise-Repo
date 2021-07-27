@@ -69,9 +69,9 @@ else
                     <div class="form-group">
                         @Html.LabelFor(model => model.State, new { @class = labelClasses + " sr-only" })
                         @(Html.Kendo().DropDownListFor(model => model.State)
-                                .OptionLabel(Empower.Common.Constant.UI.SelectList.DefaultOptionText)
+                                .OptionLabel(Empower.Common.Constant.UI.SelectList.DefaultStateOptionText)
                                 .BindTo(Model.StateCodes)
-                                .Value(Model == null ? "VA" : Model.State == null ? "VA" : Model.State)
+                                .Value(Model == null ? "DC" : Model.State == null ? "DC" : Model.State)
                             )
                         @Html.ValidationMessageFor(model => model.State)
                     </div>
@@ -87,7 +87,7 @@ else
                     <div class="form-group">
                         @Html.LabelFor(model => model.WardID, new { @class = labelClasses + " sr-only" })
                         @(Html.Kendo().DropDownListFor(model => model.WardID)
-                            .OptionLabel(Empower.Common.Constant.UI.SelectList.DefaultOptionText)
+                            .OptionLabel(Empower.Common.Constant.UI.SelectList.DefaultWardOptionText)
                             .BindTo(Model.Wards)
                         )
                         @Html.ValidationMessageFor(model => model.WardID)
