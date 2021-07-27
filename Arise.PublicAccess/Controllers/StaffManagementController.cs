@@ -82,6 +82,7 @@ namespace Arise.PublicAccess.Controllers
             staffManagementViewModel.StaffIDs = ProviderDomainService.Repository.GetBindToItems<StaffType>().ToList();
             staffManagementViewModel.StaffQualificationIDs = ProviderDomainService.Repository.GetBindToItems<Empower.Model.StaffQualification>().ToList();
             staffManagementViewModel.RelationshipIDs = ProviderDomainService.Repository.GetBindToItems<Relationship>().ToList();
+            staffManagementViewModel.DocumentTypeListIDs = ProviderDomainService.Repository.GetBindToItems<StaffDocumentCheckList>().ToList();
             staffManagementViewModel.MainAddress = new Address();
             staffManagementViewModel.HealthInformationAddress = new Address();
             staffManagementViewModel.EmergencyAddress = new Address();
@@ -311,9 +312,12 @@ namespace Arise.PublicAccess.Controllers
                                                     on s.ID equals criminal.StaffMemberID into criminalhistory
                                                     join cph in ProviderDomainService.Repository.ChildProtectionRegisterHistories
                                                     on s.ID equals cph.StaffMemberID into childprotection
+                                                    join classroom in ProviderDomainService.Repository.StaffClassRoom 
+                                                    on s.ID equals classroom.StaffID into staffclassroom
                                                     from certification in certified.DefaultIfEmpty()
                                                      from criminal in criminalhistory.DefaultIfEmpty()
                                                     from cph in childprotection.DefaultIfEmpty()
+                                                    from cls in staffclassroom.DefaultIfEmpty()
                                                     select new StaffManagementViewModel
                                                     {
                                                         ID = s.ID,
@@ -321,10 +325,10 @@ namespace Arise.PublicAccess.Controllers
                                                         FacilityID = s.FacilityID,
                                                         StaffKey = s.StaffKey,
                                                         StaffType = st.Name,
-                                                        FacilityName = f.FacilityName,
+                                                        FacilityName = cls.AddClassRoom.ClassRoomName == null ? f.FacilityName : f.FacilityName + " - " + cls.AddClassRoom.ClassRoomName,
                                                         DateOfHireGridDateFormat = sc.DateHired,
                                                         SeprationGridDateFormat = sc.SeparationDate,
-                                                        Phone = s.Phone.HomePhone,
+                                                        Phone  = s.Phone.HomePhone.Replace("-", "") +"   /   "+ s.Email,
                                                         IsDeleted = s.IsDeleted,
                                                         Certification = certification == null ? Empower.Common.Constant.UI.CertificateStatus.Fail: certification.ExpirationDate > DateTime.Now ? Empower.Common.Constant.UI.CertificateStatus.Pass : Empower.Common.Constant.UI.CertificateStatus.Fail,
                                                         Clearance = criminal == null ? cph == null ? Empower.Common.Constant.UI.CertificateStatus.Fail : criminal.ExpirationDate > DateTime.Now ? Empower.Common.Constant.UI.CertificateStatus.Pass: Empower.Common.Constant.UI.CertificateStatus.Fail : criminal.ExpirationDate > DateTime.Now ? Empower.Common.Constant.UI.CertificateStatus.Pass : Empower.Common.Constant.UI.CertificateStatus.Fail,
@@ -454,6 +458,7 @@ namespace Arise.PublicAccess.Controllers
             pA_StaffDocument.Document = fileData;
             pA_StaffDocument.DocumentName = fileName;
             pA_StaffDocument.IsDeleted = false;
+            pA_StaffDocument.DocumentTypeID = staffManagementViewModel.DocumentTypeID;
             ProviderDomainService.Repository.Add(pA_StaffDocument);
             ProviderDomainService.Save();
 
@@ -588,7 +593,7 @@ namespace Arise.PublicAccess.Controllers
                 cprVM.ReceivedDate = cprValue.ReceivedDate;
                 cprVM.StatusID = cprValue.ResultID ?? 0;
                 cprVM.Comments = cprValue.Comments;
-                cprVM.StateID = cprValue.StateID;
+                cprVM.StateID = (int)(cprValue.StateID);
                 if (cprValue.BackgroundCheckDocument != null)
                 {
                     cprVM.UploadDocument = cprValue.BackgroundCheckDocument.Name;
