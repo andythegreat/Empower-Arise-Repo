@@ -328,7 +328,7 @@ namespace Arise.PublicAccess.Controllers
                                                         FacilityName = cls.AddClassRoom.ClassRoomName == null ? f.FacilityName : f.FacilityName + " - " + cls.AddClassRoom.ClassRoomName,
                                                         DateOfHireGridDateFormat = sc.DateHired,
                                                         SeprationGridDateFormat = sc.SeparationDate,
-                                                        Phone  = s.Phone.HomePhone.Replace("-", "") +"   /   "+ s.Email,
+                                                        Phone  = s.Phone.HomePhone.Replace("-", "") +"   /   "+ s.Email, // as pe QA requirement 
                                                         IsDeleted = s.IsDeleted,
                                                         Certification = certification == null ? Empower.Common.Constant.UI.CertificateStatus.Fail: certification.ExpirationDate > DateTime.Now ? Empower.Common.Constant.UI.CertificateStatus.Pass : Empower.Common.Constant.UI.CertificateStatus.Fail,
                                                         Clearance = criminal == null ? cph == null ? Empower.Common.Constant.UI.CertificateStatus.Fail : criminal.ExpirationDate > DateTime.Now ? Empower.Common.Constant.UI.CertificateStatus.Pass: Empower.Common.Constant.UI.CertificateStatus.Fail : criminal.ExpirationDate > DateTime.Now ? Empower.Common.Constant.UI.CertificateStatus.Pass : Empower.Common.Constant.UI.CertificateStatus.Fail,
