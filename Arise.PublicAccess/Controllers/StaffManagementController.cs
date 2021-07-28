@@ -458,7 +458,7 @@ namespace Arise.PublicAccess.Controllers
             pA_StaffDocument.Document = fileData;
             pA_StaffDocument.DocumentName = fileName;
             pA_StaffDocument.IsDeleted = false;
-            pA_StaffDocument.DocumentTypeID = staffManagementViewModel.DocumentTypeID;
+            pA_StaffDocument.CheckListID = staffManagementViewModel.DocumentTypeID;
             ProviderDomainService.Repository.Add(pA_StaffDocument);
             ProviderDomainService.Save();
 
