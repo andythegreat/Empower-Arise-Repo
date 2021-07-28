@@ -707,18 +707,25 @@ namespace Empower.DomainService
                 var applicationFee = Repository.ApplicationFeeHistories.Where(x => x.ApplicationID == applicationId && x.FeeTypeID == FeeTypes.Capacity).FirstOrDefault();
                 var fee = Repository.FeeConfigurations.Where(x => x.FacilityTypeID == application.Facility.FacilityTypeID &&
                               x.ApplicationTypeID == Model.LookupIDs.ApplicationTypes.Initial && x.FeeTypeID == FeeTypes.Capacity && (x.ThresholdMin <= capacity && x.ThresholdMax >= capacity)).FirstOrDefault();
-                if (applicationFee == null)
+                
+                if (fee != null)
                 {
-                    Repository.Add(new ApplicationFeeHistory { Amount = fee.Amount, ApplicationID = applicationId, FeeStatusID = FeeStatuses.Due, FeeTypeID = FeeTypes.Capacity,FeeConfigurationID = fee.ID });
-                    Repository.Save();
+
+                    if (applicationFee == null)
+                    {
+                        Repository.Add(new ApplicationFeeHistory { Amount = fee.Amount, ApplicationID = applicationId, FeeStatusID = FeeStatuses.Due, FeeTypeID = FeeTypes.Capacity, FeeConfigurationID = fee.ID });
+                        Repository.Save();
+                    }
+                    else
+                    {
+                        applicationFee.Amount = fee.Amount;
+                        applicationFee.FeeConfigurationID = fee.ID;
+                        Repository.Update(applicationFee, applicationFee.ID);
+                        Repository.Save();
+                    }
+                
                 }
-                else
-                {
-                    applicationFee.Amount = fee.Amount;
-                    applicationFee.FeeConfigurationID = fee.ID;
-                    Repository.Update(applicationFee, applicationFee.ID);
-                    Repository.Save();
-                }
+
             }
         }
         protected override int EntityID
