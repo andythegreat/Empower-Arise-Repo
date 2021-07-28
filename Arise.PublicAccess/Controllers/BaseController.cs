@@ -1,4 +1,4 @@
-﻿using Arise.PublicAccess.Areas.ProviderApplication.Controllers;
+﻿using Arise.PublicAccess.Areas.FacilityApplication.Controllers;
 using Empower.AccessControl;
 using Empower.AccessControl.Helpers;
 using Empower.Common;
@@ -61,15 +61,15 @@ namespace Arise.PublicAccess.Controllers
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            if (RouteData.Values[Empower.Common.Constant.PublicAccessApp.Modules.ProviderApplication.RouteID] != null)
+            if (RouteData.Values[Empower.Common.Constant.PublicAccessApp.Modules.FacilityApplication.RouteID] != null)
             {
-                ProviderDomainService.FacilityApplicationID = int.Parse((string)RouteData.Values[Empower.Common.Constant.PublicAccessApp.Modules.ProviderApplication.RouteID]);
+                ProviderDomainService.FacilityApplicationID = int.Parse((string)RouteData.Values[Empower.Common.Constant.PublicAccessApp.Modules.FacilityApplication.RouteID]);
 
                 var appStatusID = ProviderDomainService.Repository.Applications.Where(pa => pa.ID == ProviderDomainService.FacilityApplicationID).Single().ApplicationStatusID;
 
                 if (appStatusID != Empower.Model.LookupIDs.ApplicationStatuses.Pending)
                 {
-                    RedirectToAction(nameof(SummaryController.Index), nameof(SummaryController).RemoveControllerFromName(), new { area = Constant.PublicAccessApp.Modules.ProviderApplication.Area });
+                    RedirectToAction(nameof(SummaryController.Index), nameof(SummaryController).RemoveControllerFromName(), new { area = Constant.PublicAccessApp.Modules.FacilityApplication.Area });
                 }
 
                 ViewBag.FacilityApplicationID = ProviderDomainService.FacilityApplicationID;
