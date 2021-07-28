@@ -304,7 +304,7 @@ namespace Arise.PublicAccess.Controllers
         {
                                 var objStaffData = (from s in ProviderDomainService.Repository.StaffMembers
                                                     join sc in ProviderDomainService.Repository.StaffCharacteristics on s.ID equals sc.StaffID
-                                                    join st in ProviderDomainService.Repository.StaffTypes on sc.TitleOfPosition equals st.ID
+                                                    join st in ProviderDomainService.Repository.StaffTypes on sc.StaffTypeID equals st.ID
                                                     join f in ProviderDomainService.Repository.Facilities on s.FacilityID equals f.ID
                                                     join certification in ProviderDomainService.Repository.CertifiedStaffInFirstAidCPRs
                                                     on s.ID equals certification.SfattID into certified
@@ -565,7 +565,7 @@ namespace Arise.PublicAccess.Controllers
                                  {
                                      sf.ID,
                                      FullName = pe.FullName,
-                                     StaffTypeID = sfc.TitleOfPosition
+                                     StaffTypeID = sfc.StaffTypeID
                                  }).WithTranslations().ToList();
 
             cprVM.NameLists = (from snl in staffNameList
