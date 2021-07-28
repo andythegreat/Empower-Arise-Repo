@@ -6,25 +6,25 @@
 
 @{
     var gridBroadcastMessages = Html.Kendo().Grid<Empower.Model.BroadcastMessage>()
-                                    .Name("GridBroadcastMessages")
-                                    .DataSource(dataSource =>
-                                        dataSource.Ajax()
-                                        .Read(read => read.Action("GetBroadcastMessages", "Home"))
-                                        .Model(model =>
-                                        {
-                                            model.Id(m => m.ID);
-                                        })
-                                    )
-                                    .Columns(columns =>
-                                    {
-                                        columns.Bound(m => m.MessageName);
-                                        columns.Bound(m => m.MessageText);
-                                        columns.Bound(m => m.GeneratedDate).Format("{0:d}");
-                                    })
-                                    .Pageable(pageable => pageable.Messages(messages => messages.Empty("No Messages.")))
-                                    .Sortable(sortable => sortable.AllowUnsort(false))
-                                    .Resizable(resize => resize.Columns(true))
-                                    ;
+        .Name("GridBroadcastMessages")
+        .DataSource(dataSource =>
+            dataSource.Ajax()
+            .Read(read => read.Action("GetBroadcastMessages", "Home"))
+            .Model(model =>
+            {
+                model.Id(m => m.ID);
+            })
+        )
+        .Columns(columns =>
+        {
+            columns.Bound(m => m.MessageName);
+            columns.Bound(m => m.MessageText);
+            columns.Bound(m => m.GeneratedDate).Format("{0:d}");
+        })
+        .Pageable(pageable => pageable.Messages(messages => messages.Empty("No Messages.")))
+        .Sortable(sortable => sortable.AllowUnsort(false))
+        .Resizable(resize => resize.Columns(true))
+        ;
 }
 
 @*@if (Request.Browser.IsMobileDevice)
