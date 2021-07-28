@@ -62,7 +62,7 @@ namespace Arise.PublicAccess.Controllers
                                   DirectorName = string.Join(", ", (from sft in ProviderDomainService.Repository.StaffMembers
                                                                     join stc in ProviderDomainService.Repository.StaffCharacteristics on sft.ID equals stc.StaffID
                                                                     join p in ProviderDomainService.Repository.Persons on sft.PersonID equals p.ID
-                                                                    where stc.TitleOfPosition == recd.stt.ID && sft.FacilityID == recd.f.ID
+                                                                    where stc.StaffTypeID == recd.stt.ID && sft.FacilityID == recd.f.ID
                                                                     select (p.FullName.ToString())).WithTranslations())
                               }
                                 );
