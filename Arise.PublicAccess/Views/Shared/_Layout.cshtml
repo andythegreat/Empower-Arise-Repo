@@ -243,6 +243,22 @@
     <script src="~/js/DocumentUploadViewComponent.js"></script>
     <script src="~/js/DialogViewComponent.js"></script>
 
+    <script>
+        @if (!ViewBag.CanEdit)
+        {
+            <text>
+                ApplyPermissions();
+            </text>
+        }
+
+        @if (ViewBag.DontDirtyCheck != true)
+        {
+            <text>
+                $('form').areYouSure();
+            </text>
+        }
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 
     @Html.RenderPartialSectionScripts()
