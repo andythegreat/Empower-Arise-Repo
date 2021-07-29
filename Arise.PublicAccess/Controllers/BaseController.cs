@@ -127,7 +127,7 @@ namespace Arise.PublicAccess.Controllers
             var agent = Request.Headers["User-Agent"];
             var url = Request.Path;
 
-            var area = filterContext.RouteData.Values[Empower.Common.Constant.Mvc.Area]?.ToString().SplitCamelCase();
+            var area = filterContext.RouteData.Values[Constant.Mvc.Area]?.ToString().SplitCamelCase();
 
             var controller = string.Empty;
             var controllerActionDescriptor = filterContext.ActionDescriptor as ControllerActionDescriptor;
@@ -145,9 +145,9 @@ namespace Arise.PublicAccess.Controllers
 
             if (Request.HasFormContentType && Request.Form.ContainsKey("navigate:Cancel"))
             {
-                var routeData = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(Request.Form["navigate:CancelRoute"]);
+                var routeData = JsonConvert.DeserializeObject<Dictionary<string, object>>(Request.Form["navigate:CancelRoute"]);
 
-                filterContext.Result = RedirectToAction((string)routeData[Empower.Common.Constant.Mvc.Action], (string)routeData[Empower.Common.Constant.Mvc.Controller], new RouteValueDictionary(routeData));
+                filterContext.Result = RedirectToAction((string)routeData[Constant.Mvc.Action], (string)routeData[Constant.Mvc.Controller], new RouteValueDictionary(routeData));
             }
 
             base.OnActionExecuting(filterContext);
@@ -155,15 +155,10 @@ namespace Arise.PublicAccess.Controllers
 
         private void SetPermissions(dynamic viewBag, string area, string controller, string action)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                var user = User;
-                viewBag.CanEdit = AccessControlManager.CheckAccess(user, string.Format("{0}.{1}.{2}", area, controller, action), Actions.Edit);
-            }
-            else
-            {
-                viewBag.CanEdit = AccessControlManager.CheckAccess(null, string.Format("{0}.{1}.{2}", area, controller, action), Actions.Edit);
-            }
+            viewBag.CanEdit = AccessControlManager.CheckAccess(
+                User?.Identity?.IsAuthenticated == true ? User : null,
+                string.Format("{0}.{1}.{2}", area, controller, action),
+                Actions.Edit);
         }
 
         protected bool IsAjax
