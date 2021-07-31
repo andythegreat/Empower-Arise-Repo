@@ -1,0 +1,179 @@
+﻿@{
+    var pageTitle = "Broadcast Messages";
+    ViewBag.PageTitle = pageTitle;
+    ViewBag.Title = ViewBag.Title + ViewBag.PageTitle;
+}
+
+@{
+    var gridBroadcastMessages = Html.Kendo().Grid<Empower.Model.BroadcastMessage>()
+        .Name("GridBroadcastMessages")
+        .DataSource(dataSource =>
+            dataSource.Ajax()
+            .Read(read => read.Action("GetBroadcastMessages", "Home"))
+            .Model(model =>
+            {
+                model.Id(m => m.ID);
+            })
+        )
+        .Columns(columns =>
+        {
+            columns.Bound(m => m.MessageName);
+            columns.Bound(m => m.MessageText);
+            columns.Bound(m => m.GeneratedDate).Format("{0:d}");
+        })
+        .Pageable(pageable => pageable.Messages(messages => messages.Empty("No Messages.")))
+        .Sortable(sortable => sortable.AllowUnsort(false))
+        .Resizable(resize => resize.Columns(true))
+        ;
+}
+
+@*@if (Request.Browser.IsMobileDevice)
+{
+    ViewBag.HasBackButton = true;
+    ViewBag.BackButtonUrl = "#mobile-messages";
+
+    gridBroadcastMessages.ColumnMenu();
+    gridBroadcastMessages.Mobile();
+    gridBroadcastMessages.Scrollable(scrollable =>
+    {
+        scrollable.Enabled(true);
+        scrollable.Height("100%");
+    });
+
+    //gridProviderMessages.ColumnMenu();
+    //gridProviderMessages.Mobile();
+    //gridProviderMessages.Scrollable(scrollable =>
+    //                        {
+    //                            scrollable.Enabled(true);
+    //                            scrollable.Height("100%");
+    //                        });
+
+    @(Html.Kendo().MobileView()
+        .Name("mobile-messages")
+        .Title(pageTitle)
+        .Transition("slide:right")
+        .Events(events => events.Show("HideMobileNavBackButton").Hide("ShowMobileNavBackButton"))
+        .Content(//content =>
+        @<text>
+            <div class="container-fluid top-buffer bottom-buffer">
+                <div class="row">
+                    <div class="col-xs-12 bottom-buffer-small text-center">
+                        @(Html.Kendo().MobileButton()
+                            .Text("View Broadcast Messages")
+                            .Url("#mobile-broadcast-messages")
+                            .HtmlAttributes(new { @class = "full-width-button" })
+                        )
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        @(Html.Kendo().MobileButton()
+                            .Text("View Provider Messages")
+                            .Url("#mobile-provider-messages")
+                            .HtmlAttributes(new { @class = "full-width-button" })
+                        )
+                    </div>
+                </div>
+            </div>
+        </text>
+        )
+    )
+
+    @(Html.Kendo().MobileView()
+        .Name("mobile-broadcast-messages")
+        .Title("Broadcast Messages")
+        .Transition("slide:left")
+        .Events(events => events.Show("GridResize"))
+        .Content(//content =>
+        @<text>
+            @gridBroadcastMessages
+        </text>
+        )
+    )
+}
+else
+{
+    <div class="form-horizontal">
+        <div class="form-group">
+            <div class="col-md-12">
+                <h4>Broadcast Messages</h4>
+                @gridBroadcastMessages
+            </div>
+        </div>
+    </div>
+}*@
+
+@gridBroadcastMessages
+
+<script id="messageTemplate" type="text/kendo-tmpl">
+    <div style="margin-left: 50px;" class="newline-br">#=MessageText#</div>
+</script>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+        });
+
+        function GridProviderMessagesDataBound(e) {
+            hideExpander(this);
+        }
+
+        function hideExpander(grid) {
+            grid.expandRow(grid.table.find('tr.k-master-row'));
+            //debugger;
+            //grid.thead.find('.k-hierarchy-cell').remove();
+            grid.table.find('.k-hierarchy-cell').remove();
+            grid.table.find('.k-hierarchy-col').remove();
+        }
+
+        function markCleared(e) {
+            dataView = this.dataSource.view();
+            var tr = $(e.currentTarget).closest("tr");
+            var grid = tr.closest('.k-grid').data("kendoGrid");
+            var item = grid.dataItem(tr);
+
+            $.ajax({
+                url: '@Url.Action("MarkCleared")',
+                type: "POST",
+                data: { id: item.ID },
+                success: function (data) {
+                    grid.dataSource.read();
+                    var clearedTaskListGrid = $("#ClearedTaskListGrid").data("kendoGrid");
+                    clearedTaskListGrid.dataSource.read();
+                },
+            })
+        }
+
+        function increaseSeverity(e) {
+            dataView = this.dataSource.view();
+            var tr = $(e.currentTarget).closest("tr");
+            var grid = tr.closest('.k-grid').data("kendoGrid");
+            var item = grid.dataItem(tr);
+
+            $.ajax({
+                url: '@Url.Action("IncreaseSeverity")',
+                type: "POST",
+                data: { id: item.ID },
+                success: function (data) {
+                    grid.dataSource.read();
+                },
+            })
+        }
+
+        function decreaseSeverity(e) {
+            dataView = this.dataSource.view();
+            var tr = $(e.currentTarget).closest("tr");
+            var grid = tr.closest('.k-grid').data("kendoGrid");
+            var item = grid.dataItem(tr);
+
+            $.ajax({
+                url: '@Url.Action("DecreaseSeverity")',
+                type: "POST",
+                data: { id: item.ID },
+                success: function (data) {
+                    grid.dataSource.read();
+                },
+            })
+        }
+    </script>
+}
