@@ -1,0 +1,287 @@
+﻿@model Arise.Shared.ViewComponents.Address.AddressViewModel
+
+@{
+    var htmlFieldPrefix = ViewData.GetHtmlFieldPrefixWithUnderscore();
+
+    var fhAddress = htmlFieldPrefix + "_fhAddress";
+    var fgAddress2 = htmlFieldPrefix + "_fgAddressLine2";
+    var fgCityStateZip = htmlFieldPrefix + "_fgCityStateZip";
+    var fgMagisterialDistrict = htmlFieldPrefix + "_fgMagisterialDistrict";
+    var fgWard = htmlFieldPrefix + "_fgWard";
+    var fgQuadrant = htmlFieldPrefix + "_fgQuadrant";
+    var divAddressVerified = htmlFieldPrefix + "_divAddressVerified";
+    var fgMARAddressResults = htmlFieldPrefix + "_fgMARAddressResults";
+    var divMARAddressResults = htmlFieldPrefix + "_divMARAddressResults";
+    var gridMARAddresses = htmlFieldPrefix + "_gridMARAddresses";
+    var btnConfirmVerify = htmlFieldPrefix + "_btnConfirmVerify";
+    var verifyAddressWindow = htmlFieldPrefix + "_VerifyAddressWindow";
+
+    var labelClasses = "control-label";
+}
+
+@if (Model != null)
+{
+    @Html.HiddenFor(model => model.ID)
+}
+@if (Model.IsReadOnly != null && Model.IsReadOnly.Value)
+{
+    <div class="row">
+        <div class="col-xs-12">
+                @Html.LabelFor(model => model.AddressText)
+                <p class="form-control-static newline-br">@Html.DisplayFor(model => model.AddressText)</p>
+            <div class="">
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div id="@fhAddress" class="panel panel-default">
+        <div class="panel-heading">
+            @Html.DisplayName(Empower.Common.Constant.UI.Address.Address1)
+        </div>
+        <div class="panel-body" style="padding-bottom: 0px;">
+            <div class="form-group form-group-tight">
+                <div class="input-group">
+                    @Html.LabelFor(model => model.Address1, new { @class = "sr-only" })
+                    @Html.EditorFor(model => model.Address1, new { @class = "form-control address-search" })
+                    <span class="input-group-btn">
+                        <button type="button" title="Verify Address" class="btn btn-warning" onclick="@(htmlFieldPrefix)_VerifyAddress(this);">
+                            <span class="glyphicon glyphicon-search" />
+                        </button>
+                    </span>
+                </div>
+                @Html.ValidationMessageFor(model => model.Address1)
+            </div>
+            <div id="@fgAddress2" class="form-group form-group-tight">
+                @Html.LabelFor(model => model.Address2, new { @class = labelClasses + " sr-only" })
+                @Html.EditorFor(model => model.Address2, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Address2)
+            </div>
+            <div id="@fgCityStateZip" class="row">
+                <div class="col-xs-4">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.City, new { @class = labelClasses + " sr-only" })
+                        @Html.EditorFor(model => model.City, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.City)
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.State, new { @class = labelClasses + " sr-only" })
+                        @(Html.Kendo().DropDownListFor(model => model.State)
+                                .OptionLabel(Empower.Common.Constant.UI.SelectList.DefaultStateOptionText)
+                                .BindTo(Model.StateCodes)
+                                .Value(Model?.State ?? Empower.Common.Constant.UI.Address.DefaultState)
+                            )
+                        @Html.ValidationMessageFor(model => model.State)
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Zip, new { @class = labelClasses + " sr-only" })
+                        @Html.EditorFor(model => model.Zip, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Zip)
+                    </div>
+                </div>
+                <div id="@fgWard" class="col-xs-2">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.WardID, new { @class = labelClasses + " sr-only" })
+                        @(Html.Kendo().DropDownListFor(model => model.WardID)
+                            .OptionLabel(Empower.Common.Constant.UI.SelectList.DefaultWardOptionText)
+                            .BindTo(Model.Wards)
+                        )
+                        @Html.ValidationMessageFor(model => model.WardID)
+                    </div>
+                </div>
+                <div id="@fgQuadrant" class="col-xs-2">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.QuadrantID, new { @class = labelClasses + " sr-only" })
+                        @(Html.Kendo().DropDownListFor(model => model.QuadrantID)
+                            .OptionLabel(Empower.Common.Constant.UI.SelectList.DefaultQuadrantOptionText)
+                            .BindTo(Model.Quadrants)
+                        )
+                        @Html.ValidationMessageFor(model => model.QuadrantID)
+                    </div>
+                </div>
+            </div>
+            <div id="@fgMARAddressResults" class="row top-buffer-small" style="display: none;">
+                <div id="@divMARAddressResults" class="col-xs-12">
+                    @* Populated by jQuery VerifyAddress *@
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @(Html.Kendo().Window()
+        .Name(verifyAddressWindow)
+        .Title("Verify Address")
+        .Actions(a => a.Close())
+        .Events(e => e.Close("PopupWindowCloseEvent"))
+        .Draggable(false)
+        .Modal(true)
+        .Pinned()
+        .Visible(false)
+        .Width(300)
+        .Content(@<text>
+            <div class="panel panel-default panel-marginless">
+                <div class="panel-body">
+                    <p>Verifying this address will update all associated address fields.</p>
+                    <p class="text-center">Continue?</p>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button id="@btnConfirmVerify" class="btn btn-primary">Verify</button>
+                        </div>
+                        <div class="col-xs-6 text-right">
+                            <button class="btn btn-default" onclick="@(htmlFieldPrefix)_CloseConfirmVerify();">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </text>)
+    )
+
+    @Html.PartialSectionScripts(@<script>
+        $(document).ready(function () {
+            if (@Model.IsReadOnly.ToString().ToLower() == "false") {
+                var tbAddress1 = $('#@Html.IdFor(model => model.Address1)');
+                SetupZipTextBox('@Html.IdFor(model => model.Zip)');
+
+                var form = tbAddress1.closest('form');
+                form.removeData('validator');
+                form.removeData('unobtrusiveValidation');
+                $.validator.unobtrusive.parse(form);
+
+                setRequiredLabels('@fhAddress');
+                ColorRequiredStarsCorrectly('@fhAddress');
+            }
+        });
+
+        function @(htmlFieldPrefix)_VerifyAddress(sender) {
+            var addessLine1 = $('#@Html.IdFor(model => model.Address1)').val();
+
+            if (addessLine1 == '') {
+                $('#@Html.IdFor(model => model.Address1)').focus();
+                return;
+            }
+
+            $(sender).css('position', 'relative');
+            kendo.ui.progress($(sender), true);
+
+            var getUrl = '@Url.Action("GetMARAddresses", "AddressViewComponent", new { area = "" })';
+
+            $.ajax({
+                url: getUrl,
+                data: { addressLine1: addessLine1, htmlFieldPrefix: '@htmlFieldPrefix' },
+                success: function (data) {
+                    $('#@fgMARAddressResults').slideDown();
+                    $('#@divMARAddressResults').html(data);
+                    $('#@divMARAddressResults').slideDown(function () {
+                        kendo.ui.progress($(sender), false);
+                    });
+                },
+                error: function () {
+                    kendo.ui.progress($(sender), false);
+                },
+                cache: false
+            });
+        }
+
+        function @(htmlFieldPrefix)_CloseConfirmVerify() {
+            $('#@verifyAddressWindow').data('kendoWindow').close();
+            var btnConfirm = $("#@btnConfirmVerify");
+            btnConfirm.off();
+        }
+
+        function PopupWindowCloseEvent() {
+            var btnConfirm = $("#@btnConfirmVerify");
+            btnConfirm.off();
+        }
+
+        function @(htmlFieldPrefix)_ConfirmSelectedAddress(addressKey) {
+            var btnConfirm = $("#@btnConfirmVerify");
+            btnConfirm.click(function () {
+            @(htmlFieldPrefix)_SelectValidAddress(addressKey);
+            });
+
+            var w = $("#@verifyAddressWindow").data("kendoWindow");
+            w.center().open();
+        }
+
+        function @(htmlFieldPrefix)_SelectValidAddress(addressKey) {
+            var getUrl = '@Url.Action("SelectMARAddress", "AddressViewComponent", new { area = "" })';
+
+            var w = $("#@verifyAddressWindow").data("kendoWindow");
+            var x = $("#@verifyAddressWindow");
+            kendo.ui.progress(x, true);
+
+            $.ajax({
+                url: getUrl,
+                data: { MARAddressKey: addressKey },
+                success: function (data) {
+                    var btnDelete = $("#@btnConfirmVerify");
+                    btnDelete.off();
+
+                    kendo.ui.progress(x, false);
+                    w.close();
+
+                @(htmlFieldPrefix)_PopulateAddressFields(data);
+
+                    $('#@fgMARAddressResults').slideUp();
+                },
+                error: function (data) {
+                    //TODO: Alert to a failure
+                    kendo.ui.progress(x, false);
+                    w.close();
+                },
+                cache: false
+            });
+
+            @(htmlFieldPrefix)_ShowRemainingAddressFields();
+        }
+
+        function @(htmlFieldPrefix)_PopulateAddressFields(addressObj) {
+            if (addressObj != null) {
+                $('#@Html.IdFor(model => model.Address1)').val(addressObj.Address1);
+                $('#@Html.IdFor(model => model.City)').val(addressObj.City);
+                $('#@Html.IdFor(model => model.State)').data('kendoDropDownList').value(addressObj.State);
+                $('#@Html.IdFor(model => model.Zip)').val(addressObj.Zip);
+
+                var bgColor = '#f2dede';
+                var bgOriginal = $('#@Html.IdFor(model => model.Address1)').css('background-color');
+                var inTime = 400;
+                var outTime = 1000;
+
+                $(':animated').promise().done(function () {
+                    $('#@Html.IdFor(model => model.Address1)').animate({ backgroundColor: bgColor }, inTime, function () {
+                        $('#@Html.IdFor(model => model.Address1)').animate({ backgroundColor: bgOriginal }, outTime);
+                    });
+                    $('#@Html.IdFor(model => model.City)').animate({ backgroundColor: bgColor }, inTime, function () {
+                        $('#@Html.IdFor(model => model.City)').animate({ backgroundColor: bgOriginal }, outTime);
+                    });
+                    $('#@Html.IdFor(model => model.State)').prev().animate({ backgroundColor: bgColor }, inTime, function () {
+                        $('#@Html.IdFor(model => model.State)').prev().animate({ backgroundColor: bgOriginal }, outTime);
+                    });
+                    $('#@Html.IdFor(model => model.Zip)').animate({ backgroundColor: bgColor }, inTime, function () {
+                        $('#@Html.IdFor(model => model.Zip)').animate({ backgroundColor: bgOriginal }, outTime);
+                    });
+
+                    ColorRequiredStarsCorrectly('@fhAddress');
+                });
+            } else {
+                var centeredPopup = $('#CenteredPopup').data("kendoNotification");
+                centeredPopup.show({ title: "Error", message: "Failed to receive data from service." }, "error");
+            }
+        }
+
+        function @(htmlFieldPrefix)_gridMARAddressesDataBound(e) {
+            @(htmlFieldPrefix)_ShowRemainingAddressFields();
+        }
+
+        function @(htmlFieldPrefix)_ShowRemainingAddressFields() {
+            $('#@fgAddress2').slideDown();
+            $('#@fgCityStateZip').slideDown();
+        }
+    </script>)
+}
